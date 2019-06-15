@@ -1,28 +1,27 @@
 # netsuite-sdk-py
-Python SDK for accessing Netsuite resources
-via the SuiteTalk SOAP services.
+Python SDK for accessing NetSuite resources via the SuiteTalk SOAP services.
 
 ## Installation
 
 	$ pip install netsuitesdk 
 
-Remark: This python netsuite SDK uses the SOAP/WSDL library [Zeep](https://python-zeep.readthedocs.io/en/master/ "Zeep") which should be automatically be installed when running above pip-command. Otherwise you can run `$ pip install zeep` first.
+Remark: This python NetSuite SDK uses the SOAP/WSDL library [Zeep](https://python-zeep.readthedocs.io/en/master/ "Zeep") which should automatically be installed when running above pip-command. Otherwise you can run `$ pip install zeep` first.
 
 ## Get Started
 
-There are the following options to access a Netsuite account via web services: 
+There are the following options to access a NetSuite account via web services: 
 - Either pass credentials (email, password, role and account Id) via login and start a request session
 - Pass credentials in the header of each request
 - Use token based authentication (within each request)
 
 ### Login with credentials
 
-The following code performs a login to a Netsuite account and starts a web service session.
+The following code performs a login to a NetSuite account and starts a web service session.
 
 ```python
 from netsuitesdk import NetSuiteClient
 
-# Initialize the netsuite client instance by passing the application Id
+# Initialize the NetSuite client instance by passing the application Id
 # which will be passed to the request header in the login operation.
 ns = NetSuiteClient(caching='sqlite', debug=True)
 
@@ -77,11 +76,47 @@ If login fails, a NetSuiteLoginError is thrown.
 For more information about NetSuite authentication, see:
 	(https://docs.oracle.com/cloud/latest/netsuitecs_gs/NSATH/NSATH.pdf)
 
-### Get Requests
-tba
-
 ### Passing credentials with requests
 tba
 
 ### Token based authentication
 tba
+
+### Get Request
+A basic example (`ns` is a reference to a `NetSuiteClient` instance):
+```python
+vendor = ns.get('vendor', internalId=ref.internalId)
+ns.print_values(vendor)
+```
+
+### Search
+To perform a search request, use `NetSuite.search`.
+The SDK provides some utility functions/classes:
+
+- `basic_stringfield_search`: A basic example (`ns` is a reference to a `NetSuiteClient` instance):
+```python
+records = ns.basic_stringfield_search(type_name='Vendor',
+                                attribute='entityId',
+                                value='Alexander Valley Vineyards',
+                                operator='is')
+print(records[0].internalId)
+```
+-`PaginatedSearch` (in utils.py):
+Its usage can be seen inside the utility function `NetSuiteClient.paginated_search`
+
+### Upsert
+Basic example(`ns` is a reference to a `NetSuiteClient` instance):
+```python
+vendor = ns.Vendor()
+vendor.externalId = 'test_vendor'
+vendor.companyName = 'Another Test Inc.'
+ref = ns.upsert(record=vendor)
+```
+
+### UpsertList
+Basic example(`ns` is a reference to a `NetSuiteClient` instance):
+```python
+customer1 = ns.Customer(externalId='customer', email='test1@example.com')
+customer2 = ns.Customer(externalId='another_customer', email='test2@example.com')
+ns.upsertList(records=[customer1, customer2])
+```
