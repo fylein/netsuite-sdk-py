@@ -21,6 +21,16 @@ class NetSuiteError(Exception):
 
 
 class NetSuiteLoginError(NetSuiteError):
-    """Exception raised for errors during login to NetSuite."""
+    """Exception raised for errors during login to NetSuite"""
+
+    pass
+
+class NetSuiteRequestError(NetSuiteError):
+    """Exception raised for errors during requests like get, search, .."""
+
+    pass
+
+class NetSuiteTypeError(NetSuiteError):
+    """Exception raised when requested an invalid netsuite type"""
 
     pass

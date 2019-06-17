@@ -19,30 +19,31 @@ from zeep.transports import Transport
 from zeep.exceptions import Fault
 from zeep.exceptions import LookupError as ZeepLookupError
 
+from .constants import *
 from .exceptions import *
+from .utils import User, PaginatedSearch
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
 
-class User:
+def request_service():
+    """
+    Decorator for NetSuite web service requests
+    Implementation not finished yet
+    """
 
-    def __init__(self, name, internalId, wsRole):
-        """
-        :param str name: the user name
-        :param int internalId: the id of the user
-        :param WsRole wsRole: has attributes `role`(containing name
-                and internalId of the role), `isDefault`, `isInactive` and `isLoggedInRole`
-        """
-
-        self.name = name
-        self.internalId = internalId
-        self.wsRole = wsRole
-
-    def __str__(self):
-        if self.wsRole is None:
-            return self.name
-        return '{}({})'.format(self.name, self.wsRole.role.name)
+    response = response.body.writeResponse
+    status = response.status
+    log.info('status: %s' % str(status))
+    if status.isSuccess:
+        record = response['record']
+        return record
+    else:
+        exc = self._request_error('get', detail=status['statusDetail'][0])
+        if not fail_silently:
+            raise exc
+        return None
 
 
 class NetSuiteClient:
@@ -52,32 +53,89 @@ class NetSuiteClient:
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
 
     _complex_type_definitions = {
-        'BaseRef': 'ns0:BaseRef',
-        'GetAllRecord': 'ns0:GetAllRecord',
-        'GetAllResult': 'ns0:GetAllResult',
-        'Passport': 'ns0:Passport',
-        'RecordList': 'ns0:RecordList',
-        'RecordRef': 'ns0:RecordRef',
-        'Status': 'ns0:Status',
-        'StatusDetail': 'ns0:StatusDetail',
-        'TokenPassport': 'ns0:TokenPassport',
-        'TokenPassportSignature': 'ns0:TokenPassportSignature',
-        'WsRole': 'ns0:WsRole',
-        'ApplicationInfo': 'ns4:ApplicationInfo',
-        'GetAllRequest': 'ns4:GetAllRequest',
-        'GetResponse': 'ns4:GetResponse',
-        'GetAllResponse': 'ns4:GetAllResponse',
-        'PartnerInfo': 'ns4:PartnerInfo',
+        'ns0': [
+            'BaseRef',
+            'GetAllRecord',
+            'GetAllResult',
+            'Passport',
+            'RecordList',
+            'RecordRef',
+            'SearchResult',
+            'SearchStringField',
+            'SearchMultiSelectField',
+            'Status',
+            'StatusDetail',
+            'TokenPassport',
+            'TokenPassportSignature',
+            'WsRole'
+        ],
 
-        'Account': 'ns17:Account',
+        # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
+        'ns4': [
+            'ApplicationInfo',
+            'GetAllRequest',
+            'GetRequest',
+            'GetResponse',
+            'GetAllResponse',
+            'PartnerInfo',
+            'ReadResponse',
+            'SearchPreferences',
+            'SearchResponse'
+        ],
+
+        # https://webservices.netsuite.com/xsd/platform/v2017_2_0/common.xsd
+        'ns5': [
+            'AccountSearchBasic',
+            'CustomerSearchBasic',
+            'LocationSearchBasic',
+            'TransactionSearchBasic',
+            'VendorSearchBasic',
+        ],
+
+        # urn:relationships.lists.webservices.netsuite.com
+        'ns13': [
+            'Customer', 'CustomerSearch',
+            'Vendor', 'VendorSearch',
+        ],
+
+        # urn:accounting_2017_2.lists.webservices.netsuite.com
+        # https://webservices.netsuite.com/xsd/lists/v2017_2_0/accounting.xsd
+        'ns17': [
+            'Account', 'AccountSearch',
+            'AccountingPeriod',
+            'Location', 'LocationSearch',
+            'VendorCategory', 'VendorCategorySearch',
+        ],
+        #'VendorBillSearch', 'VendorPaymentSearch',
+
+        'ns19': [
+            'TransactionSearch',
+        ],
+
+        # urn:purchases_2017_2.transactions.webservices.netsuite.com
+        # https://webservices.netsuite.com/xsd/transactions/v2017_2_0/purchases.xsd
+        'ns21': [
+            'VendorBill',
+            'VendorBillExpense',
+            'VendorBillExpenseList',
+            'VendorBillItem',
+            'VendorBillItemList',
+            'VendorPayment',
+        ],
     }
 
     _simple_type_definitions = {
-        'RecordType': 'ns1:RecordType',
-        'GetAllRecordType': 'ns1:GetAllRecordType',
+        # ns1: view-source:https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+        'ns1': [
+            'RecordType',
+            'GetAllRecordType',
+            'SearchRecordType',
+            'SearchStringFieldOperator',
+        ],
     }
 
-    def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, debug=False):
+
+    def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, debug=False, **kwargs):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -88,6 +146,7 @@ class NetSuiteClient:
         :param str caching: If caching = 'sqlite', setup Sqlite caching
         :param int caching_timeout: Timeout in seconds for caching.
                             If None, defaults to 30 days
+        :param bool debug: If True, will show all logs
         """
 
         if debug:
@@ -107,31 +166,108 @@ class NetSuiteClient:
         # Initialize the Zeep Client
         self._client = Client(self._wsdl_url, transport=transport)
 
-        # Parse all complex types specified in _complex_type_definitions
-        # and store them as attributes of this instance
+        # Parse all complex(simple) types specified in _complex_type_definitions
+        # (_simple_type_definitions) and store them as attributes of this instance
+        self._namespaces = {}
         self._init_complex_types()
+        self._init_simple_types()
 
         self._app_info = None
         self._is_authenticated = False
         self._user = None
+        self._search_preferences = self.SearchPreferences(
+                bodyFieldsOnly=kwargs.get('bodyFieldsOnly', True),
+                pageSize=kwargs.get('pageSize', 5),
+                returnSearchColumns=kwargs.get('returnSearchColumns', False)
+        )
 
     def _init_complex_types(self):
         self._complex_types = {}
-        for k, v in self._complex_type_definitions.items():
-            try:
-                complex_type = self._client.get_type(v)
-            except ZeepLookupError:
-                log.warning('LookupError: Did not find complex type {}'.format(v))
-            else:
-                setattr(self, k, complex_type)
-                self._complex_types[k] = complex_type
+        for namespace, complex_types in self._complex_type_definitions.items():
+            if not namespace in self._namespaces:
+                self._namespaces[namespace] = []
+            for type_name in complex_types:
+                try:
+                    verbose_type_name = '{namespace}:{type_name}'.format(
+                        namespace=namespace,
+                        type_name=type_name
+                    )
+                    complex_type = self._client.get_type(verbose_type_name)
+                except ZeepLookupError:
+                    log.warning('LookupError: Did not find complex type {}'.format(type_name))
+                else:
+                    setattr(self, type_name, complex_type)
+                    self._complex_types[type_name] = complex_type
+                    self._namespaces[namespace].append(complex_type)
+
+    def _init_simple_types(self):
+        self._simple_types = {}
+        for namespace, simple_types in self._simple_type_definitions.items():
+            if not namespace in self._namespaces:
+                self._namespaces[namespace] = []
+            for type_name in simple_types:
+                try:
+                    verbose_type_name = '{namespace}:{type_name}'.format(
+                        namespace=namespace,
+                        type_name=type_name
+                    )
+                    simple_type = self._client.get_type(verbose_type_name)
+                except ZeepLookupError:
+                    log.warning('LookupError: Did not find simple type {}'.format(type_name))
+                else:
+                    setattr(self, type_name, simple_type)
+                    self._simple_types[type_name] = simple_type
+                    self._namespaces[namespace].append(simple_type)
 
     def get_complex_type(self, type_name):
+        # if ':' in type_name:
+        #     namespace, type_name = type_name.split(':')
+            # namespace_index = namespace[2:]
         return self._complex_types[type_name]
 
-    def get_complex_type_attributes(self, type_name):
-        complex_type = self.get_complex_type(type_name)
-        return [(attribute.name, attribute.type) for attribute in complex_type._attributes]
+    def get_simple_type(self, type_name):
+        return self._simple_types[type_name]
+
+    def get_complex_type_attributes(self, complex_type):
+        if isinstance(complex_type, str):
+            complex_type = self.get_complex_type(complex_type)
+        try:
+            return [(attribute.name, attribute.type.name) for attribute in complex_type._attributes]
+        except AttributeError:
+            return []
+
+    def get_complex_type_elements(self, complex_type):
+        if isinstance(complex_type, str):
+            complex_type = self.get_complex_type(complex_type)
+        try:
+            return [(attr_name, element.type.name) for attr_name, element in complex_type.elements]
+        except AttributeError:
+            return []
+
+    def get_complex_type_info(self, complex_type):
+        if isinstance(complex_type, str):
+            complex_type = self.get_complex_type(complex_type)
+            label = complex_type
+        else:
+            if hasattr(complex_type, 'name'):
+                label = complex_type.name
+            else:
+                label = str(complex_type)
+        attributes = self.get_complex_type_attributes(complex_type)
+        elements = self.get_complex_type_elements(complex_type)
+        yield 'complexType {}:'.format(label)
+        if attributes:
+            yield 'Attributes:'
+            for name, type_name in attributes:
+                yield '\t{}: {}'.format(name, type_name)
+        else:
+            yield 'No attributes'
+        if elements:
+            yield 'Elements:'
+            for name, type_name in elements:
+                yield '\t{}: {}'.format(name, type_name)
+        else:
+            yield 'No elements'
 
     def create_passport(self, email, password, role, account):
         """
@@ -201,7 +337,7 @@ class NetSuiteClient:
         :param int app_id: All requests done in this session will be identified
             with this application Id.
         :param Passport passport: holds the credentials to authenticate the user.
-        :param fail_silently: If True, will not reraise exceptions
+        :param bool fail_silently: If True, will not reraise exceptions
 
         :return: the login response which contains the response status and user roles
         :rtype: LoginResponse
@@ -228,19 +364,16 @@ class NetSuiteClient:
                 return response
             else:
                 statusDetail = response.status['statusDetail'][0]
-                exc = NetSuiteLoginError(
-                            """An error occured in {operation} request:
-                               \tmessage: {msg}""".format(operation=operation, msg=statusDetail['message']),
-                            code=statusDetail['code']
-                )
-                log.error(str(exc))
+                exc = self._request_error('login',
+                                          detail=statusDetail,
+                                          error_cls=NetSuiteLoginError)
                 if not fail_silently:
                     raise exc
         except Fault as fault:
             exc = NetSuiteLoginError(str(fault), code=fault.code)
             log.error(str(exc))
             if not fail_silently:
-                raise exc
+                raise exc from None
 
     def _log_roles(self, response):
         roles = response.wsRoleList['wsRole']
@@ -275,3 +408,375 @@ class NetSuiteClient:
         self._user = None
         return response.status
 
+    def _request_error(self, service_name, detail, error_cls=None):
+        if error_cls is None:
+            error_cls = NetSuiteRequestError
+        exc = error_cls(
+                "An error occured in a {service_name} request: {msg}".format(
+                                                    service_name=service_name,
+                                                    msg=detail['message']),
+                code=detail['code']
+        )
+        log.error(str(exc))
+        return exc
+
+    def build_soap_headers(self, **kwargs):
+        """
+        Generate soap headers dictionary to send with a request
+
+        :param: Passport passport: holds the authentication credentials
+        :param: TokenPassport tokenPassport: holds the token based authentication details
+        :param: ApplicationInfo applicationInfo: contains the application Id
+        :return: the dictionary representing the headers
+        :rtype: dict
+        """
+
+        soapheaders = {}
+
+        passport = kwargs.pop('passport', None)
+        token_passport = kwargs.pop('tokenPassport', None)
+        if self._is_authenticated:
+            # User is already logged in, so there is no
+            # need to pass authentication details in the header
+            pass
+        elif token_passport is not None:
+            soapheaders['tokenPassport'] = tokenPassport
+        elif passport is not None:
+            soapheaders['passport'] = passport
+        else:
+            raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
+
+        app_info = kwargs.pop('applicationInfo', self._app_info)
+
+        for key, value in kwargs.items():
+            soapheaders[key] = value
+        return soapheaders
+
+    def request(self, name, *args, headers=None, **kwargs):
+        """
+        Make a NetSuite web service request
+
+        :param str name: the name of the request service ('get', 'search', ...)
+        :param dict headers: dictionary of headers
+        :return: the request response object
+        :rtype: the exact type depends on the request
+        """
+
+        if headers is None:
+            headers = {}
+        service = getattr(self._client.service, name)
+        # call the service:
+        response = service(*args, _soapheaders=self.build_soap_headers(**headers), **kwargs)
+        return response
+
+    def get(self, recordType, internalId=None, externalId=None, fail_silently=False, **kwargs):
+        """
+        Make a get request to retrieve an object of type recordType
+        specified by either internalId or externalId
+
+        :param str recordType: the complex type (e.g. 'vendor')
+        :param int internalId: id specifying the record to be retrieved
+        :param str externalId: str specifying the record to be retrieved
+        :return: the matching record in case of success
+        :rtype: Record
+        """
+
+        if internalId is not None:
+            record_ref = self.RecordRef(type=recordType, internalId=internalId)
+        elif externalId is not None:
+            record_ref = self.RecordRef(type=recordType, externalId=externalId)
+        else:
+            raise ValueError('Either internalId or externalId is necessary to make a get request.')
+        response = self.request('get', baseRef=record_ref, **kwargs)
+        response = response.body.readResponse
+
+        status = response.status
+        if status.isSuccess:
+            record = response['record']
+            return record
+        else:
+            exc = self._request_error('get', detail=status['statusDetail'][0])
+            if not fail_silently:
+                raise exc
+            return None
+
+    def getAll(self, recordType, fail_silently=False, **kwargs):
+        """
+        Make a getAll request to retrieve all objects of type recordType.
+        NetSuite types that are accessible for this operation are listed
+        under `GetAllRecordType`
+        in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+
+        :param str recordType: the complex type (e.g. 'vendor')
+        :param int internalId: id specifying the record to be retrieved
+        :param str externalId: str specifying the record to be retrieved
+        :return: the matching record in case of success
+        :rtype: Record
+        """
+
+        record = self.GetAllRecord(recordType=recordType)
+        response = self.request('getAll', record=record, **kwargs)
+        response = response.body.getAllResult
+
+        status = response.status
+        if status.isSuccess:
+            records = response['recordList']['record']
+            return records
+        else:
+            exc = self._request_error('getAll', detail=status['statusDetail'][0])
+            if not fail_silently:
+                raise exc
+            return None
+
+    def search_factory(self, type_name, **kwargs):
+        _type_name = type_name[0].lower() + type_name[1:]
+        if not _type_name in SEARCH_RECORD_TYPES:
+            raise NetSuiteTypeError('{} is not a searchable NetSuite type!'.format(type_name))
+        search_cls_name = '{}Search'.format(type_name)
+        search_cls = self.get_complex_type(search_cls_name)
+        search_record = search_cls(**kwargs)
+        return search_record
+
+    def basic_search_factory(self, type_name, **kwargs):
+        _type_name = type_name[0].lower() + type_name[1:]
+        if not _type_name in SEARCH_RECORD_TYPES:
+            raise NetSuiteTypeError('{} is not a searchable NetSuite type!'.format(type_name))
+        basic_search_cls_name = '{}SearchBasic'.format(type_name)
+        basic_search_cls = self.get_complex_type(basic_search_cls_name)
+        basic_search = basic_search_cls()
+        for key, value in kwargs.items():
+            setattr(basic_search, key, value)
+        return basic_search
+
+    def search(self, searchRecord, fail_silently=False, **kwargs):
+        """
+        Make a search request to retrieve an object of type recordType
+        specified by internalId. All types available for a search
+        are listed under `SearchRecordType`
+        in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+
+        :param Record searchRecord: data object holding all parameters for the search.
+                    The utility function `search_factory` can be used to create one.
+        :return: result records and meta data about search result
+        :rtype: SearchResult(type):
+                    int totalRecords: total number of records
+                    int pageSize: number of records per page
+                    int totalPages: number of pages
+                    int pageIndex: index of actual returned result page
+                    str searchId: identifier for the search
+                    list records: the actual records found
+        """
+
+        bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
+        pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
+        returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
+        searchPreferences = self.SearchPreferences(
+                                bodyFieldsOnly=bodyFieldsOnly,
+                                pageSize=pageSize,
+                                returnSearchColumns=returnSearchColumns)
+
+        response = self.request('search',
+                                headers={'searchPreferences': searchPreferences},
+                                searchRecord=searchRecord)
+
+        result = response.body.searchResult
+        status = result.status
+        success = status.isSuccess
+        if success:
+            if hasattr(result.recordList, 'record'):
+                result.records = result.recordList.record
+                return result
+            else:
+                # Did not find anything
+                result.records = None
+                return result
+        else:
+            exc = self._request_error('search', detail=status['statusDetail'][0])
+            if not fail_silently:
+                raise exc
+            return None
+
+    def searchMoreWithId(self, searchId, pageIndex, fail_silently=False, **kwargs):
+        bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
+        pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
+        returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
+        searchPreferences = self.SearchPreferences(
+                                bodyFieldsOnly=bodyFieldsOnly,
+                                pageSize=pageSize,
+                                returnSearchColumns=returnSearchColumns)
+
+        response = self.request('searchMoreWithId',
+                                headers={'searchPreferences': searchPreferences},
+                                searchId=searchId,
+                                pageIndex=pageIndex)
+
+        result = response.body.searchResult
+        status = result.status
+        success = status.isSuccess
+        if success:
+            result.records = result.recordList.record
+            return result
+        else:
+            exc = self._request_error('searchMoreWithId', detail=status['statusDetail'][0])
+            if not fail_silently:
+                raise exc
+            return None
+
+    def upsert(self, record, fail_silently=False, **kwargs):
+        """
+        Add an object of type recordType with given externalId..
+        If a record of specified type with matching externalId already
+        exists, it is updated.
+
+        Usage example:
+            customer = self.Customer()
+            customer.externalId = 'customer_id'
+            customer.companyName = 'Test Inc.'
+            customer.email = 'test@example.com'
+            self.upsert(record=customer)
+
+        :param str recordType: the complex type (e.g. either 'Customer' or 'vendors')
+        :param str externalId: str specifying the record to be retrieved
+        :return: a reference to the newly created or updated record (in case of success)
+        :rtype: RecordRef
+        """
+
+        response = self.request('upsert', record=record, **kwargs)
+        response = response.body.writeResponse
+        status = response.status
+        if status.isSuccess:
+            record_ref = response['baseRef']
+            log.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+                    type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
+            return record_ref
+        else:
+            exc = self._request_error('upsert', detail=status['statusDetail'][0])
+            if not fail_silently:
+                raise exc
+            return None
+
+    def upsertList(self, records, fail_silently=False, **kwargs):
+        """
+        Add objects of type recordType with given externalId..
+        If a record of specified type with matching externalId already
+        exists, it is updated.
+
+        Usage example:
+            customer1 = self.Customer(externalId='customer', email='test1@example.com')
+            customer2 = self.Customer(externalId='another_customer', email='test2@example.com')
+            self.upsertList(records=[customer1, customer2])
+
+        :param list[CompoundValue] records: the records to be created or updated
+        :return: a reference to the newly created or updated records
+        :rtype: list[CompoundValue]
+        """
+
+        response = self.request('upsertList', record=records, **kwargs)
+        responses = response.body.writeResponse
+        has_failures = False
+        record_refs = []
+        for response in responses:
+            status = response.status
+            if status.isSuccess:
+                record_ref = response['baseRef']
+                log.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+                        type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
+                record_refs.append(record_ref)
+            else:
+                exc = self._request_error('upsertList', detail=status['statusDetail'][0])
+                if not fail_silently:
+                    raise exc
+                has_failures = True
+        return record_refs
+
+    ######## Utility functions ########
+
+    def to_json(self, record, include_none_values=False):
+        """ Convert a netsuite record (e.g. as
+        returned from `get`) into a dictionary """
+
+        if include_none_values:
+            return record.__values__
+        values = {}
+        for name, value in record.__values__.items():
+            if value is not None:
+                values[name] = value
+        return values
+
+    def print_values(self, record, include_none_values=False):
+        """
+        :param CompoundValue record: the record whose values should be printed
+        :param bool include_none_values: if True, also None values will be printed
+        """
+
+        for key, value in self.to_json(record, include_none_values=include_none_values).items():
+            print('{}: {}'.format(key, str(value)))
+
+    def print_records(self, records, print_func):
+        for record in records:
+            print_func(record)
+            print('-'*15)
+
+    def paginated_search(self, type_name, basic_search=None, page_size=None, print_func=None, **kwargs):
+        """
+        Uses `PaginatedSearch` (defined in utils.py) which in turn uses
+        `NetSuiteClient.search` to perform a search on the NetSuite type `type_name`
+        and returns a PaginatedSearch object containing the search results in
+        its attribute `records`.
+
+        :param str type_name: name of the type the search is performed on, e.g. 'Vendor'
+        :param BasicSearch basic_search: set this to perform basic filtering
+        """
+
+        paginated_search = PaginatedSearch(client=self,
+                                           type_name=type_name,
+                                           basic_search=basic_search,
+                                           page_size=page_size,
+                                           **kwargs)
+        print('totalRecords: ', paginated_search.total_records)
+        print('pageSize: ', paginated_search.page_size)
+        print('totalPages: ', paginated_search.total_pages)
+        print('pageIndex: ', paginated_search.page_index)
+        print('results on page: ', len(paginated_search.records))
+        if print_func is None: print_func = self.print_values
+        self.print_records(records=paginated_search.records, print_func=print_func)
+        for i in range(2, paginated_search.total_pages):
+            inp = input('q: quit this view, any other key: next page\n')
+            if inp == 'q':
+                break
+            paginated_search.goto_page(page_index=i)
+            self.print_records(records=paginated_search.records, print_func=print_func)
+
+    def basic_stringfield_search(self, type_name, attribute, value, operator=None):
+        """
+        Searches for an object of type `type_name` whose name contains
+        `value`
+
+        :param str type_name: the name of the NetSuite type to be searched in
+        :param str attribute: the attribute of the type to be used for the search
+        :param str value: the value to be used for the search
+        :param str operator: mode used to search for value, possible:
+                    'is', 'contains', 'doesNotContain',
+                    'doesNotStartWith', 'empty', 'hasKeywords',
+                    'isNot', 'notEmpty', 'startsWith'
+
+        See for example: http://www.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2017_2/schema/search/locationsearchbasic.html?mode=package
+        In general, one can find the possible search attributes for a basic search
+        in the type {type_name}SearchBasic
+        """
+
+        search_cls_name = '{type_name}SearchBasic'.format(type_name=type_name)
+        search_cls = getattr(self, search_cls_name)
+        if operator is None: operator = 'is'
+        string_field = self.SearchStringField(
+                                    searchValue=value,
+                                    operator=operator)
+        basic_search = search_cls()
+        setattr(basic_search, attribute, string_field)
+        result = self.search(basic_search)
+        if result.records:
+            return result.records
+        else:
+            print('Did not find {type}, {attribute} {operator} {value}'.format(
+                    type=type_name, attribute=attribute, operator=operator, value=value))
+            return None
