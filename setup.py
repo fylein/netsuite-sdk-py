@@ -1,12 +1,11 @@
 import setuptools
-from netsuitesdk import __version__
 
 with open('README.md', 'r') as f:
     long_description = f.read()
 
 setuptools.setup(
     name='netsuitesdk',
-    version=__version__,
+    version='0.1.0',
     author='Siva Narayanan',
     author_email='siva@fyle.in',
     description='Python SDK for accessing the NetSuite SOAP webservice',

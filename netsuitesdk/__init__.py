@@ -10,4 +10,3 @@ __all__ = [
 ]
 
 name = "netsuitesdk"
-__version__ = '0.1'
