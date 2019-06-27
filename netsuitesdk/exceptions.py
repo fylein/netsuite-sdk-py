@@ -1,4 +1,9 @@
-
+"""
+    :class:`NetSuiteError`
+    :class:`NetSuiteLoginError`
+    :class:`NetSuiteRequestError`
+    :class:`NetSuiteTypeError`
+"""
 
 class NetSuiteError(Exception):
     """Exception raised for errors during login or other requests (like

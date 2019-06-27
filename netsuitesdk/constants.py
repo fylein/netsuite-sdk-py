@@ -1,4 +1,5 @@
 
+
 SEARCH_RECORD_TYPES = [
     'account',
     'accountingPeriod',
@@ -7,7 +8,7 @@ SEARCH_RECORD_TYPES = [
     'billingSchedule',
     'bin',
     'budget',
-    'caendarEvent',
+    'calendarEvent',
     'campaign',
     'charge',
     'classification',
@@ -87,3 +88,26 @@ SEARCH_RECORD_TYPES = [
     'vendorCategory',
     'winLossReason',
 ]
+""" As defined in `SearchRecordType` in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd"""
+
+GET_ALL_RECORD_TYPES = [
+    'budgetCategory',
+    'campaignAudience',
+    'campaignCategory',
+    'campaignChannel',
+    'campaignFamily',
+    'campaignOffer',
+    'campaignSearchEngine',
+    'campaignSubscription',
+    'campaignVertical',
+    'currency',
+    'leadSource',
+    'state',
+    'supportCaseIssue',
+    'supportCaseOrigin',
+    'supportCasePriority',
+    'supportCaseStatus',
+    'supportCaseType',
+    'taxAcct',
+]
+""" As defined in `GetAllRecordType` in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd"""

@@ -1,7 +1,6 @@
 """
-Python Netsuite SDK using the SOAP client library
-zeep(https://python-zeep.readthedocs.io/en/master/) to
-connect to the NetSuite SOAP web service TalkSuite(http://www.netsuite.com/portal/platform/developer/suitetalk.shtml)
+    :class:`NetSuiteClient`: client proxy class which uses the python library
+    Zeep to connect to a NetSuite account and make requests.
 """
 
 import base64
@@ -21,6 +20,7 @@ from zeep.exceptions import LookupError as ZeepLookupError
 
 from .constants import *
 from .exceptions import *
+from .netsuite_types import *
 from .utils import User, PaginatedSearch
 
 logging.basicConfig(stream=sys.stdout)
@@ -51,89 +51,6 @@ class NetSuiteClient:
     SOAP/WSDL web service"""
 
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
-
-    _complex_type_definitions = {
-        'ns0': [
-            'BaseRef',
-            'GetAllRecord',
-            'GetAllResult',
-            'Passport',
-            'RecordList',
-            'RecordRef',
-            'SearchResult',
-            'SearchStringField',
-            'SearchMultiSelectField',
-            'Status',
-            'StatusDetail',
-            'TokenPassport',
-            'TokenPassportSignature',
-            'WsRole'
-        ],
-
-        # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
-        'ns4': [
-            'ApplicationInfo',
-            'GetAllRequest',
-            'GetRequest',
-            'GetResponse',
-            'GetAllResponse',
-            'PartnerInfo',
-            'ReadResponse',
-            'SearchPreferences',
-            'SearchResponse'
-        ],
-
-        # https://webservices.netsuite.com/xsd/platform/v2017_2_0/common.xsd
-        'ns5': [
-            'AccountSearchBasic',
-            'CustomerSearchBasic',
-            'LocationSearchBasic',
-            'TransactionSearchBasic',
-            'VendorSearchBasic',
-        ],
-
-        # urn:relationships.lists.webservices.netsuite.com
-        'ns13': [
-            'Customer', 'CustomerSearch',
-            'Vendor', 'VendorSearch',
-        ],
-
-        # urn:accounting_2017_2.lists.webservices.netsuite.com
-        # https://webservices.netsuite.com/xsd/lists/v2017_2_0/accounting.xsd
-        'ns17': [
-            'Account', 'AccountSearch',
-            'AccountingPeriod',
-            'Location', 'LocationSearch',
-            'VendorCategory', 'VendorCategorySearch',
-        ],
-        #'VendorBillSearch', 'VendorPaymentSearch',
-
-        'ns19': [
-            'TransactionSearch',
-        ],
-
-        # urn:purchases_2017_2.transactions.webservices.netsuite.com
-        # https://webservices.netsuite.com/xsd/transactions/v2017_2_0/purchases.xsd
-        'ns21': [
-            'VendorBill',
-            'VendorBillExpense',
-            'VendorBillExpenseList',
-            'VendorBillItem',
-            'VendorBillItemList',
-            'VendorPayment',
-        ],
-    }
-
-    _simple_type_definitions = {
-        # ns1: view-source:https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
-        'ns1': [
-            'RecordType',
-            'GetAllRecordType',
-            'SearchRecordType',
-            'SearchStringFieldOperator',
-        ],
-    }
-
 
     def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, debug=False, **kwargs):
         """
@@ -166,8 +83,8 @@ class NetSuiteClient:
         # Initialize the Zeep Client
         self._client = Client(self._wsdl_url, transport=transport)
 
-        # Parse all complex(simple) types specified in _complex_type_definitions
-        # (_simple_type_definitions) and store them as attributes of this instance
+        # Parse all complex types specified in :const:`~netsuitesdk.netsuite_types.COMPLEX_TYPES`
+        # and store them as attributes of this instance. Same for simple types.
         self._namespaces = {}
         self._init_complex_types()
         self._init_simple_types()
@@ -183,7 +100,7 @@ class NetSuiteClient:
 
     def _init_complex_types(self):
         self._complex_types = {}
-        for namespace, complex_types in self._complex_type_definitions.items():
+        for namespace, complex_types in COMPLEX_TYPES.items():
             if not namespace in self._namespaces:
                 self._namespaces[namespace] = []
             for type_name in complex_types:
@@ -202,7 +119,7 @@ class NetSuiteClient:
 
     def _init_simple_types(self):
         self._simple_types = {}
-        for namespace, simple_types in self._simple_type_definitions.items():
+        for namespace, simple_types in SIMPLE_TYPES.items():
             if not namespace in self._namespaces:
                 self._namespaces[namespace] = []
             for type_name in simple_types:
@@ -328,20 +245,19 @@ class NetSuiteClient:
         return self.TokenPassport(account=account, consumerKey=consumer_key, token=token_key,
                                   nonce=nonce, timestamp=timestamp, signature=signature)
 
-    def login(self, app_id, passport, fail_silently=False):
+    def login(self, applicationId, passport, fail_silently=False):
         """
         Authenticate and login user for a Netsuite session. The passport argument is
         of type Passport(email, password, role and account) which holds the credentials
         and can be created with NetSuiteClient.create_password.
 
-        :param int app_id: All requests done in this session will be identified
-            with this application Id.
+        :param int applicationId: All requests done in this session will be identified
+            with this application id.
         :param Passport passport: holds the credentials to authenticate the user.
         :param bool fail_silently: If True, will not reraise exceptions
-
         :return: the login response which contains the response status and user roles
         :rtype: LoginResponse
-        :raises NetSuiteLoginError(message, code): if login was not successful. Possible codes
+        :raises :class:`~netsuitesdk.exceptions.NetSuiteLoginError`: if login was not successful. Possible codes
             are: InsufficientPermissionFault, InvalidAccountFault, InvalidSessionFault,
             InvalidCredentialsFault and UnexpectedErrorFault
         """
@@ -349,7 +265,7 @@ class NetSuiteClient:
         if self._is_authenticated:
             self.logout()
         try:
-            self._app_info = self.ApplicationInfo(applicationId=app_id)
+            self._app_info = self.ApplicationInfo(applicationId=applicationId)
             response = self._client.service.login(
                                 passport,
                                 _soapheaders={'applicationInfo': self._app_info}
@@ -424,11 +340,12 @@ class NetSuiteClient:
         """
         Generate soap headers dictionary to send with a request
 
-        :param: Passport passport: holds the authentication credentials
-        :param: TokenPassport tokenPassport: holds the token based authentication details
-        :param: ApplicationInfo applicationInfo: contains the application Id
+        :param Passport passport: holds the authentication credentials
+        :param TokenPassport tokenPassport: holds the token based authentication details
+        :param ApplicationInfo applicationInfo: contains the application Id
         :return: the dictionary representing the headers
         :rtype: dict
+        :raises :class:`~netsuitesdk.exceptions.NetSuiteError`: if user is neither logged in nor a passport or tokenPassport was passed
         """
 
         soapheaders = {}
@@ -445,8 +362,6 @@ class NetSuiteClient:
             soapheaders['passport'] = passport
         else:
             raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
-
-        app_info = kwargs.pop('applicationInfo', self._app_info)
 
         for key, value in kwargs.items():
             soapheaders[key] = value
@@ -469,7 +384,7 @@ class NetSuiteClient:
         response = service(*args, _soapheaders=self.build_soap_headers(**headers), **kwargs)
         return response
 
-    def get(self, recordType, internalId=None, externalId=None, fail_silently=False, **kwargs):
+    def get(self, recordType, internalId=None, externalId=None, fail_silently=False, headers=None, **kwargs):
         """
         Make a get request to retrieve an object of type recordType
         specified by either internalId or externalId
@@ -479,15 +394,17 @@ class NetSuiteClient:
         :param str externalId: str specifying the record to be retrieved
         :return: the matching record in case of success
         :rtype: Record
+        :raises ValueError: if neither internalId nor externalId was passed
         """
 
+        recordType = recordType[0].lower() + recordType[1:]
         if internalId is not None:
             record_ref = self.RecordRef(type=recordType, internalId=internalId)
         elif externalId is not None:
             record_ref = self.RecordRef(type=recordType, externalId=externalId)
         else:
             raise ValueError('Either internalId or externalId is necessary to make a get request.')
-        response = self.request('get', baseRef=record_ref, **kwargs)
+        response = self.request('get', headers=headers, baseRef=record_ref, **kwargs)
         response = response.body.readResponse
 
         status = response.status
@@ -500,12 +417,11 @@ class NetSuiteClient:
                 raise exc
             return None
 
-    def getAll(self, recordType, fail_silently=False, **kwargs):
+    def getAll(self, recordType, fail_silently=False, headers=None, **kwargs):
         """
         Make a getAll request to retrieve all objects of type recordType.
-        NetSuite types that are accessible for this operation are listed
-        under `GetAllRecordType`
-        in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+        All NetSuite types available for a search
+        are listed under :const:`constants.GET_ALL_RECORD_TYPES`.
 
         :param str recordType: the complex type (e.g. 'vendor')
         :param int internalId: id specifying the record to be retrieved
@@ -514,8 +430,9 @@ class NetSuiteClient:
         :rtype: Record
         """
 
+        recordType = recordType[0].lower() + recordType[1:]
         record = self.GetAllRecord(recordType=recordType)
-        response = self.request('getAll', record=record, **kwargs)
+        response = self.request('getAll', headers=headers, record=record, **kwargs)
         response = response.body.getAllResult
 
         status = response.status
@@ -548,12 +465,11 @@ class NetSuiteClient:
             setattr(basic_search, key, value)
         return basic_search
 
-    def search(self, searchRecord, fail_silently=False, **kwargs):
+    def search(self, searchRecord, fail_silently=False, headers=None, **kwargs):
         """
         Make a search request to retrieve an object of type recordType
-        specified by internalId. All types available for a search
-        are listed under `SearchRecordType`
-        in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+        specified by internalId. All NetSuite types available for a search
+        are listed under :const:`constants.SEARCH_RECORD_TYPES`.
 
         :param Record searchRecord: data object holding all parameters for the search.
                     The utility function `search_factory` can be used to create one.
@@ -574,9 +490,12 @@ class NetSuiteClient:
                                 bodyFieldsOnly=bodyFieldsOnly,
                                 pageSize=pageSize,
                                 returnSearchColumns=returnSearchColumns)
+        if headers is None:
+            headers = {}
+        headers['searchPreferences'] = searchPreferences
 
         response = self.request('search',
-                                headers={'searchPreferences': searchPreferences},
+                                headers=headers,
                                 searchRecord=searchRecord)
 
         result = response.body.searchResult
@@ -596,7 +515,7 @@ class NetSuiteClient:
                 raise exc
             return None
 
-    def searchMoreWithId(self, searchId, pageIndex, fail_silently=False, **kwargs):
+    def searchMoreWithId(self, searchId, pageIndex, fail_silently=False, headers=None, **kwargs):
         bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
         pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
         returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
@@ -604,9 +523,12 @@ class NetSuiteClient:
                                 bodyFieldsOnly=bodyFieldsOnly,
                                 pageSize=pageSize,
                                 returnSearchColumns=returnSearchColumns)
+        if headers is None:
+            headers = {}
+        headers['searchPreferences'] = searchPreferences
 
         response = self.request('searchMoreWithId',
-                                headers={'searchPreferences': searchPreferences},
+                                headers=headers,
                                 searchId=searchId,
                                 pageIndex=pageIndex)
 
@@ -622,7 +544,7 @@ class NetSuiteClient:
                 raise exc
             return None
 
-    def upsert(self, record, fail_silently=False, **kwargs):
+    def upsert(self, record, fail_silently=False, headers=None, **kwargs):
         """
         Add an object of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -641,7 +563,7 @@ class NetSuiteClient:
         :rtype: RecordRef
         """
 
-        response = self.request('upsert', record=record, **kwargs)
+        response = self.request('upsert', headers=headers, record=record, **kwargs)
         response = response.body.writeResponse
         status = response.status
         if status.isSuccess:
@@ -655,7 +577,7 @@ class NetSuiteClient:
                 raise exc
             return None
 
-    def upsertList(self, records, fail_silently=False, **kwargs):
+    def upsertList(self, records, fail_silently=False, headers=None, **kwargs):
         """
         Add objects of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -671,7 +593,7 @@ class NetSuiteClient:
         :rtype: list[CompoundValue]
         """
 
-        response = self.request('upsertList', record=records, **kwargs)
+        response = self.request('upsertList', headers=headers, record=records, **kwargs)
         responses = response.body.writeResponse
         has_failures = False
         record_refs = []
@@ -712,7 +634,9 @@ class NetSuiteClient:
         for key, value in self.to_json(record, include_none_values=include_none_values).items():
             print('{}: {}'.format(key, str(value)))
 
-    def print_records(self, records, print_func):
+    def print_records(self, records, print_func=None):
+        if print_func is None:
+            print_func = self.print_values
         for record in records:
             print_func(record)
             print('-'*15)
@@ -737,7 +661,7 @@ class NetSuiteClient:
         print('pageSize: ', paginated_search.page_size)
         print('totalPages: ', paginated_search.total_pages)
         print('pageIndex: ', paginated_search.page_index)
-        print('results on page: ', len(paginated_search.records))
+        print('results on page: ', paginated_search.num_records)
         if print_func is None: print_func = self.print_values
         self.print_records(records=paginated_search.records, print_func=print_func)
         for i in range(2, paginated_search.total_pages):
@@ -749,8 +673,7 @@ class NetSuiteClient:
 
     def basic_stringfield_search(self, type_name, attribute, value, operator=None):
         """
-        Searches for an object of type `type_name` whose name contains
-        `value`
+        Searches for an object of type `type_name` whose name contains `value`
 
         :param str type_name: the name of the NetSuite type to be searched in
         :param str attribute: the attribute of the type to be used for the search
@@ -777,6 +700,6 @@ class NetSuiteClient:
         if result.records:
             return result.records
         else:
-            print('Did not find {type}, {attribute} {operator} {value}'.format(
-                    type=type_name, attribute=attribute, operator=operator, value=value))
+            #print('Did not find {type}, {attribute} {operator} {value}'.format(
+            #        type=type_name, attribute=attribute, operator=operator, value=value))
             return None
