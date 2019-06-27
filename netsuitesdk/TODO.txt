@@ -1,9 +1,0 @@
-- add utility functions to lookup the namespace which contains a NetSuite type. Up to now,
-only the types are comfortably accessible (as e.g. NetSuiteClient.Vendor) which are added in
-`NetSuiteClient._complex_type_definitions`. Maybe overwrite `__getattribute__` of class `NetSuiteClient`.
-
-- enhance search functionality (more complex searches than of type BasicSearch)
-
-- add & test netsuite operations: add, update, delete
-
-- refactor using decorator `request_service` for all request functions like get, search, upsert, .. 

@@ -1,5 +1,5 @@
 # netsuite-sdk-py
-Python SDK for accessing NetSuite resources via the SuiteTalk SOAP services.
+Netsuite-sdk-py is a Python SDK using the SOAP client library zeep(https://python-zeep.readthedocs.io/en/master/) for accessing NetSuite resources via the NetSuite SOAP web service SuiteTalk(http://www.netsuite.com/portal/platform/developer/suitetalk.shtml).
 
 ## Installation
 
@@ -101,7 +101,8 @@ records = ns.basic_stringfield_search(type_name='Vendor',
                                 operator='is')
 print(records[0].internalId)
 ```
--`PaginatedSearch` (in utils.py):
+
+- `PaginatedSearch` (in utils.py):
 Its usage can be seen inside the utility function `NetSuiteClient.paginated_search`
 
 ### Upsert
@@ -120,3 +121,8 @@ customer1 = ns.Customer(externalId='customer', email='test1@example.com')
 customer2 = ns.Customer(externalId='another_customer', email='test2@example.com')
 ns.upsertList(records=[customer1, customer2])
 ```
+
+## Documentation
+Documentation can be found in the docs/_build/html folder (open index.html) and soon in readthedocs.
+For contributors: to build the documentation (cd to /docs and) run `make buildapi`
+as well as `make html`
