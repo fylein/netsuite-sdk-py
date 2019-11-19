@@ -53,6 +53,9 @@ def connect_tba():
 ns = client_tba()
 
 # Use the client to access various parts of NS
+
+ns.logout()
+
 ```
 
 ### Password-based Auth
@@ -88,6 +91,8 @@ def connect_password():
 ns = connect_password()
 
 # Do things with ns..
+
+ns.logout()
 ```
 
 ### Remarks and possible errors regarding authentication

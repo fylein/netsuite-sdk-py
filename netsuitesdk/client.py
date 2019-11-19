@@ -215,7 +215,7 @@ class NetSuiteClient:
                 self._user = User(name=response.userId['name'],
                                   internalId=response.userId['internalId'],
                                   wsRole=logged_in_role)
-                self.logger.info("User {} logged in successfully.".format(str(self._user)))
+                self.logger.debug("User {} logged in successfully.".format(str(self._user)))
                 return response
             else:
                 statusDetail = response.status['statusDetail'][0]
@@ -293,7 +293,7 @@ class NetSuiteClient:
             self._roles.append(wsRole)
             if wsRole.isLoggedInRole:
                 logged_in_role = wsRole
-        self.logger.info('There are {} user roles: {}'.format(len(self._roles),
+        self.logger.debug('There are {} user roles: {}'.format(len(self._roles),
             ', '.join(['{}({})'.format(role.role.name, role.role.internalId) for role in self._roles])))
         return logged_in_role
 
@@ -306,8 +306,12 @@ class NetSuiteClient:
             return
         response = self._client.service.logout()
         self._is_authenticated = False
-        self.logger.info("User {user} was logged out.".format(user=str(self._user)))
+        self.logger.debug("User {user} was logged out.".format(user=str(self._user)))
         self._user = None
+        self._consumer_key = None
+        self._consumer_secret = None
+        self._token_key = None
+        self._token_secret = None
         return response.status
 
     def _request_error(self, service_name, detail, error_cls=None):
@@ -518,7 +522,7 @@ class NetSuiteClient:
         status = response.status
         if status.isSuccess:
             record_ref = response['baseRef']
-            self.logger.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+            self.logger.debug('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
                     type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
             return record_ref
         else:
@@ -549,7 +553,7 @@ class NetSuiteClient:
             status = response.status
             if status.isSuccess:
                 record_ref = response['baseRef']
-                self.logger.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+                self.logger.debug('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
                         type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
                 record_refs.append(record_ref)
             else:

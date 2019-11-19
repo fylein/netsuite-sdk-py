@@ -14,11 +14,9 @@ def test_search_vendor_bills(ns):
                                         pageSize=5)
     assert len(paginated_search.records) > 0, 'There are no vendor bills'
     logger.debug('record = %s', str(paginated_search.records[0]))
-#    ns.print_records(records=paginated_search.records, print_func=print_vendorbill)
 
 @pytest.mark.parametrize('type_name', ['Account', 'Vendor', 'Department', 'Location', 'Classification'])
 def test_search_all(ns, type_name):
-    # time.sleep(10)
     paginated_search = PaginatedSearch(client=ns, type_name=type_name, pageSize=20)
     assert len(paginated_search.records) > 0, f'There are no records of type {type_name}'
     logger.debug('record = %s', str(paginated_search.records[0]))
