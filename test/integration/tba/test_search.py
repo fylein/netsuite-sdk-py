@@ -3,9 +3,8 @@ import logging
 import pytest
 import time
 
-
 logger = logging.getLogger(__name__)
-
+ 
 def test_search_vendor_bills(ns):
     record_type_search_field = ns.SearchStringField(searchValue='VendorBill', operator='contains')
     basic_search = ns.basic_search_factory('Transaction', recordType=record_type_search_field)

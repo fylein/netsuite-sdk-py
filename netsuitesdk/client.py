@@ -182,7 +182,7 @@ class NetSuiteClient:
         else:
             yield 'No elements'
 
-    def connect_login(self, email, password, role, application_id):
+    def login(self, email, password, role, application_id):
         """
         Authenticate and login user for a Netsuite session. The passport argument is
         of type Passport(email, password, role and account) which holds the credentials
@@ -206,7 +206,7 @@ class NetSuiteClient:
         try:
             self._app_info = self.ApplicationInfo(applicationId=application_id)
             response = self._client.service.login(
-                                passport,
+                                self._passport,
                                 _soapheaders={'applicationInfo': self._app_info}
             )
             if response.status.isSuccess:
