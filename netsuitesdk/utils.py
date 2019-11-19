@@ -32,7 +32,7 @@ class PaginatedSearch:
 
     default_page_size = 20
 
-    def __init__(self, client, type_name, search_record=None, basic_search=None, pageSize=None, perform_search=True, headers=None, **kwargs):
+    def __init__(self, client, type_name, search_record=None, basic_search=None, pageSize=None, perform_search=True, headers=None):
         """
         PaginatedSearch is a utility class that can be used to perform
         a search.
@@ -48,14 +48,13 @@ class PaginatedSearch:
         self._ns = client
         self._result = None
         self._type_name = type_name
-        kwargs['pageSize'] = pageSize or self.default_page_size
         self.search_record = search_record or self._ns.search_factory(type_name=self._type_name)
         self.basic_search = basic_search
         if self.basic_search is not None:
             self.search_record.basic = self.basic_search
         self._headers = headers
         if perform_search:
-            self.search(headers=self._headers, **kwargs)
+            self.search(headers=self._headers)
 
     @property
     def total_records(self):
@@ -83,15 +82,14 @@ class PaginatedSearch:
             return len(self.records)
         return 0
 
-    def search(self, headers=None, **kwargs):
+    def search(self, headers=None):
         """ Call the netsuite operation `search` """
 
         headers = headers or self._headers
         self._result = self._ns.search(searchRecord=self.search_record,
-                                       headers=headers,
-                                       **kwargs)
+                                       headers=headers)
 
-    def goto_page(self, page_index, headers=None, **kwargs):
+    def goto_page(self, page_index, headers=None):
         """ After a search was performed, this method utilizes the NetSuite
         operation `searchMoreWithId` to retrieve more results """
 
@@ -102,5 +100,4 @@ class PaginatedSearch:
         headers = headers or self._headers
         self._result = self._ns.searchMoreWithId(searchId=self._result.searchId,
                                                  pageIndex=page_index,
-                                                 headers=headers,
-                                                 **kwargs)
+                                                 headers=headers)

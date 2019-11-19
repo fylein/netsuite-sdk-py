@@ -30,7 +30,11 @@ class NetSuiteClient:
 
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
 
-    def __init__(self, account_id=None, wsdl_url=None, caching=True, caching_timeout=2592000, **kwargs):
+    _search_preferences = None
+    _token_passport = None
+    _passport = None
+
+    def __init__(self, account_id=None, wsdl_url=None, caching=True, caching_timeout=2592000):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -73,10 +77,13 @@ class NetSuiteClient:
         self._app_info = None
         self._is_authenticated = False
         self._user = None
+#        self.set_search_preferences()
+
+    def set_search_preferences(self, body_fields_only: bool = True, page_size: int = 5, return_search_columns: bool = False):
         self._search_preferences = self.SearchPreferences(
-                bodyFieldsOnly=kwargs.get('bodyFieldsOnly', True),
-                pageSize=kwargs.get('pageSize', 5),
-                returnSearchColumns=kwargs.get('returnSearchColumns', False)
+            bodyFieldsOnly=body_fields_only,
+            pageSize=page_size,
+            returnSearchColumns=return_search_columns
         )
 
     def _init_complex_types(self):
@@ -167,23 +174,53 @@ class NetSuiteClient:
         else:
             yield 'No elements'
 
-    def create_passport(self, email, password, role, account):
+    def connect_login(self, email, password, role, account, application_id):
         """
-        Create a Passport object holding authentication credentials which
-        will be passed to NetSuiteClient.login
+        Authenticate and login user for a Netsuite session. The passport argument is
+        of type Passport(email, password, role and account) which holds the credentials
+        and can be created with NetSuiteClient.create_password.
 
-        :param str email: NetSuite user email
-        :param str password: NetSuite user password
-        :param int role: Integer identifying the user role
-        :param str account: the NetSuite account ID
-        :rtype: Passport
+        :param int applicationId: All requests done in this session will be identified
+            with this application id.
+        :param Passport passport: holds the credentials to authenticate the user.
+        :return: the login response which contains the response status and user roles
+        :rtype: LoginResponse
+        :raises :class:`~netsuitesdk.exceptions.NetSuiteLoginError`: if login was not successful. Possible codes
+            are: InsufficientPermissionFault, InvalidAccountFault, InvalidSessionFault,
+            InvalidCredentialsFault and UnexpectedErrorFault
         """
 
         role = self.RecordRef(internalId=role)
-        return self.Passport(email=email, password=password, role=role, account=account)
+        self._passport = self.Passport(email=email, password=password, role=role, account=account)
 
-    def create_token_passport(self, account, consumer_key, consumer_secret,
-                              token_key, token_secret, signature_algorithm):
+        if self._is_authenticated:
+            self.logout()
+        try:
+            self._app_info = self.ApplicationInfo(applicationId=application_id)
+            response = self._client.service.login(
+                                passport,
+                                _soapheaders={'applicationInfo': self._app_info}
+            )
+            if response.status.isSuccess:
+                self._is_authenticated = True
+                logged_in_role = self._log_roles(response)
+                self._user = User(name=response.userId['name'],
+                                  internalId=response.userId['internalId'],
+                                  wsRole=logged_in_role)
+                self.logger.info("User {} logged in successfully.".format(str(self._user)))
+                return response
+            else:
+                statusDetail = response.status['statusDetail'][0]
+                exc = self._request_error('login',
+                                          detail=statusDetail,
+                                          error_cls=NetSuiteLoginError)
+                raise exc
+        except Fault as fault:
+            exc = NetSuiteLoginError(str(fault), code=fault.code)
+            self.logger.error(str(exc))
+            raise exc from None
+
+    def connect_tba(self, account, consumer_key, consumer_secret, token_key, token_secret, signature_algorithm='HMAC-SHA1'):
         """
         Create a TokenPassport object holding credentials for Token based
         authentication which will be passed to NetSuiteClient.login
@@ -196,7 +233,6 @@ class NetSuiteClient:
         :param str token_secret: the token secret
         :param str signature_algorithm: algorithm to compute the signature value (a hashed value),
                         choices are 'HMAC-SHA256' or 'HMAC-SHA1'
-        :rtype: TokenPassport
         """
 
         def compute_nonce(length=20):
@@ -223,51 +259,8 @@ class NetSuiteClient:
         value = base64.b64encode(dig).decode()
 
         signature = self.TokenPassportSignature(value, algorithm=signature_algorithm)
-        return self.TokenPassport(account=account, consumerKey=consumer_key, token=token_key,
+        self._token_passport = self.TokenPassport(account=account, consumerKey=consumer_key, token=token_key,
                                   nonce=nonce, timestamp=timestamp, signature=signature)
-
-    def login(self, applicationId, passport):
-        """
-        Authenticate and login user for a Netsuite session. The passport argument is
-        of type Passport(email, password, role and account) which holds the credentials
-        and can be created with NetSuiteClient.create_password.
-
-        :param int applicationId: All requests done in this session will be identified
-            with this application id.
-        :param Passport passport: holds the credentials to authenticate the user.
-        :return: the login response which contains the response status and user roles
-        :rtype: LoginResponse
-        :raises :class:`~netsuitesdk.exceptions.NetSuiteLoginError`: if login was not successful. Possible codes
-            are: InsufficientPermissionFault, InvalidAccountFault, InvalidSessionFault,
-            InvalidCredentialsFault and UnexpectedErrorFault
-        """
-
-        if self._is_authenticated:
-            self.logout()
-        try:
-            self._app_info = self.ApplicationInfo(applicationId=applicationId)
-            response = self._client.service.login(
-                                passport,
-                                _soapheaders={'applicationInfo': self._app_info}
-            )
-            if response.status.isSuccess:
-                self._is_authenticated = True
-                logged_in_role = self._log_roles(response)
-                self._user = User(name=response.userId['name'],
-                                  internalId=response.userId['internalId'],
-                                  wsRole=logged_in_role)
-                self.logger.info("User {} logged in successfully.".format(str(self._user)))
-                return response
-            else:
-                statusDetail = response.status['statusDetail'][0]
-                exc = self._request_error('login',
-                                          detail=statusDetail,
-                                          error_cls=NetSuiteLoginError)
-                raise exc
-        except Fault as fault:
-            exc = NetSuiteLoginError(str(fault), code=fault.code)
-            self.logger.error(str(exc))
-            raise exc from None
 
     def _log_roles(self, response):
         roles = response.wsRoleList['wsRole']
@@ -314,7 +307,7 @@ class NetSuiteClient:
         self.logger.error(str(exc))
         return exc
 
-    def build_soap_headers(self, **kwargs):
+    def build_soap_headers(self, include_search_preferences: bool = False):
         """
         Generate soap headers dictionary to send with a request
 
@@ -328,8 +321,8 @@ class NetSuiteClient:
 
         soapheaders = {}
 
-        passport = kwargs.pop('passport', None)
-        token_passport = kwargs.pop('tokenPassport', None)
+        passport = self._passport
+        token_passport = self._token_passport
         if self._is_authenticated:
             # User is already logged in, so there is no
             # need to pass authentication details in the header
@@ -341,8 +334,9 @@ class NetSuiteClient:
         else:
             raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
 
-        for key, value in kwargs.items():
-            soapheaders[key] = value
+        # if include_search_preferences:
+        #     soapheaders['searchPreferences'] = self._search_preferences
+
         return soapheaders
 
     def request(self, name, *args, headers=None, **kwargs):
@@ -354,15 +348,15 @@ class NetSuiteClient:
         :return: the request response object
         :rtype: the exact type depends on the request
         """
-
-        if headers is None:
-            headers = {}
+        headers = {}
+        # if headers is None:
+        #     headers = {}
         service = getattr(self._client.service, name)
         # call the service:
-        response = service(*args, _soapheaders=self.build_soap_headers(**headers), **kwargs)
+        response = service(*args, _soapheaders=self.build_soap_headers(), **kwargs)
         return response
 
-    def get(self, recordType, internalId=None, externalId=None, headers=None, **kwargs):
+    def get(self, recordType, internalId=None, externalId=None, headers=None):
         """
         Make a get request to retrieve an object of type recordType
         specified by either internalId or externalId
@@ -382,7 +376,7 @@ class NetSuiteClient:
             record_ref = self.RecordRef(type=recordType, externalId=externalId)
         else:
             raise ValueError('Either internalId or externalId is necessary to make a get request.')
-        response = self.request('get', headers=headers, baseRef=record_ref, **kwargs)
+        response = self.request('get', headers=headers, baseRef=record_ref)
         response = response.body.readResponse
 
         status = response.status
@@ -393,7 +387,7 @@ class NetSuiteClient:
             exc = self._request_error('get', detail=status['statusDetail'][0])
             raise exc
 
-    def getAll(self, recordType, headers=None, **kwargs):
+    def getAll(self, recordType, headers=None):
         """
         Make a getAll request to retrieve all objects of type recordType.
         All NetSuite types available for a search
@@ -408,7 +402,7 @@ class NetSuiteClient:
 
         recordType = recordType[0].lower() + recordType[1:]
         record = self.GetAllRecord(recordType=recordType)
-        response = self.request('getAll', headers=headers, record=record, **kwargs)
+        response = self.request('getAll', headers=headers, record=record)
         response = response.body.getAllResult
 
         status = response.status
@@ -439,7 +433,7 @@ class NetSuiteClient:
             setattr(basic_search, key, value)
         return basic_search
 
-    def search(self, searchRecord, headers=None, **kwargs):
+    def search(self, searchRecord, headers=None):
         """
         Make a search request to retrieve an object of type recordType
         specified by internalId. All NetSuite types available for a search
@@ -456,18 +450,6 @@ class NetSuiteClient:
                     str searchId: identifier for the search
                     list records: the actual records found
         """
-
-        bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
-        pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
-        returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
-        searchPreferences = self.SearchPreferences(
-                                bodyFieldsOnly=bodyFieldsOnly,
-                                pageSize=pageSize,
-                                returnSearchColumns=returnSearchColumns)
-        if headers is None:
-            headers = {}
-        headers['searchPreferences'] = searchPreferences
-
         response = self.request('search',
                                 headers=headers,
                                 searchRecord=searchRecord)
@@ -487,18 +469,7 @@ class NetSuiteClient:
             exc = self._request_error('search', detail=status['statusDetail'][0])
             raise exc
 
-    def searchMoreWithId(self, searchId, pageIndex, headers=None, **kwargs):
-        bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
-        pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
-        returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
-        searchPreferences = self.SearchPreferences(
-                                bodyFieldsOnly=bodyFieldsOnly,
-                                pageSize=pageSize,
-                                returnSearchColumns=returnSearchColumns)
-        if headers is None:
-            headers = {}
-        headers['searchPreferences'] = searchPreferences
-
+    def searchMoreWithId(self, searchId, pageIndex, headers=None):
         response = self.request('searchMoreWithId',
                                 headers=headers,
                                 searchId=searchId,
@@ -514,7 +485,7 @@ class NetSuiteClient:
             exc = self._request_error('searchMoreWithId', detail=status['statusDetail'][0])
             raise exc
 
-    def upsert(self, record, headers=None, **kwargs):
+    def upsert(self, record, headers=None):
         """
         Add an object of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -533,7 +504,7 @@ class NetSuiteClient:
         :rtype: RecordRef
         """
 
-        response = self.request('upsert', headers=headers, record=record, **kwargs)
+        response = self.request('upsert', headers=headers, record=record)
         response = response.body.writeResponse
         status = response.status
         if status.isSuccess:
@@ -545,7 +516,7 @@ class NetSuiteClient:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
             raise exc
 
-    def upsertList(self, records, headers=None, **kwargs):
+    def upsertList(self, records, headers=None):
         """
         Add objects of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -561,7 +532,7 @@ class NetSuiteClient:
         :rtype: list[CompoundValue]
         """
 
-        response = self.request('upsertList', headers=headers, record=records, **kwargs)
+        response = self.request('upsertList', headers=headers, record=records)
         responses = response.body.writeResponse
         has_failures = False
         record_refs = []
@@ -608,7 +579,7 @@ class NetSuiteClient:
             print_func(record)
             print('-'*15)
 
-    def paginated_search(self, type_name, basic_search=None, page_size=None, print_func=None, **kwargs):
+    def paginated_search(self, type_name, basic_search=None, page_size=None, print_func=None):
         """
         Uses `PaginatedSearch` (defined in utils.py) which in turn uses
         `NetSuiteClient.search` to perform a search on the NetSuite type `type_name`
@@ -623,7 +594,7 @@ class NetSuiteClient:
                                            type_name=type_name,
                                            basic_search=basic_search,
                                            page_size=page_size,
-                                           **kwargs)
+                                           )
         print('totalRecords: ', paginated_search.total_records)
         print('pageSize: ', paginated_search.page_size)
         print('totalPages: ', paginated_search.total_pages)
