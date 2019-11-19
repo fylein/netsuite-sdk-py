@@ -355,7 +355,7 @@ class NetSuiteClient:
             # need to pass authentication details in the header
             pass
         elif token_passport is not None:
-            soapheaders['tokenPassport'] = tokenPassport
+            soapheaders['tokenPassport'] = token_passport
         elif passport is not None:
             soapheaders['passport'] = passport
         else:
