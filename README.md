@@ -125,14 +125,23 @@ ns.upsertList(records=[customer1, customer2])
 
 ## Integration Tests
 
-To run integration tests, you will to use TBA credentials to an actual Netsuite account with the right permissions. 
+To run integration tests, you will set both login and TBA credentials for an actual Netsuite account with the right permissions. 
 ```
-export ACCOUNT_ID=xxxx
-export APP_ID=xxxx
-export CONSUMER_KEY=xxxx
-export CONSUMER_SECRET=xxxx
-export TOKEN_KEY=xxxx
-export TOKEN_SECRET=xxxx
+# TBA credentials
+export NS_ACCOUNT=xxxx
+export NS_APPID=xxxx
+export NS_CONSUMER_KEY=xxxx
+export NS_CONSUMER_SECRET=xxxx
+export NS_TOKEN_KEY=xxxx
+export NS_TOKEN_SECRET=xxxx
+
+# Login credentials - this is deprecated, we strongly prefer TBA
+export NS_EMAIL=xxx
+export NS_PASSWORD=xxxx
+export NS_ROLE=xxxx
+export NS_ACCOUNT=xxxx
+export NS_APPID=xxxxx
+
 
 python -m pytest test/integration
 ```
