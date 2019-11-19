@@ -22,35 +22,13 @@ from .exceptions import *
 from .netsuite_types import *
 from .utils import User, PaginatedSearch
 
-log = logging.getLogger(__name__)
-
-
-def request_service():
-    """
-    Decorator for NetSuite web service requests
-    Implementation not finished yet
-    """
-
-    response = response.body.writeResponse
-    status = response.status
-    log.info('status: %s' % str(status))
-    if status.isSuccess:
-        record = response['record']
-        return record
-    else:
-        exc = self._request_error('get', detail=status['statusDetail'][0])
-        if not fail_silently:
-            raise exc
-        return None
-
-
 class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
 
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
 
-    def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, debug=False, **kwargs):
+    def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, **kwargs):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -61,13 +39,8 @@ class NetSuiteClient:
         :param str caching: If caching = 'sqlite', setup Sqlite caching
         :param int caching_timeout: Timeout in seconds for caching.
                             If None, defaults to 30 days
-        :param bool debug: If True, will show all logs
         """
-
-        if debug:
-            log.setLevel(level=logging.DEBUG)
-        else:
-            log.setLevel(level=logging.WARNING)
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         self._wsdl_url = wsdl_url or self.DEFAULT_WSDL_URL
         if caching == 'sqlite':
@@ -109,7 +82,7 @@ class NetSuiteClient:
                     )
                     complex_type = self._client.get_type(verbose_type_name)
                 except ZeepLookupError:
-                    log.warning('LookupError: Did not find complex type {}'.format(type_name))
+                    self.logger.warning('LookupError: Did not find complex type {}'.format(type_name))
                 else:
                     setattr(self, type_name, complex_type)
                     self._complex_types[type_name] = complex_type
@@ -128,7 +101,7 @@ class NetSuiteClient:
                     )
                     simple_type = self._client.get_type(verbose_type_name)
                 except ZeepLookupError:
-                    log.warning('LookupError: Did not find simple type {}'.format(type_name))
+                    self.logger.warning('LookupError: Did not find simple type {}'.format(type_name))
                 else:
                     setattr(self, type_name, simple_type)
                     self._simple_types[type_name] = simple_type
@@ -274,7 +247,7 @@ class NetSuiteClient:
                 self._user = User(name=response.userId['name'],
                                   internalId=response.userId['internalId'],
                                   wsRole=logged_in_role)
-                log.info("User {} logged in successfully.".format(str(self._user)))
+                self.logger.info("User {} logged in successfully.".format(str(self._user)))
                 return response
             else:
                 statusDetail = response.status['statusDetail'][0]
@@ -285,7 +258,7 @@ class NetSuiteClient:
                     raise exc
         except Fault as fault:
             exc = NetSuiteLoginError(str(fault), code=fault.code)
-            log.error(str(exc))
+            self.logger.error(str(exc))
             if not fail_silently:
                 raise exc from None
 
@@ -305,7 +278,7 @@ class NetSuiteClient:
             self._roles.append(wsRole)
             if wsRole.isLoggedInRole:
                 logged_in_role = wsRole
-        log.info('There are {} user roles: {}'.format(len(self._roles),
+        self.logger.info('There are {} user roles: {}'.format(len(self._roles),
             ', '.join(['{}({})'.format(role.role.name, role.role.internalId) for role in self._roles])))
         return logged_in_role
 
@@ -318,7 +291,7 @@ class NetSuiteClient:
             return
         response = self._client.service.logout()
         self._is_authenticated = False
-        log.info("User {user} was logged out.".format(user=str(self._user)))
+        self.logger.info("User {user} was logged out.".format(user=str(self._user)))
         self._user = None
         return response.status
 
@@ -331,7 +304,7 @@ class NetSuiteClient:
                                                     msg=detail['message']),
                 code=detail['code']
         )
-        log.error(str(exc))
+        self.logger.error(str(exc))
         return exc
 
     def build_soap_headers(self, **kwargs):
@@ -566,7 +539,7 @@ class NetSuiteClient:
         status = response.status
         if status.isSuccess:
             record_ref = response['baseRef']
-            log.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+            self.logger.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
                     type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
             return record_ref
         else:
@@ -599,7 +572,7 @@ class NetSuiteClient:
             status = response.status
             if status.isSuccess:
                 record_ref = response['baseRef']
-                log.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+                self.logger.info('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
                         type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
                 record_refs.append(record_ref)
             else:
