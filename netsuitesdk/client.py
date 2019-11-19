@@ -85,7 +85,7 @@ class NetSuiteClient:
         self._app_info = None
         self._is_authenticated = False
         self._user = None
-#        self.set_search_preferences()
+        self.set_search_preferences()
 
     def set_search_preferences(self, body_fields_only: bool = True, page_size: int = 5, return_search_columns: bool = False):
         self._search_preferences = self.SearchPreferences(
@@ -322,7 +322,7 @@ class NetSuiteClient:
         self.logger.error(str(exc))
         return exc
 
-    def build_soap_headers(self):
+    def _build_soap_headers(self, include_search_preferences: bool = False):
         """
         Generate soap headers dictionary to send with a request
 
@@ -346,9 +346,8 @@ class NetSuiteClient:
             soapheaders['passport'] = self._passport
         else:
             raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
-        # self.logger.info('soapheaders = %s', soapheaders)
-        # if include_search_preferences:
-        #     soapheaders['searchPreferences'] = self._search_preferences
+        if include_search_preferences:
+            soapheaders['searchPreferences'] = self._search_preferences
 
         return soapheaders
 
@@ -362,7 +361,10 @@ class NetSuiteClient:
         """
         service = getattr(self._client.service, name)
         # call the service:
-        response = service(*args, _soapheaders=self.build_soap_headers(), **kwargs)
+        include_search_preferences = (name == 'search')
+        response = service(*args, 
+                _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
+                , **kwargs)
         return response
 
     def get(self, recordType, internalId=None, externalId=None):
