@@ -32,7 +32,7 @@ class PaginatedSearch:
 
     default_page_size = 20
 
-    def __init__(self, client, type_name, search_record=None, basic_search=None, pageSize=None, perform_search=True, headers=None):
+    def __init__(self, client, type_name, search_record=None, basic_search=None, pageSize=None, perform_search=True):
         """
         PaginatedSearch is a utility class that can be used to perform
         a search.
@@ -52,9 +52,8 @@ class PaginatedSearch:
         self.basic_search = basic_search
         if self.basic_search is not None:
             self.search_record.basic = self.basic_search
-        self._headers = headers
         if perform_search:
-            self.search(headers=self._headers)
+            self.search()
 
     @property
     def total_records(self):
@@ -82,14 +81,11 @@ class PaginatedSearch:
             return len(self.records)
         return 0
 
-    def search(self, headers=None):
+    def search(self):
         """ Call the netsuite operation `search` """
+        self._result = self._ns.search(searchRecord=self.search_record)
 
-        headers = headers or self._headers
-        self._result = self._ns.search(searchRecord=self.search_record,
-                                       headers=headers)
-
-    def goto_page(self, page_index, headers=None):
+    def goto_page(self, page_index):
         """ After a search was performed, this method utilizes the NetSuite
         operation `searchMoreWithId` to retrieve more results """
 
@@ -97,7 +93,5 @@ class PaginatedSearch:
             return
         if page_index > self.total_pages or page_index < 1:
             return
-        headers = headers or self._headers
         self._result = self._ns.searchMoreWithId(searchId=self._result.searchId,
-                                                 pageIndex=page_index,
-                                                 headers=headers)
+                                                 pageIndex=page_index)

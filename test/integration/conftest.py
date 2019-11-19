@@ -17,8 +17,8 @@ def ns():
     TOKEN_KEY = os.getenv('TOKEN_KEY')
     TOKEN_SECRET = os.getenv('TOKEN_SECRET')
     APP_ID = os.getenv('APP_ID')
-    ns = NetSuiteClient(account_id=ACCOUNT_ID)
-    ns.connect_tba(account=ACCOUNT_ID, consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
+    ns = NetSuiteClient(account=ACCOUNT_ID)
+    ns.connect_tba(consumer_key=CONSUMER_KEY, consumer_secret=CONSUMER_SECRET,
                                         token_key=TOKEN_KEY, token_secret=TOKEN_SECRET, signature_algorithm='HMAC-SHA1')
     return ns
  
