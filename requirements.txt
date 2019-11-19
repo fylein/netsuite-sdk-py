@@ -1,2 +1,4 @@
 zeep==3.4.0
 pytest==5.2.4
+pytest-cov==2.8.1
+pytest-mock==1.11.2
