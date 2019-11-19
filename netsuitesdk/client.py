@@ -9,7 +9,6 @@ import hmac
 import logging
 import os.path
 import random
-import sys
 import time
 
 from zeep import Client
@@ -23,7 +22,6 @@ from .exceptions import *
 from .netsuite_types import *
 from .utils import User, PaginatedSearch
 
-logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
 
