@@ -32,7 +32,7 @@ def upsert_vendor_bill(ns):
     new_bill = False
     while True:
         externalId = input('externalId of VendorBill: ')
-        bill = ns.get('vendorBill', externalId=externalId, fail_silently=True)
+        bill = ns.get('vendorBill', externalId=externalId)
         if bill is None:
             inp = input('VendorBill with externalId {} does not exist yet. Do you want to create a new record? (y or n) '.format(externalId))
             if inp == 'y':

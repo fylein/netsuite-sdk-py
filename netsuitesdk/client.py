@@ -226,7 +226,7 @@ class NetSuiteClient:
         return self.TokenPassport(account=account, consumerKey=consumer_key, token=token_key,
                                   nonce=nonce, timestamp=timestamp, signature=signature)
 
-    def login(self, applicationId, passport, fail_silently=False):
+    def login(self, applicationId, passport):
         """
         Authenticate and login user for a Netsuite session. The passport argument is
         of type Passport(email, password, role and account) which holds the credentials
@@ -235,7 +235,6 @@ class NetSuiteClient:
         :param int applicationId: All requests done in this session will be identified
             with this application id.
         :param Passport passport: holds the credentials to authenticate the user.
-        :param bool fail_silently: If True, will not reraise exceptions
         :return: the login response which contains the response status and user roles
         :rtype: LoginResponse
         :raises :class:`~netsuitesdk.exceptions.NetSuiteLoginError`: if login was not successful. Possible codes
@@ -264,13 +263,11 @@ class NetSuiteClient:
                 exc = self._request_error('login',
                                           detail=statusDetail,
                                           error_cls=NetSuiteLoginError)
-                if not fail_silently:
-                    raise exc
+                raise exc
         except Fault as fault:
             exc = NetSuiteLoginError(str(fault), code=fault.code)
             self.logger.error(str(exc))
-            if not fail_silently:
-                raise exc from None
+            raise exc from None
 
     def _log_roles(self, response):
         roles = response.wsRoleList['wsRole']
@@ -365,7 +362,7 @@ class NetSuiteClient:
         response = service(*args, _soapheaders=self.build_soap_headers(**headers), **kwargs)
         return response
 
-    def get(self, recordType, internalId=None, externalId=None, fail_silently=False, headers=None, **kwargs):
+    def get(self, recordType, internalId=None, externalId=None, headers=None, **kwargs):
         """
         Make a get request to retrieve an object of type recordType
         specified by either internalId or externalId
@@ -394,11 +391,9 @@ class NetSuiteClient:
             return record
         else:
             exc = self._request_error('get', detail=status['statusDetail'][0])
-            if not fail_silently:
-                raise exc
-            return None
+            raise exc
 
-    def getAll(self, recordType, fail_silently=False, headers=None, **kwargs):
+    def getAll(self, recordType, headers=None, **kwargs):
         """
         Make a getAll request to retrieve all objects of type recordType.
         All NetSuite types available for a search
@@ -422,9 +417,7 @@ class NetSuiteClient:
             return records
         else:
             exc = self._request_error('getAll', detail=status['statusDetail'][0])
-            if not fail_silently:
-                raise exc
-            return None
+            raise exc
 
     def search_factory(self, type_name, **kwargs):
         _type_name = type_name[0].lower() + type_name[1:]
@@ -446,7 +439,7 @@ class NetSuiteClient:
             setattr(basic_search, key, value)
         return basic_search
 
-    def search(self, searchRecord, fail_silently=False, headers=None, **kwargs):
+    def search(self, searchRecord, headers=None, **kwargs):
         """
         Make a search request to retrieve an object of type recordType
         specified by internalId. All NetSuite types available for a search
@@ -492,11 +485,9 @@ class NetSuiteClient:
                 return result
         else:
             exc = self._request_error('search', detail=status['statusDetail'][0])
-            if not fail_silently:
-                raise exc
-            return None
+            raise exc
 
-    def searchMoreWithId(self, searchId, pageIndex, fail_silently=False, headers=None, **kwargs):
+    def searchMoreWithId(self, searchId, pageIndex, headers=None, **kwargs):
         bodyFieldsOnly = kwargs.pop('bodyFieldsOnly', self._search_preferences.bodyFieldsOnly)
         pageSize = kwargs.pop('pageSize', self._search_preferences.pageSize)
         returnSearchColumns = kwargs.pop('returnSearchColumns', self._search_preferences.returnSearchColumns)
@@ -521,11 +512,9 @@ class NetSuiteClient:
             return result
         else:
             exc = self._request_error('searchMoreWithId', detail=status['statusDetail'][0])
-            if not fail_silently:
-                raise exc
-            return None
+            raise exc
 
-    def upsert(self, record, fail_silently=False, headers=None, **kwargs):
+    def upsert(self, record, headers=None, **kwargs):
         """
         Add an object of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -554,11 +543,9 @@ class NetSuiteClient:
             return record_ref
         else:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
-            if not fail_silently:
-                raise exc
-            return None
+            raise exc
 
-    def upsertList(self, records, fail_silently=False, headers=None, **kwargs):
+    def upsertList(self, records, headers=None, **kwargs):
         """
         Add objects of type recordType with given externalId..
         If a record of specified type with matching externalId already
@@ -587,9 +574,8 @@ class NetSuiteClient:
                 record_refs.append(record_ref)
             else:
                 exc = self._request_error('upsertList', detail=status['statusDetail'][0])
-                if not fail_silently:
-                    raise exc
                 has_failures = True
+                raise exc
         return record_refs
 
     ######## Utility functions ########
