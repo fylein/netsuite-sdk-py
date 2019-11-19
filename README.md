@@ -9,60 +9,85 @@ Remark: This python NetSuite SDK uses the SOAP/WSDL library [Zeep](https://pytho
 
 ## Get Started
 
-There are the following options to access a NetSuite account via web services: 
-- Either pass credentials (email, password, role and account Id) via login and start a request session
-- Pass credentials in the header of each request
-- Use token based authentication (within each request)
+There are two ways to access a NetSuite account via web services: 
+- Use token-based auth (TBA) (within each request). This is preferred.
+- Use email, password, role and account id to login and start a session
 
-### Login with credentials
+### Token-based Auth
 
-The following code performs a login to a NetSuite account and starts a web service session.
-
-```python
-from netsuitesdk import NetSuiteClient
-
-# Initialize the NetSuite client instance by passing the application Id
-# which will be passed to the request header in the login operation.
-ns = NetSuiteClient(caching='sqlite', debug=True)
-
-passport = ns.create_passport(email=NS_EMAIL,
-                              password=NS_PASSWORD,
-                              role=NS_ROLE,
-                              account=NS_ACCOUNT)
-
-# Authenticate the user and start a new webservice session in NetSuite
-ns.login(app_id=NS_APPID, passport=passport)
-
-# Make requests. All requests done in this session will be identified
-# with the application Id passed to the login operation
-
-ns.logout()
-```
-
-To avoid storing the credentials in the python source code file, one can use
-python-dotenv (`$ pip install python-dotenv`) to load authentication 
-credentials from a .env-file as environment variables. The .env-file would look something like this:
+First, setup TBA credentials using environment variables.
 
 ```
-NS_EMAIL = '*****@example.com'
-NS_PASSWORD = '*******'
-NS_ROLE = '1047'
-NS_ACCOUNT = '*********'
-NS_APPID = '********-****-****-****-************'
+# TBA credentials
+export NS_ACCOUNT=xxxx
+export NS_APPID=xxxx
+export NS_CONSUMER_KEY=xxxx
+export NS_CONSUMER_SECRET=xxxx
+export NS_TOKEN_KEY=xxxx
+export NS_TOKEN_SECRET=xxxx
+
 ```
 
-and the variables could be loaded as follows:
+The following snippet shows how to use TBA to initialize the SDK.
 
 ```python
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-NS_EMAIL = os.getenv("NS_EMAIL")
-NS_PASSWORD = os.getenv("NS_PASSWORD")
-NS_ROLE = os.getenv("NS_ROLE")
-NS_ACCOUNT = os.getenv("NS_ACCOUNT")
-NS_APPID = os.getenv("NS_APPID")
+from netsuitesdk import NetSuiteClient
+
+def connect_tba():
+    """
+    Returns: (ns, headers)
+    """
+    NS_ACCOUNT = os.getenv('NS_ACCOUNT')
+    NS_CONSUMER_KEY = os.getenv('NS_CONSUMER_KEY')
+    NS_CONSUMER_SECRET = os.getenv('NS_CONSUMER_SECRET')
+    NS_TOKEN_KEY = os.getenv('NS_TOKEN_KEY')
+    NS_TOKEN_SECRET = os.getenv('NS_TOKEN_SECRET')
+    NS_APPID = os.getenv('NS_APPID')
+    ns = NetSuiteClient(account=NS_ACCOUNT)
+    ns.connect_tba(consumer_key=NS_CONSUMER_KEY, consumer_secret=NS_CONSUMER_SECRET,
+                                        token_key=NS_TOKEN_KEY, token_secret=NS_TOKEN_SECRET, signature_algorithm='HMAC-SHA1')
+    return ns
+
+ns = client_tba()
+
+# Use the client to access various parts of NS
+```
+
+### Password-based Auth
+
+Password-based auth is less preferred. You can set the following environment variables for convenience:
+
+```
+export NS_EMAIL=xxxx
+export NS_PASSWORD=xxxx
+export NS_ROLE=xxx
+export NS_ACCOUNT=xxxx
+export NS_APPID=xxxx
+```
+
+Here's a snippet that shows how the client can be initialized.
+
+```python
+import os
+
+from netsuitesdk import NetSuiteClient
+
+def connect_password():
+    NS_EMAIL = os.getenv("NS_EMAIL")
+    NS_PASSWORD = os.getenv("NS_PASSWORD")
+    NS_ROLE = os.getenv("NS_ROLE")
+    NS_ACCOUNT = os.getenv("NS_ACCOUNT")
+    NS_APPID = os.getenv("NS_APPID")
+
+    ns = NetSuiteClient(account=NS_ACCOUNT)
+    ns.login(email=NS_EMAIL, password=NS_PASSWORD, role=NS_ROLE, application_id=NS_APPID)
+    return ns
+
+ns = connect_password()
+
+# Do things with ns..
 ```
 
 ### Remarks and possible errors regarding authentication
@@ -76,11 +101,6 @@ If login fails, a NetSuiteLoginError is thrown.
 For more information about NetSuite authentication, see:
 	(https://docs.oracle.com/cloud/latest/netsuitecs_gs/NSATH/NSATH.pdf)
 
-### Passing credentials with requests
-tba
-
-### Token based authentication
-tba
 
 ### Get Request
 A basic example (`ns` is a reference to a `NetSuiteClient` instance):
@@ -135,7 +155,7 @@ export NS_CONSUMER_SECRET=xxxx
 export NS_TOKEN_KEY=xxxx
 export NS_TOKEN_SECRET=xxxx
 
-# Login credentials - this is deprecated, we strongly prefer TBA
+# Password credentials
 export NS_EMAIL=xxx
 export NS_PASSWORD=xxxx
 export NS_ROLE=xxxx
