@@ -116,7 +116,7 @@ def start_session():
     NS_ACCOUNT = os.getenv("NS_ACCOUNT")
     NS_APPID = os.getenv("NS_APPID")
 
-    ns = NetSuiteClient(caching='sqlite', debug=True)
+    ns = NetSuiteClient()
 
     # Login with user credentials (email, password, role and account)
     passport = ns.create_passport(email=NS_EMAIL,

@@ -54,6 +54,7 @@ COMPLEX_TYPES = {
     'ns17': [
         'Account', 'AccountSearch',
         'AccountingPeriod',
+        'Classification', 'ClassificationSearch',
         'Department', 'DepartmentSearch',
         'Location', 'LocationSearch',
         'VendorCategory', 'VendorCategorySearch',
