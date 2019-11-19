@@ -31,9 +31,16 @@ class NetSuiteClient:
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
 
     _search_preferences = None
-    _token_passport = None
     _passport = None
     _account = None
+
+    # Used by TBA
+    _consumer_key = None
+    _consumer_secret = None
+    _token_key = None
+    _token_secret = None
+    _app_id = None
+
 
     def __init__(self, account=None, wsdl_url=None, caching=True, caching_timeout=2592000):
         """
@@ -221,6 +228,35 @@ class NetSuiteClient:
             self.logger.error(str(exc))
             raise exc from None
 
+    def _generate_token_passport(self):
+        def compute_nonce(length=20):
+            """pseudo-random generated numeric string"""
+            return ''.join([str(random.randint(0, 9)) for i in range(length)])
+
+        nonce = compute_nonce(length=20)
+        timestamp = int(time.time())
+        key = '{}&{}'.format(self._consumer_secret, self._token_secret)
+        base_string = '&'.join([self._account, self._consumer_key, self._token_key, nonce, str(timestamp)])
+        key_bytes = key.encode(encoding='ascii')
+        message_bytes = base_string.encode(encoding='ascii')
+        # compute the signature
+        if self._signature_algorithm == 'HMAC-SHA256':
+            # hash
+            hashed_value = hmac.new(key_bytes, msg=message_bytes, digestmod=hashlib.sha256)
+        elif self._signature_algorithm == 'HMAC-SHA1':
+            hashed_value = hmac.new(key_bytes, msg=message_bytes, digestmod=hashlib.sha1)
+        else:
+            raise NetSuiteError("signature_algorithm needs to be one of 'HMAC-SHA256', 'HMAC-SHA1'")
+
+        dig = hashed_value.digest()
+        # convert dig (a byte sequence) to a base 64 string
+        value = base64.b64encode(dig).decode()
+
+        signature = self.TokenPassportSignature(value, algorithm=self._signature_algorithm)
+        return self.TokenPassport(account=self._account, consumerKey=self._consumer_key, token=self._token_key,
+                                  nonce=nonce, timestamp=timestamp, signature=signature)
+
+
     def connect_tba(self, consumer_key, consumer_secret, token_key, token_secret, signature_algorithm='HMAC-SHA1'):
         """
         Create a TokenPassport object holding credentials for Token based
@@ -235,33 +271,11 @@ class NetSuiteClient:
         :param str signature_algorithm: algorithm to compute the signature value (a hashed value),
                         choices are 'HMAC-SHA256' or 'HMAC-SHA1'
         """
-
-        def compute_nonce(length=20):
-            """pseudo-random generated numeric string"""
-            return ''.join([str(random.randint(0, 9)) for i in range(length)])
-
-        nonce = compute_nonce(length=20)
-        timestamp = int(time.time())
-        key = '{}&{}'.format(consumer_secret, token_secret)
-        base_string = '&'.join([self._account, consumer_key, token_key, nonce, str(timestamp)])
-        key_bytes = key.encode(encoding='ascii')
-        message_bytes = base_string.encode(encoding='ascii')
-        # compute the signature
-        if signature_algorithm == 'HMAC-SHA256':
-            # hash
-            hashed_value = hmac.new(key_bytes, msg=message_bytes, digestmod=hashlib.sha256)
-        elif signature_algorithm == 'HMAC-SHA1':
-            hashed_value = hmac.new(key_bytes, msg=message_bytes, digestmod=hashlib.sha1)
-        else:
-            raise NetSuiteError("signature_algorithm needs to be one of 'HMAC-SHA256', 'HMAC-SHA1'")
-
-        dig = hashed_value.digest()
-        # convert dig (a byte sequence) to a base 64 string
-        value = base64.b64encode(dig).decode()
-
-        signature = self.TokenPassportSignature(value, algorithm=signature_algorithm)
-        self._token_passport = self.TokenPassport(account=self._account, consumerKey=consumer_key, token=token_key,
-                                  nonce=nonce, timestamp=timestamp, signature=signature)
+        self._consumer_key = consumer_key
+        self._consumer_secret = consumer_secret
+        self._token_key = token_key
+        self._token_secret = token_secret
+        self._signature_algorithm = signature_algorithm
 
     def _log_roles(self, response):
         roles = response.wsRoleList['wsRole']
@@ -308,7 +322,7 @@ class NetSuiteClient:
         self.logger.error(str(exc))
         return exc
 
-    def build_soap_headers(self, include_search_preferences: bool = False):
+    def build_soap_headers(self):
         """
         Generate soap headers dictionary to send with a request
 
@@ -326,13 +340,13 @@ class NetSuiteClient:
             # User is already logged in, so there is no
             # need to pass authentication details in the header
             pass
-        elif self._token_passport is not None:
-            soapheaders['tokenPassport'] = self._token_passport
+        elif self._consumer_key is not None:
+            soapheaders['tokenPassport'] = self._generate_token_passport()
         elif self._passport is not None:
             soapheaders['passport'] = self._passport
         else:
             raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
-        self.logger.info('soapheaders = %s', soapheaders)
+        # self.logger.info('soapheaders = %s', soapheaders)
         # if include_search_preferences:
         #     soapheaders['searchPreferences'] = self._search_preferences
 

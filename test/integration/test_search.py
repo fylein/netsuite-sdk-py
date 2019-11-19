@@ -1,6 +1,7 @@
 from netsuitesdk import PaginatedSearch
 import logging
 import pytest
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ def test_search_vendor_bills(ns):
 
 @pytest.mark.parametrize('type_name', ['Account', 'Vendor', 'Department', 'Location', 'Classification'])
 def test_search_all(ns, type_name):
+    # time.sleep(10)
     paginated_search = PaginatedSearch(client=ns, type_name=type_name, pageSize=20)
     assert len(paginated_search.records) > 0, f'There are no records of type {type_name}'
     logger.debug('record = %s', str(paginated_search.records[0]))
