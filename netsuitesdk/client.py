@@ -26,14 +26,17 @@ class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
 
+    WSDL_URL_TEMPLATE = 'https://{account_id}.suitetalk.api.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
+
     DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
 
-    def __init__(self, wsdl_url=None, caching=None, caching_timeout=None, **kwargs):
+    def __init__(self, account_id=None, wsdl_url=None, caching=True, caching_timeout=2592000, **kwargs):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
         instance.
 
+        :param str account_id: Account ID to connect to
         :param str wsdl_url: WSDL url of the Netsuite SOAP service.
                             If None, defaults to DEFAULT_WSDL_URL
         :param str caching: If caching = 'sqlite', setup Sqlite caching
@@ -42,10 +45,17 @@ class NetSuiteClient:
         """
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        self._wsdl_url = wsdl_url or self.DEFAULT_WSDL_URL
-        if caching == 'sqlite':
+        if wsdl_url:
+            self._wsdl_url = wsdl_url
+        else:
+            if account_id:
+                self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account_id=account_id)
+            else:
+                self._wsdl_url = self.DEFAULT_WSDL_URL
+
+        if caching:
             path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache.db')
-            timeout = caching_timeout or 30*24*60*60
+            timeout = caching_timeout
             cache = SqliteCache(path=path, timeout=timeout)
             transport = Transport(cache=cache)
         else:
