@@ -122,6 +122,49 @@ customer2 = ns.Customer(externalId='another_customer', email='test2@example.com'
 ns.upsertList(records=[customer1, customer2])
 ```
 
+
+## Integration Tests
+
+To run integration tests, you will to use TBA credentials to an actual Netsuite account with the right permissions. 
+```
+export ACCOUNT_ID=xxxx
+export APP_ID=xxxx
+export CONSUMER_KEY=xxxx
+export CONSUMER_SECRET=xxxx
+export TOKEN_KEY=xxxx
+export TOKEN_SECRET=xxxx
+
+python -m pytest test/integration
+```
+
+## Code coverage
+
+To get code coverage report, run this command:
+
+```python
+python -m pytest --cov=netsuitesdk
+
+<snipped output>
+Name                            Stmts   Miss  Cover
+---------------------------------------------------
+netsuitesdk/__init__.py             5      0   100%
+netsuitesdk/client.py             343    198    42%
+netsuitesdk/constants.py            3      0   100%
+netsuitesdk/exceptions.py          14      5    64%
+netsuitesdk/netsuite_types.py       2      0   100%
+netsuitesdk/utils.py               47     19    60%
+---------------------------------------------------
+TOTAL                             414    222    46%
+```
+
+To get an html report, run this command:
+
+```python
+python -m pytest --cov=netsuitesdk --cov-report html:cov_html
+```
+
+We want to maintain code coverage of more than 95% for this project at all times.
+
 ## Documentation
 Documentation can be found in the docs/_build/html folder (open index.html) and soon in readthedocs.
 For contributors: to build the documentation (cd to /docs and) run `make buildapi`
