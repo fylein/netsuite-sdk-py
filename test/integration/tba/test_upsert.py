@@ -23,7 +23,10 @@ def get_vendor(ns):
     return get_record(ns, 'Vendor')
 
 def get_category_account(ns):
-    return get_record(ns, 'Account')
+    return ns.get(recordType='account', internalId=68)
+
+def get_currency(ns):
+    return ns.get(recordType='currency', internalId='1')
 
 def test_upsert_vendor_bill(ns):
     vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
@@ -35,16 +38,16 @@ def test_upsert_vendor_bill(ns):
     expenses = []
 
     vbe1 = ns.VendorBillExpense()
-    vbe1.account = cat_account_ref
-    vbe1.amount = 10.0
-    vbe1.department = dep_ref
+    vbe1['account'] = cat_account_ref
+    vbe1['amount'] = 10.0
+    vbe1['department'] = dep_ref
     vbe1['class'] = class_ref
-    vbe1.location = loc_ref
+    vbe1['location'] = loc_ref
 
     expenses.append(vbe1)
     vbe1 = ns.VendorBillExpense()
     vbe1.account = cat_account_ref
-    vbe1.amount = 10.0
+    vbe1.amount = 20.0
     vbe1.department = dep_ref
     vbe1['class'] = class_ref
     vbe1.location = loc_ref
@@ -52,14 +55,17 @@ def test_upsert_vendor_bill(ns):
     expenses.append(vbe1)
 
     bill = ns.VendorBill(externalId='1234')
-    bill.currency = ns.RecordRef(type='currency', internalId='1') # US dollar
+    bill.currency = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId) # US dollar
     bill.exchangerate = 1.0
     bill.expenseList = ns.VendorBillExpenseList(expense=expenses)
     bill.memo = 'test memo'
+    bill['class'] = class_ref
+    bill['location'] = loc_ref
+    bill['entity'] = vendor_ref
     record_ref = ns.upsert(bill)
     logger.debug('record_ref = %s', record_ref)
     assert record_ref['externalId'] == '1234', 'External ID does not match'
 
     bill2 = ns.get(recordType='vendorBill', externalId='1234')
-    logger.debug('bill2 = %s', str(bill2))
+    logger.info('bill2 = %s', str(bill2))
     assert (29.99 < bill2['userTotal']) and (bill2['userTotal'] < 30.01), 'Bill total is not 30.0'
