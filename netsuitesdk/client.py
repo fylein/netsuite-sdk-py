@@ -56,15 +56,15 @@ class NetSuiteClient:
                             If None, defaults to 30 days
         """
         self.logger = logging.getLogger(self.__class__.__name__)
+        assert '-' not in account, 'Account cannot have hyphens, it is likely an underscore'
         self._account = account
         if wsdl_url:
             self._wsdl_url = wsdl_url
         else:
             if account:
-                self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account)
+                self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'))
             else:
                 self._wsdl_url = self.DEFAULT_WSDL_URL
-
         if caching:
             path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache.db')
             timeout = caching_timeout
