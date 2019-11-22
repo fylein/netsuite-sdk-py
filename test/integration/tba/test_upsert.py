@@ -46,19 +46,19 @@ def test_upsert_vendor_bill(ns):
 
     expenses.append(vbe1)
     vbe1 = ns.VendorBillExpense()
-    vbe1.account = cat_account_ref
-    vbe1.amount = 20.0
-    vbe1.department = dep_ref
+    vbe1['account'] = cat_account_ref
+    vbe1['amount'] = 20.0
+    vbe1['department'] = dep_ref
     vbe1['class'] = class_ref
-    vbe1.location = loc_ref
+    vbe1['location'] = loc_ref
 
     expenses.append(vbe1)
 
     bill = ns.VendorBill(externalId='1234')
-    bill.currency = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId) # US dollar
-    bill.exchangerate = 1.0
-    bill.expenseList = ns.VendorBillExpenseList(expense=expenses)
-    bill.memo = 'test memo'
+    bill['currency'] = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId) # US dollar
+    bill['exchangerate'] = 1.0
+    bill['expenseList'] = ns.VendorBillExpenseList(expense=expenses)
+    bill['memo'] = 'test memo'
     bill['class'] = class_ref
     bill['location'] = loc_ref
     bill['entity'] = vendor_ref
