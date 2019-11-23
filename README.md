@@ -32,7 +32,8 @@ The following snippet shows how to use TBA to initialize the SDK.
 
 ```python
 import os
-
+import itertools
+import json
 from netsuitesdk import NetSuiteConnection
 
 def connect_tba():
@@ -46,14 +47,27 @@ def connect_tba():
 
 nc = connect_tba()
 
-# Supported get_all operations - they all returned List[OrderedDict]
-nc.accounts.get_all()
-nc.classifications.get_all()
-nc.currencies.get_all()
-nc.departments.get_all()
-nc.locations.get_all()
-nc.vendors.get_all()
-nc.vendor_bills.get_all()
+# Use get_all methods to get all objects of certain types
+currencies = nc.currencies.get_all()
+locations = nc.locations.get_all()
+departments = nc.departments.get_all()
+classifications = nc.classifications.get_all()
+all_accounts = list(itertools.islice(nc.accounts.get_all_generator(), 100))
+accounts = [a for a in all_accounts if a['acctType'] == '_expense']
+vendor_bills = list(itertools.islice(nc.vendor_bills.get_all_generator(), 10))
+vendors = list(itertools.islice(nc.vendors.get_all_generator(), 10))
+
+data = {
+  'accounts': accounts,
+  'classifications': classifications,
+  'departments': departments,
+  'locations': locations,
+  'currencies': currencies,
+  'vendors': vendors,
+  'vendor_bills': vendor_bills
+}
+with open('/tmp/netsuite.json', 'w') as oj:
+	oj.write(json.dumps(data, default=str, indent=2))
 
 # There are also generator methods to iterate over potentially large lists
 for c in nc.currencies.get_all_generator():
