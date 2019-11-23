@@ -9,3 +9,9 @@ class Currencies(ApiBase):
 
     def get_all(self):
         return self._get_all()
+
+    def get_all_generator(self, page_size=20):
+        """
+        Returns a generator which is more efficient memory-wise
+        """
+        return self._get_all_generator()

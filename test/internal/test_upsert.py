@@ -62,6 +62,7 @@ def test_upsert_vendor_bill(ns):
     bill['class'] = class_ref
     bill['location'] = loc_ref
     bill['entity'] = vendor_ref
+    logger.info('upserting bill %s', bill)
     record_ref = ns.upsert(bill)
     logger.debug('record_ref = %s', record_ref)
     assert record_ref['externalId'] == '1234', 'External ID does not match'

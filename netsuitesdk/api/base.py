@@ -15,7 +15,7 @@ class ApiBase:
     def get_all(self):
         return list(self.get_all_generator())
 
-    def get_all_generator(self, page_size=100):
+    def get_all_generator(self, page_size=20):
         """
         Returns a generator which is more efficient memory-wise
         """
@@ -24,7 +24,10 @@ class ApiBase:
     def get(self, internalId=None, externalId=None) -> OrderedDict:
         return self._get(internalId=internalId, externalId=externalId)
 
-    def post(self, data):
+    def get_ref(self, internalId=None, externalId=None) -> OrderedDict:
+        return self._serialize(self.ns_client.RecordRef(type=self.type_name.lower(), internalId=internalId, externalId=externalId))
+
+    def post(self, data) -> OrderedDict:
         raise NotImplementedError('post method not implemented')
 
     def _serialize(self, record) -> OrderedDict:
@@ -67,6 +70,11 @@ class ApiBase:
         records = self.ns_client.getAll(recordType=self.type_name)
         return self._serialize_array(records)
     
+    def _get_all_generator(self) -> List[OrderedDict]:
+        res = self._get_all()
+        for r in res:
+            yield r
+
     def _get(self, internalId=None, externalId=None) -> OrderedDict:
         record = self.ns_client.get(recordType=self.type_name, internalId=internalId, externalId=externalId)
         return self._serialize(record=record)

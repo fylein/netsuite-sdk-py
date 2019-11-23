@@ -25,3 +25,20 @@ class VendorBills(ApiBase):
         # TODO: go over all the pages
         return self._serialize_array(paginated_search.records)
     
+    def post(self, data) -> OrderedDict:
+        assert data['externalId'], 'missing external id'
+        vb = self.ns_client.VendorBill(externalId=data['externalId'])
+        expense_list = []
+        for eod in data['expenseList']:
+            vbe = self.ns_client.VendorBillExpense(**eod)
+            expense_list.append(vbe)
+        
+        vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
+        vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
+        vb['memo'] = data['memo']
+        vb['class'] = self.ns_client.RecordRef(**(data['class']))
+        vb['location'] = self.ns_client.RecordRef(**(data['location']))
+        vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
+        logger.debug('able to create vb = %s', vb)
+        res = self.ns_client.upsert(vb)
+        return self._serialize(res)
