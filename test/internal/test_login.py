@@ -5,10 +5,11 @@ import time
 import pytest
 from netsuitesdk.internal.client import NetSuiteClient
 from netsuitesdk.internal.utils import PaginatedSearch
+from netsuitesdk.internal.exceptions import NetSuiteLoginError
 
 logger = logging.getLogger(__name__)
 
-def test_login():
+def test_login_disallowed():
     """
     Test if login method is supported. We will not use this often.
     """
@@ -18,8 +19,6 @@ def test_login():
     NS_ACCOUNT = os.getenv("NS_ACCOUNT")
     NS_APPID = os.getenv("NS_APPID")
     ns = NetSuiteClient(account=NS_ACCOUNT)
-    ns.login(email=NS_EMAIL, password=NS_PASSWORD, role=NS_ROLE, application_id=NS_APPID)
-    type_name = 'Account'
-    paginated_search = PaginatedSearch(client=ns, type_name=type_name, pageSize=20)
-    assert len(paginated_search.records) > 0, f'There are no records of type {type_name}'
-    logger.debug('record = %s', str(paginated_search.records[0]))
+    with pytest.raises(NetSuiteLoginError) as ex:
+        ns.login(email=NS_EMAIL, password=NS_PASSWORD, role=NS_ROLE, application_id=NS_APPID)
+    assert 'Integration blocked' in str(ex.value), 'credentials are allowing login - this is not recommended'

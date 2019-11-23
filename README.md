@@ -5,13 +5,11 @@ Netsuite-sdk-py is a Python SDK using the SOAP client library zeep(https://pytho
 
 	$ pip install netsuitesdk 
 
-Remark: This python NetSuite SDK uses the SOAP/WSDL library [Zeep](https://python-zeep.readthedocs.io/en/master/ "Zeep") which should automatically be installed when running above pip-command. Otherwise you can run `$ pip install zeep` first.
-
 ## Get Started
 
 There are two ways to access a NetSuite account via web services: 
-- Use token-based auth (TBA) (within each request). This is preferred.
-- Use email, password, role and account id to login and start a session
+- Use token-based auth (TBA) (within each request). This is the mechanism supported by this SDK.
+- Use email, password, role and account id to login and start a session. This is not supported by this SDK
 
 ### Token-based Auth
 
@@ -20,7 +18,6 @@ First, setup TBA credentials using environment variables.
 ```
 # TBA credentials
 export NS_ACCOUNT=xxxx
-export NS_APPID=xxxx
 export NS_CONSUMER_KEY=xxxx
 export NS_CONSUMER_SECRET=xxxx
 export NS_TOKEN_KEY=xxxx
@@ -33,32 +30,42 @@ The following snippet shows how to use TBA to initialize the SDK.
 ```python
 import os
 
-from netsuitesdk import NetSuiteClient
+from netsuitesdk import NetSuiteConnection
 
 def connect_tba():
-    """
-    Returns: (ns, headers)
-    """
     NS_ACCOUNT = os.getenv('NS_ACCOUNT')
     NS_CONSUMER_KEY = os.getenv('NS_CONSUMER_KEY')
     NS_CONSUMER_SECRET = os.getenv('NS_CONSUMER_SECRET')
     NS_TOKEN_KEY = os.getenv('NS_TOKEN_KEY')
     NS_TOKEN_SECRET = os.getenv('NS_TOKEN_SECRET')
-    NS_APPID = os.getenv('NS_APPID')
-    ns = NetSuiteClient(account=NS_ACCOUNT)
-    ns.connect_tba(consumer_key=NS_CONSUMER_KEY, consumer_secret=NS_CONSUMER_SECRET,
-                                        token_key=NS_TOKEN_KEY, token_secret=NS_TOKEN_SECRET, signature_algorithm='HMAC-SHA1')
-    return ns
+    nc = NetSuiteConnection(account=NS_ACCOUNT, consumer_key=NS_CONSUMER_KEY, consumer_secret=NS_CONSUMER_SECRET,                   token_key=NS_TOKEN_KEY, token_secret=NS_TOKEN_SECRET)
+    return nc
 
-ns = client_tba()
+nc = connect_tba()
 
-# Use the client to access various parts of NS
+# Supported get_all operations - they all returned List[OrderedDict]
+nc.accounts.get_all()
+nc.classifications.get_all()
+nc.currencies.get_all()
+nc.departments.get_all()
+nc.locations.get_all()
+nc.vendors.get_all()
+nc.vendor_bills.get_all()
 
-ns.logout()
+# There are also generator methods to iterate over potentially large lists
+for c in nc.currencies.get_all_generator():
+    print(c)
+
+# Get a specific object
+nc.currencies.get(internalId='1')
+
+# Post operation is only supported on vendor_bills currently (see test_vendor_bills.py on how to construct vendor bill)
+vb = {...}
+nc.vendor_bills.post(vb)
 
 ```
 
-### Password-based Auth
+<!-- ### Password-based Auth
 
 Password-based auth is less preferred. You can set the following environment variables for convenience:
 
@@ -93,7 +100,7 @@ ns = connect_password()
 # Do things with ns..
 
 ns.logout()
-```
+``` -->
 
 ### Remarks and possible errors regarding authentication
 **Note:** NetSuite requires two-factor authentication (2FA) for
@@ -107,7 +114,7 @@ For more information about NetSuite authentication, see:
 	(https://docs.oracle.com/cloud/latest/netsuitecs_gs/NSATH/NSATH.pdf)
 
 
-### Get Request
+<!-- ### Get Request
 A basic example (`ns` is a reference to a `NetSuiteClient` instance):
 ```python
 vendor = ns.get('vendor', internalId=ref.internalId)
@@ -145,7 +152,7 @@ Basic example(`ns` is a reference to a `NetSuiteClient` instance):
 customer1 = ns.Customer(externalId='customer', email='test1@example.com')
 customer2 = ns.Customer(externalId='another_customer', email='test2@example.com')
 ns.upsertList(records=[customer1, customer2])
-```
+``` -->
 
 
 ## Integration Tests
@@ -154,19 +161,10 @@ To run integration tests, you will set both login and TBA credentials for an act
 ```
 # TBA credentials
 export NS_ACCOUNT=xxxx
-export NS_APPID=xxxx
 export NS_CONSUMER_KEY=xxxx
 export NS_CONSUMER_SECRET=xxxx
 export NS_TOKEN_KEY=xxxx
 export NS_TOKEN_SECRET=xxxx
-
-# Password credentials
-export NS_EMAIL=xxx
-export NS_PASSWORD=xxxx
-export NS_ROLE=xxxx
-export NS_ACCOUNT=xxxx
-export NS_APPID=xxxxx
-
 
 python -m pytest test/integration
 ```

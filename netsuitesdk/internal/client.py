@@ -225,7 +225,7 @@ class NetSuiteClient:
                 raise exc
         except Fault as fault:
             exc = NetSuiteLoginError(str(fault), code=fault.code)
-            self.logger.error(str(exc))
+#            self.logger.error(str(exc))
             raise exc from None
 
     def _generate_token_passport(self):
@@ -323,7 +323,7 @@ class NetSuiteClient:
                                                     msg=detail['message']),
                 code=detail['code']
         )
-        self.logger.error(str(exc))
+#        self.logger.error(str(exc))
         return exc
 
     def _build_soap_headers(self, include_search_preferences: bool = False):
@@ -529,128 +529,34 @@ class NetSuiteClient:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
             raise exc
 
-    def upsertList(self, records):
-        """
-        Add objects of type recordType with given externalId..
-        If a record of specified type with matching externalId already
-        exists, it is updated.
+    # def upsertList(self, records):
+    #     """
+    #     Add objects of type recordType with given externalId..
+    #     If a record of specified type with matching externalId already
+    #     exists, it is updated.
 
-        Usage example:
-            customer1 = self.Customer(externalId='customer', email='test1@example.com')
-            customer2 = self.Customer(externalId='another_customer', email='test2@example.com')
-            self.upsertList(records=[customer1, customer2])
+    #     Usage example:
+    #         customer1 = self.Customer(externalId='customer', email='test1@example.com')
+    #         customer2 = self.Customer(externalId='another_customer', email='test2@example.com')
+    #         self.upsertList(records=[customer1, customer2])
 
-        :param list[CompoundValue] records: the records to be created or updated
-        :return: a reference to the newly created or updated records
-        :rtype: list[CompoundValue]
-        """
+    #     :param list[CompoundValue] records: the records to be created or updated
+    #     :return: a reference to the newly created or updated records
+    #     :rtype: list[CompoundValue]
+    #     """
 
-        response = self.request('upsertList', record=records)
-        responses = response.body.writeResponse
-        record_refs = []
-        for response in responses:
-            status = response.status
-            if status.isSuccess:
-                record_ref = response['baseRef']
-                self.logger.debug('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
-                        type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
-                record_refs.append(record_ref)
-            else:
-                exc = self._request_error('upsertList', detail=status['statusDetail'][0])
-                has_failures = True
-                raise exc
-        return record_refs
-
-    # TODO: remove these
-    ######## Utility functions ########
-
-    def to_json(self, record, include_none_values=False):
-        """ Convert a netsuite record (e.g. as
-        returned from `get`) into a dictionary """
-
-        if include_none_values:
-            return record.__values__
-        values = {}
-        for name, value in record.__values__.items():
-            if value is not None:
-                values[name] = value
-        return values
-
-    def print_values(self, record, include_none_values=False):
-        """
-        :param CompoundValue record: the record whose values should be printed
-        :param bool include_none_values: if True, also None values will be printed
-        """
-
-        for key, value in self.to_json(record, include_none_values=include_none_values).items():
-            print('{}: {}'.format(key, str(value)))
-
-    def print_records(self, records, print_func=None):
-        if print_func is None:
-            print_func = self.print_values
-        for record in records:
-            print_func(record)
-            print('-'*15)
-
-    def paginated_search(self, type_name, basic_search=None, page_size=None, print_func=None):
-        """
-        Uses `PaginatedSearch` (defined in utils.py) which in turn uses
-        `NetSuiteClient.search` to perform a search on the NetSuite type `type_name`
-        and returns a PaginatedSearch object containing the search results in
-        its attribute `records`.
-
-        :param str type_name: name of the type the search is performed on, e.g. 'Vendor'
-        :param BasicSearch basic_search: set this to perform basic filtering
-        """
-
-        paginated_search = PaginatedSearch(client=self,
-                                           type_name=type_name,
-                                           basic_search=basic_search,
-                                           page_size=page_size,
-                                           )
-        print('totalRecords: ', paginated_search.total_records)
-        print('pageSize: ', paginated_search.page_size)
-        print('totalPages: ', paginated_search.total_pages)
-        print('pageIndex: ', paginated_search.page_index)
-        print('results on page: ', paginated_search.num_records)
-        if print_func is None: print_func = self.print_values
-        self.print_records(records=paginated_search.records, print_func=print_func)
-        for i in range(2, paginated_search.total_pages):
-            inp = input('q: quit this view, any other key: next page\n')
-            if inp == 'q':
-                break
-            paginated_search.goto_page(page_index=i)
-            self.print_records(records=paginated_search.records, print_func=print_func)
-
-    def basic_stringfield_search(self, type_name, attribute, value, operator=None):
-        """
-        Searches for an object of type `type_name` whose name contains `value`
-
-        :param str type_name: the name of the NetSuite type to be searched in
-        :param str attribute: the attribute of the type to be used for the search
-        :param str value: the value to be used for the search
-        :param str operator: mode used to search for value, possible:
-                    'is', 'contains', 'doesNotContain',
-                    'doesNotStartWith', 'empty', 'hasKeywords',
-                    'isNot', 'notEmpty', 'startsWith'
-
-        See for example: http://www.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2017_2/schema/search/locationsearchbasic.html?mode=package
-        In general, one can find the possible search attributes for a basic search
-        in the type {type_name}SearchBasic
-        """
-
-        search_cls_name = '{type_name}SearchBasic'.format(type_name=type_name)
-        search_cls = getattr(self, search_cls_name)
-        if operator is None: operator = 'is'
-        string_field = self.SearchStringField(
-                                    searchValue=value,
-                                    operator=operator)
-        basic_search = search_cls()
-        setattr(basic_search, attribute, string_field)
-        result = self.search(basic_search)
-        if result.records:
-            return result.records
-        else:
-            #print('Did not find {type}, {attribute} {operator} {value}'.format(
-            #        type=type_name, attribute=attribute, operator=operator, value=value))
-            return None
+    #     response = self.request('upsertList', record=records)
+    #     responses = response.body.writeResponse
+    #     record_refs = []
+    #     for response in responses:
+    #         status = response.status
+    #         if status.isSuccess:
+    #             record_ref = response['baseRef']
+    #             self.logger.debug('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+    #                     type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
+    #             record_refs.append(record_ref)
+    #         else:
+    #             exc = self._request_error('upsertList', detail=status['statusDetail'][0])
+    #             has_failures = True
+    #             raise exc
+    #     return record_refs
