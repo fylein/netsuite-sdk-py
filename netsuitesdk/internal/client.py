@@ -547,7 +547,6 @@ class NetSuiteClient:
 
         response = self.request('upsertList', record=records)
         responses = response.body.writeResponse
-        has_failures = False
         record_refs = []
         for response in responses:
             status = response.status
@@ -562,6 +561,7 @@ class NetSuiteClient:
                 raise exc
         return record_refs
 
+    # TODO: remove these
     ######## Utility functions ########
 
     def to_json(self, record, include_none_values=False):

@@ -6,3 +6,6 @@ logger = logging.getLogger(__name__)
 class Currencies(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Currency')
+
+    def get_all(self):
+        return self._get_all()

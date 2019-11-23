@@ -1,6 +1,9 @@
 import zeep
 import logging
-from typing import Dict
+from collections import OrderedDict
+from netsuitesdk.internal.utils import PaginatedSearch
+from typing import List
+
 logger = logging.getLogger(__name__)
  
  # TODO: introduce arg and return types
@@ -10,37 +13,37 @@ class ApiBase:
         self.type_name = type_name
 
     def get_all(self):
-        return self._get_all()
+        return self._search_all()
 
-    def get(self, external_id=None, internal_id=None) -> Dict:
-        return self._get(external_id=external_id, internal_id=internal_id)
+    def get(self, internalId=None, externalId=None) -> OrderedDict:
+        return self._get(internalId=internalId, externalId=externalId)
 
     def post(self, data):
         raise NotImplementedError('post method not implemented')
 
-    def _serialize(self, record) -> Dict:
+    def _serialize(self, record) -> OrderedDict:
         """
         record: single record
         Returns a dict
         """
         return zeep.helpers.serialize_object(record)
 
-    def _serialize_array(self, records):
+    def _serialize_array(self, records) -> List[OrderedDict]:
         """
         records: a list of records
         Returns an array of dicts
         """
         return zeep.helpers.serialize_object(records)
 
-    def _search_all(self):
+    def _search_all(self) -> List[OrderedDict]:
         paginated_search = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=20)
         # TODO: go over all the pages
         return self._serialize_array(paginated_search.records)
 
-    def _get_all(self):
-        records = ns.getAll(recordType=self.type_name)
+    def _get_all(self) -> List[OrderedDict]:
+        records = self.ns_client.getAll(recordType=self.type_name)
         return self._serialize_array(records)
     
-    def _get(self, internal_id=None, external_id=None):
-        record = self.ns_client.get(recordType=self.type_name, internalId=internal_id, externalId=external_id)
+    def _get(self, internalId=None, externalId=None) -> OrderedDict:
+        record = self.ns_client.get(recordType=self.type_name, internalId=internalId, externalId=externalId)
         return self._serialize(record=record)
