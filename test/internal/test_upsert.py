@@ -1,4 +1,4 @@
-from netsuitesdk.zeep.utils import PaginatedSearch
+from netsuitesdk.internal.utils import PaginatedSearch
 import logging
 import pytest
 import zeep

@@ -2,7 +2,7 @@ import logging
 import os
 
 import pytest
-from netsuitesdk.zeep.client import NetSuiteClient
+from netsuitesdk.internal.client import NetSuiteClient
 
 logger = logging.getLogger(__name__)
 

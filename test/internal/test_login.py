@@ -3,8 +3,8 @@ import os
 import time
 
 import pytest
-from netsuitesdk.zeep.client import NetSuiteClient
-from netsuitesdk.zeep.utils import PaginatedSearch
+from netsuitesdk.internal.client import NetSuiteClient
+from netsuitesdk.internal.utils import PaginatedSearch
 
 logger = logging.getLogger(__name__)
 

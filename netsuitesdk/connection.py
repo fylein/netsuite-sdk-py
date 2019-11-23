@@ -1,5 +1,5 @@
 from .api import *
-from .zeep.client import NetSuiteClient
+from .internal.client import NetSuiteClient
 
 class NetSuiteConnection:
     def __init__(account, consumer_key, consumer_secret, token_key, token_secret):

@@ -1,5 +1,5 @@
 from .connection import NetSuiteConnection
-from .zeep.exceptions import *
+from .internal.exceptions import *
 
 
 __all__ = [
