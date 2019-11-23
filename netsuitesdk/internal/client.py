@@ -20,7 +20,7 @@ from zeep.exceptions import LookupError as ZeepLookupError
 from .constants import *
 from .exceptions import *
 from .netsuite_types import *
-from .utils import User, PaginatedSearch
+from .utils import PaginatedSearch
 
 class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
@@ -84,7 +84,6 @@ class NetSuiteClient:
 
         self._app_info = None
         self._is_authenticated = False
-        self._user = None
         self.set_search_preferences()
 
     def set_search_preferences(self, body_fields_only: bool = True, page_size: int = 5, return_search_columns: bool = False):
@@ -211,11 +210,6 @@ class NetSuiteClient:
             )
             if response.status.isSuccess:
                 self._is_authenticated = True
-                logged_in_role = self._log_roles(response)
-                self._user = User(name=response.userId['name'],
-                                  internalId=response.userId['internalId'],
-                                  wsRole=logged_in_role)
-                self.logger.debug("User {} logged in successfully.".format(str(self._user)))
                 return response
             else:
                 statusDetail = response.status['statusDetail'][0]
@@ -225,7 +219,6 @@ class NetSuiteClient:
                 raise exc
         except Fault as fault:
             exc = NetSuiteLoginError(str(fault), code=fault.code)
-#            self.logger.error(str(exc))
             raise exc from None
 
     def _generate_token_passport(self):
@@ -277,26 +270,6 @@ class NetSuiteClient:
         self._token_secret = token_secret
         self._signature_algorithm = signature_algorithm
 
-    def _log_roles(self, response):
-        roles = response.wsRoleList['wsRole']
-        self._roles = []
-        logged_in_role = None
-        for role in roles:
-            record_ref = self.RecordRef(name=role['role'].name,
-                                        internalId=role['role'].internalId)
-            wsRole = self.WsRole(
-                        role=record_ref,
-                        isDefault=role['isDefault'],
-                        isInactive=role['isInactive'],
-                        isLoggedInRole=role['isLoggedInRole']
-                    )
-            self._roles.append(wsRole)
-            if wsRole.isLoggedInRole:
-                logged_in_role = wsRole
-        self.logger.debug('There are {} user roles: {}'.format(len(self._roles),
-            ', '.join(['{}({})'.format(role.role.name, role.role.internalId) for role in self._roles])))
-        return logged_in_role
-
     @property
     def logged_in(self):
         return self._is_authenticated
@@ -306,8 +279,6 @@ class NetSuiteClient:
             return
         response = self._client.service.logout()
         self._is_authenticated = False
-        self.logger.debug("User {user} was logged out.".format(user=str(self._user)))
-        self._user = None
         self._consumer_key = None
         self._consumer_secret = None
         self._token_key = None

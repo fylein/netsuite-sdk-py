@@ -1,33 +1,3 @@
-"""
-    :class:`User`: Represents a NetSuite user who is logged in
-        via the NetSuiteClient class.
-
-    :class:`PaginatedSearch`: utility class that can be used to perform a search.
-"""
-
-class User:
-
-    def __init__(self, name, internalId, wsRole):
-        """
-        The User class represents a NetSuite user who is logged in
-        via the NetSuiteClient class.
-
-        :param str name: the user name
-        :param int internalId: the id of the user
-        :param WsRole wsRole: has attributes `role`(containing name
-                and internalId of the role), `isDefault`, `isInactive` and `isLoggedInRole`
-        """
-
-        self.name = name
-        self.internalId = internalId
-        self.wsRole = wsRole
-
-    def __str__(self):
-        if self.wsRole is None:
-            return self.name
-        return '{}({})'.format(self.name, self.wsRole.role.name)
-
-
 class PaginatedSearch:
 
     default_page_size = 20

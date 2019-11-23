@@ -47,6 +47,6 @@ class VendorBills(ApiBase):
             vb['department'] = self.ns_client.RecordRef(**(data['department']))
 
         vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
-        logger.info('able to create vb = %s', vb)
+        logger.debug('able to create vb = %s', vb)
         res = self.ns_client.upsert(vb)
         return self._serialize(res)
