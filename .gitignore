@@ -110,3 +110,4 @@ venv.bak/
 test.py
 
 make_mock.py
+private/
