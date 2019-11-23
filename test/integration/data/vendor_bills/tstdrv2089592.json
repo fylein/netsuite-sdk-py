@@ -1,0 +1,87 @@
+{
+    "externalId": "1237",
+    "currency": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "currency"
+    },
+    "expenseList": [
+        {
+            "account": {
+                "name": null,
+                "internalId": 16,
+                "externalId": null,
+                "type": "account"
+            },
+            "amount": 10.0,
+            "department": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "department"
+            },
+            "class": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "classification"
+            },
+            "location": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "location"
+            },
+            "memo": "Kuch lete kyun nahin"
+        },
+        {
+            "account": {
+                "name": null,
+                "internalId": 15,
+                "externalId": null,
+                "type": "account"
+            },
+            "amount": 20.0,
+            "department": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "department"
+            },
+            "class": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "classification"
+            },
+            "location": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "location"
+            },
+            "memo": "Humdard ka tonic"
+
+        }
+    ],
+    "memo": "Fyle ka Bill",
+    "class": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "classification"
+    },
+    "location": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "location"
+    },
+    "entity": {
+        "name": null,
+        "internalId": "-100",
+        "externalId": null,
+        "type": "vendor"
+    }
+}

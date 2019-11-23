@@ -1,0 +1,79 @@
+{
+    "externalId": "1237",
+    "currency": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "currency"
+    },
+    "expenseList": [
+        {
+            "account": {
+                "name": null,
+                "internalId": "355",
+                "externalId": null,
+                "type": "account"
+            },
+            "amount": 10.0,
+            "department": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "department"
+            },
+            "class": {
+                "name": null,
+                "internalId": 1,
+                "externalId": null,
+                "type": "classification"
+            },
+            "location": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "location"
+            },
+            "memo": "Expense ID 20190101"
+        },
+        {
+            "account": {
+                "name": null,
+                "internalId": "355",
+                "externalId": null,
+                "type": "account"
+            },
+            "amount": 20.0,
+            "department": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "department"
+            },
+            "class": {
+                "name": null,
+                "internalId": 23,
+                "externalId": null,
+                "type": "classification"
+            },
+            "location": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "location"
+            }
+        }
+    ],
+    "memo": "Created by Fyle Integration",
+    "department": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "department"
+    },
+    "entity": {
+        "name": null,
+        "internalId": 1560159,
+        "externalId": null,
+        "type": "vendor"
+    }
+}
