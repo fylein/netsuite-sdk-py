@@ -13,7 +13,13 @@ class ApiBase:
         self.type_name = type_name
 
     def get_all(self):
-        return self._search_all()
+        return list(self.get_all_generator())
+
+    def get_all_generator(self, page_size=100):
+        """
+        Returns a generator which is more efficient memory-wise
+        """
+        return self._search_all_generator(page_size=page_size)
 
     def get(self, internalId=None, externalId=None) -> OrderedDict:
         return self._get(internalId=internalId, externalId=externalId)
@@ -35,10 +41,27 @@ class ApiBase:
         """
         return zeep.helpers.serialize_object(records)
 
-    def _search_all(self) -> List[OrderedDict]:
-        paginated_search = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=20)
-        # TODO: go over all the pages
-        return self._serialize_array(paginated_search.records)
+    def _search_all_generator(self, page_size) -> List[OrderedDict]:
+        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)
+        if ps.num_records == 0:
+            return
+
+        num_pages = ps.total_pages
+        logger.debug('total pages = %d, records in page = %d', ps.total_pages, ps.num_records)
+        logger.debug('going to page %d', 0)
+
+        num_records = ps.num_records
+        for r in range(0, num_records):
+            record = ps.records[r]
+            yield self._serialize(record=record)
+
+        for p in range(1, num_pages):
+            logger.debug('going to page %d', p)
+            ps.goto_page(p)
+            num_records = ps.num_records
+            for r in range(0, num_records):
+                record = ps.records[r]
+                yield self._serialize(record=record)
 
     def _get_all(self) -> List[OrderedDict]:
         records = self.ns_client.getAll(recordType=self.type_name)
