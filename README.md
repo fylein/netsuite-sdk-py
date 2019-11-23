@@ -1,5 +1,8 @@
 # netsuite-sdk-py
-Netsuite-sdk-py is a Python SDK using the SOAP client library zeep(https://python-zeep.readthedocs.io/en/master/) for accessing NetSuite resources via the NetSuite SOAP web service SuiteTalk(http://www.netsuite.com/portal/platform/developer/suitetalk.shtml).
+
+*Warning*: This SDK is under active development and some of the contracts will likely evolve in the next couple of weeks. It is not yet production-ready. If you want to collaborate on this, please mail siva@fyle.in
+
+Netsuite-sdk-py is a Python SDK. It uses the SOAP client library zeep(https://python-zeep.readthedocs.io/en/master/) for accessing NetSuite resources via the NetSuite SOAP web service SuiteTalk(http://www.netsuite.com/portal/platform/developer/suitetalk.shtml), but hides the complexity from the SDK user.
 
 ## Installation
 
@@ -201,3 +204,7 @@ We want to maintain code coverage of more than 95% for this project at all times
 Documentation can be found in the docs/_build/html folder (open index.html) and soon in readthedocs.
 For contributors: to build the documentation (cd to /docs and) run `make buildapi`
 as well as `make html`
+
+## Contributions
+
+This SDK is under active development. Once the contracts are well settled, we will be accepting contributions. Please mail siva@fyle.in if you wish to collaborate on this.
