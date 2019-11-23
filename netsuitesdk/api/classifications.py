@@ -1,7 +1,7 @@
 from .base import ApiBase
 import logging
 
-logger = logging.basicConfig(__name__)
+logger = logging.getLogger(__name__)
 
 class Classifications(ApiBase):
     def __init__(self, ns_client):
