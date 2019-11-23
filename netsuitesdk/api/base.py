@@ -44,33 +44,36 @@ class ApiBase:
         """
         return zeep.helpers.serialize_object(records)
 
-    def _search_all_generator(self, page_size) -> List[OrderedDict]:
-        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)
-        if ps.num_records == 0:
+    def _paginated_search_to_generator(self, paginated_search):
+        if paginated_search.num_records == 0:
             return
 
-        num_pages = ps.total_pages
-        logger.debug('total pages = %d, records in page = %d', ps.total_pages, ps.num_records)
+        num_pages = paginated_search.total_pages
+        logger.debug('total pages = %d, records in page = %d', paginated_search.total_pages, paginated_search.num_records)
         logger.debug('going to page %d', 0)
 
-        num_records = ps.num_records
+        num_records = paginated_search.num_records
         for r in range(0, num_records):
-            record = ps.records[r]
+            record = paginated_search.records[r]
             yield self._serialize(record=record)
 
         for p in range(1, num_pages):
             logger.debug('going to page %d', p)
-            ps.goto_page(p)
-            num_records = ps.num_records
+            paginated_search.goto_page(p)
+            num_records = paginated_search.num_records
             for r in range(0, num_records):
-                record = ps.records[r]
+                record = paginated_search.records[r]
                 yield self._serialize(record=record)
+
+    def _search_all_generator(self, page_size):
+        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)
+        return self._paginated_search_to_generator(paginated_search=ps)
 
     def _get_all(self) -> List[OrderedDict]:
         records = self.ns_client.getAll(recordType=self.type_name)
         return self._serialize_array(records)
     
-    def _get_all_generator(self) -> List[OrderedDict]:
+    def _get_all_generator(self):
         res = self._get_all()
         for r in res:
             yield r
