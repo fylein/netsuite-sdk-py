@@ -1,13 +1,9 @@
-from .client import NetSuiteClient
 from .connection import NetSuiteConnection
-from .utils import PaginatedSearch
-from .exceptions import *
+from .zeep.exceptions import *
 
 
 __all__ = [
-#    'NetSuiteClient',
-    'NetSuiteConnection',
-    'PaginatedSearch',
+    'NetSuiteConnection'
     'NetSuiteError',
     'NetSuiteLoginError',
     'NetSuiteRequestError',
