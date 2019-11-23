@@ -10,7 +10,7 @@
         {
             "account": {
                 "name": null,
-                "internalId": "355",
+                "internalId": 200,
                 "externalId": null,
                 "type": "account"
             },
@@ -38,11 +38,11 @@
         {
             "account": {
                 "name": null,
-                "internalId": "355",
+                "internalId": 198,
                 "externalId": null,
                 "type": "account"
             },
-            "amount": 20.0,
+            "amount": 15.0,
             "department": {
                 "name": null,
                 "internalId": "1",
@@ -60,7 +60,36 @@
                 "internalId": "1",
                 "externalId": null,
                 "type": "location"
-            }
+            },
+            "memo": "Expense ID 20190102"
+        },
+        {
+            "account": {
+                "name": null,
+                "internalId": 199,
+                "externalId": null,
+                "type": "account"
+            },
+            "amount": 5.0,
+            "department": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "department"
+            },
+            "class": {
+                "name": null,
+                "internalId": 23,
+                "externalId": null,
+                "type": "classification"
+            },
+            "location": {
+                "name": null,
+                "internalId": "1",
+                "externalId": null,
+                "type": "location"
+            },
+            "memo": "Expense ID 20190103"
         }
     ],
     "memo": "Created by Fyle Integration",
