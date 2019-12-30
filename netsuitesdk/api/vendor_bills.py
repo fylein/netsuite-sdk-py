@@ -34,8 +34,12 @@ class VendorBills(ApiBase):
         
         vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
         vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
+
         if 'memo' in data:
             vb['memo'] = data['memo']
+
+        if 'name' in data:
+            vb['name'] = data['name']
 
         if 'class' in data:
             vb['class'] = self.ns_client.RecordRef(**(data['class']))
