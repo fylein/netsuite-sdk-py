@@ -38,8 +38,8 @@ class VendorBills(ApiBase):
         if 'memo' in data:
             vb['memo'] = data['memo']
 
-        if 'name' in data:
-            vb['name'] = data['name']
+        if 'tranId' in data:
+            vb['tranId'] = data['tranId']
 
         if 'class' in data:
             vb['class'] = self.ns_client.RecordRef(**(data['class']))
