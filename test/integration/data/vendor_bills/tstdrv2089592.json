@@ -83,5 +83,11 @@
         "internalId": "-100",
         "externalId": null,
         "type": "vendor"
+    },
+    "department": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "department"
     }
 }

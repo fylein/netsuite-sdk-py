@@ -26,9 +26,8 @@ class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
 
-    WSDL_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
-
-    DEFAULT_WSDL_URL = 'https://webservices.netsuite.com/wsdl/v2017_2_0/netsuite.wsdl'
+    WSDL_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/wsdl/v2019_1_0/netsuite.wsdl'
+    DATACENTER_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/services/NetSuitePort_2019_1'
 
     _search_preferences = None
     _passport = None
@@ -42,29 +41,25 @@ class NetSuiteClient:
     _app_id = None
 
 
-    def __init__(self, account=None, wsdl_url=None, caching=True, caching_timeout=2592000):
+    def __init__(self, account=None, caching=True, caching_timeout=2592000):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
         instance.
 
         :param str account_id: Account ID to connect to
-        :param str wsdl_url: WSDL url of the Netsuite SOAP service.
-                            If None, defaults to DEFAULT_WSDL_URL
         :param str caching: If caching = 'sqlite', setup Sqlite caching
         :param int caching_timeout: Timeout in seconds for caching.
                             If None, defaults to 30 days
         """
         self.logger = logging.getLogger(self.__class__.__name__)
+        assert account, 'Invalid account'
         assert '-' not in account, 'Account cannot have hyphens, it is likely an underscore'
         self._account = account
-        if wsdl_url:
-            self._wsdl_url = wsdl_url
-        else:
-            if account:
-                self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'))
-            else:
-                self._wsdl_url = self.DEFAULT_WSDL_URL
+
+        self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'))
+        self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'))
+
         if caching:
             path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache.db')
             timeout = caching_timeout
@@ -75,6 +70,9 @@ class NetSuiteClient:
 
         # Initialize the Zeep Client
         self._client = Client(self._wsdl_url, transport=transport)
+
+        # default service points to wrong data center. need to create a new service proxy and replace the default one
+        self._service_proxy = self._client.create_service('{urn:platform_2019_1.webservices.netsuite.com}NetSuiteBinding', self._datacenter_url)
 
         # Parse all complex types specified in :const:`~netsuitesdk.netsuite_types.COMPLEX_TYPES`
         # and store them as attributes of this instance. Same for simple types.
@@ -204,7 +202,7 @@ class NetSuiteClient:
             self.logout()
         try:
             self._app_info = self.ApplicationInfo(applicationId=application_id)
-            response = self._client.service.login(
+            response = self._service_proxy.login(
                                 self._passport,
                                 _soapheaders={'applicationInfo': self._app_info}
             )
@@ -277,7 +275,7 @@ class NetSuiteClient:
     def logout(self):
         if not self._is_authenticated:
             return
-        response = self._client.service.logout()
+        response = self._service_proxy.logout()
         self._is_authenticated = False
         self._consumer_key = None
         self._consumer_secret = None
@@ -334,10 +332,10 @@ class NetSuiteClient:
         :return: the request response object
         :rtype: the exact type depends on the request
         """
-        service = getattr(self._client.service, name)
+        method = getattr(self._service_proxy, name)
         # call the service:
         include_search_preferences = (name == 'search')
-        response = service(*args, 
+        response = method(*args, 
                 _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
                 , **kwargs)
         return response
