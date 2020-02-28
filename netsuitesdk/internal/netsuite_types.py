@@ -74,6 +74,11 @@ COMPLEX_TYPES = {
         'VendorBillItemList',
         'VendorPayment',
     ],
+
+    # https://webservices.netsuite.com/xsd/lists/v2017_2_0/employees.xsd
+    'ns34': [
+        'EmployeeSearch',
+    ],
 }
 
 SIMPLE_TYPES = {
