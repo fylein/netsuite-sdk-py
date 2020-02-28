@@ -41,6 +41,7 @@ COMPLEX_TYPES = {
         'LocationSearchBasic',
         'TransactionSearchBasic',
         'VendorSearchBasic',
+        'EmployeeSearchBasic'
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -79,6 +80,14 @@ COMPLEX_TYPES = {
     'ns34': [
         'EmployeeSearch',
     ],
+
+    # urn:employees_2017_2.transactions.webservices.netsuite.com
+    # https://webservices.netsuite.com/xsd/transactions/v2017_2_0/employees.xsd
+    'ns38': [
+        'ExpenseReport',
+        'ExpenseReportExpense',
+        'ExpenseReportExpenseList'
+    ]
 }
 
 SIMPLE_TYPES = {

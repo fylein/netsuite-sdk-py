@@ -3,6 +3,7 @@ from .api.classifications import Classifications
 from .api.departments import Departments
 from .api.currencies import Currencies
 from .api.employees import Employees
+from .api.expense_reports import ExpenseReports
 from .api.locations import Locations
 from .api.vendor_bills import VendorBills
 from .api.vendors import Vendors
@@ -20,3 +21,4 @@ class NetSuiteConnection:
         self.vendor_bills = VendorBills(ns_client)
         self.vendors = Vendors(ns_client)
         self.employees = Employees(ns_client)
+        self.expense_reports = ExpenseReports(ns_client)
