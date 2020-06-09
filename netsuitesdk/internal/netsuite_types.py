@@ -41,6 +41,7 @@ COMPLEX_TYPES = {
         'LocationSearchBasic',
         'TransactionSearchBasic',
         'VendorSearchBasic',
+        'SubsidiarySearchBasic',
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -57,6 +58,7 @@ COMPLEX_TYPES = {
         'Classification', 'ClassificationSearch',
         'Department', 'DepartmentSearch',
         'Location', 'LocationSearch',
+        'Subsidiary', 'SubsidiarySearch',
         'VendorCategory', 'VendorCategorySearch',
     ],
 

@@ -6,11 +6,18 @@ from .api.locations import Locations
 from .api.vendor_bills import VendorBills
 from .api.vendors import Vendors
 from .internal.client import NetSuiteClient
+from .api.subsidiaries import Subsidiaries
+
 
 class NetSuiteConnection:
     def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret):
         ns_client = NetSuiteClient(account=account)
-        ns_client.connect_tba(consumer_key=consumer_key, consumer_secret=consumer_secret, token_key=token_key, token_secret=token_secret)
+        ns_client.connect_tba(
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            token_key=token_key,
+            token_secret=token_secret
+        )
         self.accounts = Accounts(ns_client)
         self.classifications = Classifications(ns_client)
         self.departments = Departments(ns_client)
@@ -18,3 +25,4 @@ class NetSuiteConnection:
         self.locations = Locations(ns_client)
         self.vendor_bills = VendorBills(ns_client)
         self.vendors = Vendors(ns_client)
+        self.subsidiaries = Subsidiaries(ns_client)
