@@ -5,8 +5,8 @@ from .api.currencies import Currencies
 from .api.locations import Locations
 from .api.vendor_bills import VendorBills
 from .api.vendors import Vendors
-from .internal.client import NetSuiteClient
 from .api.subsidiaries import Subsidiaries
+from .internal.client import NetSuiteClient
 
 
 class NetSuiteConnection:
