@@ -52,6 +52,7 @@ currencies = nc.currencies.get_all()
 locations = nc.locations.get_all()
 departments = nc.departments.get_all()
 classifications = nc.classifications.get_all()
+subsidiaries = nc.subsidiaries.get_all()
 all_accounts = list(itertools.islice(nc.accounts.get_all_generator(), 100))
 accounts = [a for a in all_accounts if a['acctType'] == '_expense']
 vendor_bills = list(itertools.islice(nc.vendor_bills.get_all_generator(), 10))
@@ -64,7 +65,8 @@ data = {
   'locations': locations,
   'currencies': currencies,
   'vendors': vendors,
-  'vendor_bills': vendor_bills
+  'vendor_bills': vendor_bills,
+  'subsidiaries': subsidiaries
 }
 with open('/tmp/netsuite.json', 'w') as oj:
 	oj.write(json.dumps(data, default=str, indent=2))
