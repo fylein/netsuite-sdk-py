@@ -1,0 +1,154 @@
+{
+    "accountingBook": null,
+    "accountingBookDetailList": null,
+    "approved": null,
+    "class": null,
+    "createdDate": null,
+    "createdFrom": null,
+    "currency": {
+        "name": "USD",
+        "internalId": null,
+        "externalId": null,
+        "type": "currency"
+    },
+    "customFieldList": null,
+    "customForm": null,
+    "department": null,
+    "exchangeRate": null,
+    "isBookSpecific": null,
+    "lastModifiedDate": null,
+    "lineList": [
+        {
+            "account": {
+                "name": null,
+                "internalId": "25",
+                "externalId": null,
+                "type": "account"
+            },
+            "department": {
+                "name": null,
+                "internalId": "10",
+                "externalId": null,
+                "type": "department"
+            },
+            "location": {
+                "name": null,
+                "internalId": "2",
+                "externalId": null,
+                "type": "location"
+            },
+            "class": {
+                "name": null,
+                "internalId": null,
+                "externalId": null,
+                "type": "account"
+            },
+            "entity": {
+                "name": null,
+                "internalId": "1648",
+                "externalId": null,
+                "type": "vendor"
+            },
+            "credit": 500,
+            "creditTax": null,
+            "customFieldList": null,
+            "debit": null,
+            "debitTax": null,
+            "eliminate": null,
+            "endDate": null,
+            "grossAmt": null,
+            "line": null,
+            "lineTaxCode": null,
+            "lineTaxRate": null,
+            "memo": "Testing JournalEntry via Fyle SDK 3",
+            "residual": null,
+            "revenueRecognitionRule": null,
+            "schedule": null,
+            "scheduleNum": null,
+            "startDate": null,
+            "tax1Acct": null,
+            "tax1Amt": null,
+            "taxAccount": null,
+            "taxBasis": null,
+            "taxCode": null,
+            "taxRate1": null,
+            "totalAmount": null
+        },
+        {
+            "account": {
+                "name": null,
+                "internalId": "25",
+                "externalId": null,
+                "type": "account"
+            },
+            "department": {
+                "name": null,
+                "internalId": "10",
+                "externalId": null,
+                "type": "department"
+            },
+            "location": {
+                "name": null,
+                "internalId": "2",
+                "externalId": null,
+                "type": "location"
+            },
+            "class": {
+                "name": null,
+                "internalId": null,
+                "externalId": null,
+                "type": "account"
+            },
+            "credit": null,
+            "creditTax": null,
+            "customFieldList": null,
+            "debit": 500,
+            "debitTax": null,
+            "eliminate": null,
+            "endDate": null,
+            "entity": {
+                "name": null,
+                "internalId": "1648",
+                "externalId": null,
+                "type": "vendor"
+            },
+            "grossAmt": null,
+            "line": null,
+            "lineTaxCode": null,
+            "lineTaxRate": null,
+            "memo": "Testing JournalEntry via Fyle SDK 3",
+            "residual": null,
+            "revenueRecognitionRule": null,
+            "schedule": null,
+            "scheduleNum": null,
+            "startDate": null,
+            "tax1Acct": null,
+            "tax1Amt": null,
+            "taxAccount": null,
+            "taxBasis": null,
+            "taxCode": null,
+            "taxRate1": null,
+            "totalAmount": null
+        }
+    ],
+    "location": null,
+    "memo": "JE Testing Fyle SDK 3",
+    "nexus": null,
+    "parentExpenseAlloc": null,
+    "postingPeriod": null,
+    "reversalDate": null,
+    "reversalDefer": null,
+    "reversalEntry": null,
+    "subsidiary": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "subsidiaryTaxRegNum": null,
+    "taxPointDate": null,
+    "toSubsidiary": null,
+    "tranDate": null,
+    "tranId": null,
+    "externalId": "JE_04"
+}
