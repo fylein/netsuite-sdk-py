@@ -1,0 +1,97 @@
+{
+    "nullFieldList": null,
+    "createdDate": null,
+    "lastModifiedDate": null,
+    "status": null,
+    "customForm": null,
+    "account": {
+        "name": null,
+        "internalId": "25",
+        "externalId": null,
+        "type": "account"
+    },
+    "entity": {
+        "name": null,
+        "internalId": "1648",
+        "externalId": null,
+        "type": "vendor"
+    },
+    "expenseReportCurrency": {
+        "name": "USD",
+        "internalId": null,
+        "externalId": null,
+        "type": "currency"
+    },
+    "expenseReportExchangeRate": null,
+    "subsidiary": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "taxPointDate": null,
+    "tranId": null,
+    "acctCorpCardExp": null,
+    "postingPeriod": null,
+    "tranDate": null,
+    "dueDate": null,
+    "approvalStatus": null,
+    "total": null,
+    "nextApprover": null,
+    "advance": null,
+    "tax1Amt": null,
+    "amount": null,
+    "memo": "Testing ExpenseReport using Fyle SDK",
+    "complete": null,
+    "supervisorApproval": null,
+    "accountingApproval": null,
+    "useMultiCurrency": null,
+    "tax2Amt": null,
+    "department": null,
+    "class": null,
+    "location": null,
+    "expenseList": [
+        {
+            "amount": 100,
+            "category": {
+                "name": null,
+                "internalId": "2",
+                "externalId": null,
+                "type": "account"
+            },
+            "class": null,
+            "corporateCreditCard": null,
+            "currency": {
+                "name": "USD",
+                "internalId": "1",
+                "externalId": null,
+                "type": "currency"
+            },
+            "customer": null,
+            "customFieldList": null,
+            "department": null,
+            "exchangeRate": null,
+            "expenseDate": null,
+            "expMediaItem": null,
+            "foreignAmount": null,
+            "grossAmt": null,
+            "isBillable": null,
+            "isNonReimbursable": null,
+            "line": null,
+            "location": null,
+            "memo": "Testing ExpenseReports using Fyle SDK",
+            "quantity": null,
+            "rate": null,
+            "receipt": null,
+            "refNumber": null,
+            "tax1Amt": null,
+            "taxCode": null,
+            "taxRate1": null,
+            "taxRate2":null
+        }
+    ],
+    "accountingBookDetailList": null,
+    "customFieldList": null,
+    "internalId": null,
+    "externalId": "EXPR_1"
+}

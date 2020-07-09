@@ -9,7 +9,7 @@ def test_get_all(ns, type_name):
     records = ns.getAll(recordType=type_name)
     assert len(records) > 0, f'No records of type {type_name} returned'
 
-@pytest.mark.parametrize('type_name', ['account', 'vendor', 'department', 'location', 'classification', 'subsidiaries'])
+@pytest.mark.parametrize('type_name', ['account', 'vendor', 'department', 'location', 'classification', 'subsidiaries', 'employees'])
 def test_get_all_not_supported(ns, type_name):
     with pytest.raises(zeep.exceptions.Fault) as ex:
         records = ns.getAll(recordType=type_name)

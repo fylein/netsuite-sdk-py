@@ -22,6 +22,9 @@ def get_class(ns):
 def get_vendor(ns):
     return get_record(ns, 'Vendor')
 
+def get_employee(ns):
+    return ns.get(recordType='employee', internalId='1648')
+
 def get_category_account(ns):
     return ns.get(recordType='account', internalId=68)
 
@@ -70,3 +73,37 @@ def test_upsert_vendor_bill(ns):
     bill2 = ns.get(recordType='vendorBill', externalId='1234')
     logger.debug('bill2 = %s', str(bill2))
     assert (29.99 < bill2['userTotal']) and (bill2['userTotal'] < 30.01), 'Bill total is not 30.0'
+
+def test_upsert_expense_report(ns):
+    employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
+    bill_account_ref = ns.RecordRef(type='account', internalId=25)
+    cat_account_ref = ns.RecordRef(type='account', internalId='1')
+    loc_ref = ns.RecordRef(type='location', internalId=get_location(ns).internalId)
+    dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
+    class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)
+    currency_ref = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId)
+    expenses = []
+
+    er = ns.ExpenseReportExpense()
+    er['category'] = cat_account_ref
+    er['amount'] = 10.0
+    er['department'] = dep_ref
+    er['class'] = class_ref
+    er['location'] = loc_ref
+    er['currency'] = currency_ref
+
+    expenses.append(er)
+
+    expense_report = ns.ExpenseReport(externalId='EXPR_1')
+    expense_report['expenseReportCurrency'] = currency_ref  # US dollar
+    expense_report['exchangerate'] = 1.0
+    expense_report['expenseList'] = ns.ExpenseReportExpenseList(expense=expenses)
+    expense_report['memo'] = 'test memo'
+    expense_report['entity'] = employee_ref
+    logger.debug('upserting expense report %s', expense_report)
+    record_ref = ns.upsert(expense_report)
+    logger.debug('record_ref = %s', record_ref)
+    assert record_ref['externalId'] == 'EXPR_1', 'External ID does not match'
+
+    expr = ns.get(recordType='ExpenseReport', externalId='EXPR_1')
+    logger.debug('expense report = %s', str(expr))
