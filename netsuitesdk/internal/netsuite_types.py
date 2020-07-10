@@ -42,6 +42,7 @@ COMPLEX_TYPES = {
         'TransactionSearchBasic',
         'VendorSearchBasic',
         'SubsidiarySearchBasic',
+        'EmployeeSearchBasic',
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -83,6 +84,19 @@ COMPLEX_TYPES = {
         'JournalEntry',
         'JournalEntryLine',
         'JournalEntryLineList',
+    ],
+
+    # https://webservices.netsuite.com/xsd/lists/v2019_2_0/employees.xsd
+    'ns34': [
+        'EmployeeSearch',
+    ],
+
+    # urn:employees_2019_2.transactions.webservices.netsuite.com
+    # https://webservices.netsuite.com/xsd/transactions/v2019_2_0/employees.xsd
+    'ns38': [
+        'ExpenseReport',
+        'ExpenseReportExpense',
+        'ExpenseReportExpenseList',
     ],
 }
 
