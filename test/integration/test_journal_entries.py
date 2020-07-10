@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 def test_get(nc):
     data = next(nc.journal_entries.get_all_generator())
     logger.debug('data = %s', data)
-    print(data)
     assert data, 'get all generator didnt work'
     assert data['internalId'] == '16', f'No object found with internalId'
 
