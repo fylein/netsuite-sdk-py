@@ -7,6 +7,8 @@ from .api.vendor_bills import VendorBills
 from .api.vendors import Vendors
 from .api.subsidiaries import Subsidiaries
 from .api.journal_entries import JournalEntries
+from .api.employees import Employees
+from .api.expense_reports import ExpenseReports
 from .internal.client import NetSuiteClient
 
 
@@ -28,3 +30,5 @@ class NetSuiteConnection:
         self.vendors = Vendors(ns_client)
         self.subsidiaries = Subsidiaries(ns_client)
         self.journal_entries = JournalEntries(ns_client)
+        self.employees = Employees(ns_client)
+        self.expense_reports = ExpenseReports(ns_client)
