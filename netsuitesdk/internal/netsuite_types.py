@@ -43,6 +43,8 @@ COMPLEX_TYPES = {
         'VendorSearchBasic',
         'SubsidiarySearchBasic',
         'EmployeeSearchBasic',
+        'FolderSearchBasic',
+        'FileSearchBasic'
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -97,6 +99,12 @@ COMPLEX_TYPES = {
         'ExpenseReport',
         'ExpenseReportExpense',
         'ExpenseReportExpenseList',
+    ],
+    'ns11': [
+        'FolderSearch',
+        'Folder',
+        'File',
+        'FileSearch'
     ],
 }
 

@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# test_files
+dry_run.py
+
 # cache file
 cache.db
 
