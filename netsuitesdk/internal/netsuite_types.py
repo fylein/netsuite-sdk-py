@@ -18,7 +18,9 @@ COMPLEX_TYPES = {
         'StatusDetail',
         'TokenPassport',
         'TokenPassportSignature',
-        'WsRole'
+        'WsRole',
+        'CustomFieldList',
+        'StringCustomFieldRef'
     ],
 
     # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
