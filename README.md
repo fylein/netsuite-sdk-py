@@ -82,7 +82,7 @@ nc.currencies.get(internalId='1')
 vb = {...}
 nc.vendor_bills.post(vb)
 
-### Upset Files
+### Upsert Files
 file = open('receipt.pdf', 'rb').read()
 
 created_folder = nc.folders.post(
@@ -105,7 +105,6 @@ uploaded_file = nc.files.post({
             }
     }
 )
-
 ```
 
 <!-- ### Password-based Auth
@@ -195,7 +194,6 @@ Basic example(`ns` is a reference to a `NetSuiteClient` instance):
 customer1 = ns.Customer(externalId='customer', email='test1@example.com')
 customer2 = ns.Customer(externalId='another_customer', email='test2@example.com')
 ns.upsertList(records=[customer1, customer2])
-
 ``` -->
 
 
