@@ -9,6 +9,9 @@ __pycache__/
 # test_files
 dry_run.py
 
+# IDEs
+.DS_Store
+
 # cache file
 cache.db
 
