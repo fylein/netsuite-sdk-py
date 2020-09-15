@@ -29,6 +29,18 @@ class VendorBills(ApiBase):
         vb = self.ns_client.VendorBill(externalId=data['externalId'])
         expense_list = []
         for eod in data['expenseList']:
+            if 'customFieldList' in eod and eod['customFieldList']:
+                custom_fields = []
+                for field in eod['customFieldList']:
+                    if field['type'] == 'String':
+                        custom_fields.append(
+                            self.ns_client.StringCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=field['value']
+                            )
+                        )
+                eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             vbe = self.ns_client.VendorBillExpense(**eod)
             expense_list.append(vbe)
         

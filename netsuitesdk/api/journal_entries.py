@@ -25,6 +25,18 @@ class JournalEntries(ApiBase):
         je = self.ns_client.JournalEntry(externalId=data['externalId'])
         line_list = []
         for eod in data['lineList']:
+            if 'customFieldList' in eod and eod['customFieldList']:
+                custom_fields = []
+                for field in eod['customFieldList']:
+                    if field['type'] == 'String':
+                        custom_fields.append(
+                            self.ns_client.StringCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=field['value']
+                            )
+                        )
+                eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             jee = self.ns_client.JournalEntryLine(**eod)
             line_list.append(jee)
 

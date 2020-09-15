@@ -82,6 +82,29 @@ nc.currencies.get(internalId='1')
 vb = {...}
 nc.vendor_bills.post(vb)
 
+### Upsert Files
+file = open('receipt.pdf', 'rb').read()
+
+created_folder = nc.folders.post(
+    {
+        "externalId": 'new-folder',
+        "name": 'Receipts'
+    }
+)
+
+uploaded_file = nc.files.post({
+    "externalId": "receipt 1",
+    "name": 'receipt.pdf',
+    'content': file,
+    'fileType': '_PDF',
+    "folder": {
+                "name": None,
+                "internalId": 695,
+                "externalId": 'new-folder',
+                "type": "folder"
+            }
+    }
+)
 ```
 
 <!-- ### Password-based Auth

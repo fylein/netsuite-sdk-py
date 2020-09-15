@@ -9,6 +9,8 @@ from .api.subsidiaries import Subsidiaries
 from .api.journal_entries import JournalEntries
 from .api.employees import Employees
 from .api.expense_reports import ExpenseReports
+from .api.folders import Folders
+from .api.files import Files
 from .internal.client import NetSuiteClient
 
 
@@ -32,3 +34,5 @@ class NetSuiteConnection:
         self.journal_entries = JournalEntries(ns_client)
         self.employees = Employees(ns_client)
         self.expense_reports = ExpenseReports(ns_client)
+        self.folders = Folders(ns_client)
+        self.files = Files(ns_client)

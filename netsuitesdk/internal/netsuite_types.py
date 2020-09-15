@@ -18,7 +18,9 @@ COMPLEX_TYPES = {
         'StatusDetail',
         'TokenPassport',
         'TokenPassportSignature',
-        'WsRole'
+        'WsRole',
+        'CustomFieldList',
+        'StringCustomFieldRef'
     ],
 
     # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
@@ -43,6 +45,8 @@ COMPLEX_TYPES = {
         'VendorSearchBasic',
         'SubsidiarySearchBasic',
         'EmployeeSearchBasic',
+        'FolderSearchBasic',
+        'FileSearchBasic'
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -97,6 +101,12 @@ COMPLEX_TYPES = {
         'ExpenseReport',
         'ExpenseReportExpense',
         'ExpenseReportExpenseList',
+    ],
+    'ns11': [
+        'FolderSearch',
+        'Folder',
+        'File',
+        'FileSearch'
     ],
 }
 
