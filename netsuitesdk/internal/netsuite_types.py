@@ -59,6 +59,7 @@ COMPLEX_TYPES = {
     # https://webservices.netsuite.com/xsd/lists/v2017_2_0/accounting.xsd
     'ns17': [
         'Account', 'AccountSearch',
+        'ExpenseCategory', 'ExpenseCategorySearch',
         'AccountingPeriod',
         'Classification', 'ClassificationSearch',
         'Department', 'DepartmentSearch',

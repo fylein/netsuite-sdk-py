@@ -11,6 +11,7 @@ from .api.employees import Employees
 from .api.expense_reports import ExpenseReports
 from .api.folders import Folders
 from .api.files import Files
+from .api.expense_categories import ExpenseCategory
 from .internal.client import NetSuiteClient
 
 
@@ -36,3 +37,4 @@ class NetSuiteConnection:
         self.expense_reports = ExpenseReports(ns_client)
         self.folders = Folders(ns_client)
         self.files = Files(ns_client)
+        self.expense_categories = ExpenseCategory(ns_client)
