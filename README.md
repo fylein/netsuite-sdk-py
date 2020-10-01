@@ -42,7 +42,13 @@ def connect_tba():
     NS_CONSUMER_SECRET = os.getenv('NS_CONSUMER_SECRET')
     NS_TOKEN_KEY = os.getenv('NS_TOKEN_KEY')
     NS_TOKEN_SECRET = os.getenv('NS_TOKEN_SECRET')
-    nc = NetSuiteConnection(account=NS_ACCOUNT, consumer_key=NS_CONSUMER_KEY, consumer_secret=NS_CONSUMER_SECRET,                   token_key=NS_TOKEN_KEY, token_secret=NS_TOKEN_SECRET)
+    nc = NetSuiteConnection(
+        account=NS_ACCOUNT,
+        consumer_key=NS_CONSUMER_KEY,
+        consumer_secret=NS_CONSUMER_SECRET,
+        token_key=NS_TOKEN_KEY,
+        token_secret=NS_TOKEN_SECRET
+    )
     return nc
 
 nc = connect_tba()
@@ -53,6 +59,8 @@ locations = nc.locations.get_all()
 departments = nc.departments.get_all()
 classifications = nc.classifications.get_all()
 subsidiaries = nc.subsidiaries.get_all()
+expense_categories = nc.expense_categories.get_all()
+employees = nc.employees.get_all()
 all_accounts = list(itertools.islice(nc.accounts.get_all_generator(), 100))
 accounts = [a for a in all_accounts if a['acctType'] == '_expense']
 vendor_bills = list(itertools.islice(nc.vendor_bills.get_all_generator(), 10))
@@ -66,7 +74,9 @@ data = {
   'currencies': currencies,
   'vendors': vendors,
   'vendor_bills': vendor_bills,
-  'subsidiaries': subsidiaries
+  'subsidiaries': subsidiaries,
+  'expense_categories': expense_categories,
+  'employees': employees
 }
 with open('/tmp/netsuite.json', 'w') as oj:
 	oj.write(json.dumps(data, default=str, indent=2))
@@ -78,9 +88,15 @@ for c in nc.currencies.get_all_generator():
 # Get a specific object
 nc.currencies.get(internalId='1')
 
-# Post operation is only supported on vendor_bills currently (see test_vendor_bills.py on how to construct vendor bill)
+# Post operation is only supported on vendor_bills, expense_reports and journal_entries currently (see tests on how to construct vendor bill, expense report and journal entry)
 vb = {...}
 nc.vendor_bills.post(vb)
+
+er = {...}
+nc.expense_reports.post(er)
+
+je = {...}
+nc.journal_entries.post(je)
 
 ### Upsert Files
 file = open('receipt.pdf', 'rb').read()

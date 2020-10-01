@@ -51,6 +51,9 @@ class ExpenseReports(ApiBase):
         if 'memo' in data:
             er['memo'] = data['memo']
 
+        if 'tranDate' in data:
+            er['tranDate'] = data['tranDate']
+
         if 'tranId' in data:
             er['tranId'] = data['tranId']
 

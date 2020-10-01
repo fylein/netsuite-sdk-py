@@ -46,6 +46,9 @@ class JournalEntries(ApiBase):
         if 'memo' in data:
             je['memo'] = data['memo']
 
+        if 'tranDate' in data:
+            je['tranDate'] = data['tranDate']
+
         if 'tranId' in data:
             je['tranId'] = data['tranId']
 
