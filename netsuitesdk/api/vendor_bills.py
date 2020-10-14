@@ -42,6 +42,16 @@ class VendorBills(ApiBase):
                                 value=field['value']
                             )
                         )
+                    elif field['type'] == 'Select':
+                        custom_fields.append(
+                            self.ns_client.SelectCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=self.ns_client.ListOrRecordRef(
+                                    internalId=field['value']
+                                )
+                            )
+                        )
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             vbe = self.ns_client.VendorBillExpense(**eod)
             expense_list.append(vbe)

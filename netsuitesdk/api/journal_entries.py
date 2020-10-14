@@ -42,7 +42,7 @@ class JournalEntries(ApiBase):
                                 scriptId=field['scriptId'] if 'scriptId' in field else None,
                                 internalId=field['internalId'] if 'internalId' in field else None,
                                 value=self.ns_client.ListOrRecordRef(
-                                    internalId=field['value']['internalId']
+                                    internalId=field['value']
                                 )
                             )
                         )
