@@ -11,6 +11,7 @@ COMPLEX_TYPES = {
         'Passport',
         'RecordList',
         'RecordRef',
+        'ListOrRecordRef',
         'SearchResult',
         'SearchStringField',
         'SearchMultiSelectField',
@@ -20,7 +21,9 @@ COMPLEX_TYPES = {
         'TokenPassportSignature',
         'WsRole',
         'CustomFieldList',
-        'StringCustomFieldRef'
+        'StringCustomFieldRef',
+        'CustomRecordRef',
+        'SelectCustomFieldRef'
     ],
 
     # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
@@ -46,7 +49,9 @@ COMPLEX_TYPES = {
         'SubsidiarySearchBasic',
         'EmployeeSearchBasic',
         'FolderSearchBasic',
-        'FileSearchBasic'
+        'FileSearchBasic',
+        'CustomRecordSearchBasic',
+        'CustomListSearchBasic'
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -65,11 +70,11 @@ COMPLEX_TYPES = {
         'Department', 'DepartmentSearch',
         'Location', 'LocationSearch',
         'Subsidiary', 'SubsidiarySearch',
-        'VendorCategory', 'VendorCategorySearch',
+        'VendorCategory', 'VendorCategorySearch'
     ],
 
     'ns19': [
-        'TransactionSearch',
+        'TransactionSearch'
     ],
 
     # urn:purchases_2017_2.transactions.webservices.netsuite.com
@@ -91,9 +96,17 @@ COMPLEX_TYPES = {
         'JournalEntryLineList',
     ],
 
+    'ns32': [
+        'CustomRecord',
+        'CustomRecordCustomField',
+        'CustomRecordSearch',
+        'CustomListSearch',
+        'CustomRecordType'
+    ],
+
     # https://webservices.netsuite.com/xsd/lists/v2019_2_0/employees.xsd
     'ns34': [
-        'EmployeeSearch',
+        'EmployeeSearch'
     ],
 
     # urn:employees_2019_2.transactions.webservices.netsuite.com

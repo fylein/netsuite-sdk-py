@@ -12,6 +12,8 @@ from .api.expense_reports import ExpenseReports
 from .api.folders import Folders
 from .api.files import Files
 from .api.expense_categories import ExpenseCategory
+from .api.custom_lists import CustomLists
+from .api.custom_records import CustomRecords
 from .internal.client import NetSuiteClient
 
 
@@ -24,6 +26,7 @@ class NetSuiteConnection:
             token_key=token_key,
             token_secret=token_secret
         )
+        self.client = ns_client
         self.accounts = Accounts(ns_client)
         self.classifications = Classifications(ns_client)
         self.departments = Departments(ns_client)
@@ -38,3 +41,5 @@ class NetSuiteConnection:
         self.folders = Folders(ns_client)
         self.files = Files(ns_client)
         self.expense_categories = ExpenseCategory(ns_client)
+        self.custom_lists = CustomLists(ns_client)
+        self.custom_records = CustomRecords(ns_client)

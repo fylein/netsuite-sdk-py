@@ -36,6 +36,16 @@ class JournalEntries(ApiBase):
                                 value=field['value']
                             )
                         )
+                    elif field['type'] == 'Select':
+                        custom_fields.append(
+                            self.ns_client.SelectCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=self.ns_client.ListOrRecordRef(
+                                    internalId=field['value']['internalId']
+                                )
+                            )
+                        )
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             jee = self.ns_client.JournalEntryLine(**eod)
             line_list.append(jee)

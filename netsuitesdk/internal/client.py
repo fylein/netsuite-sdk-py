@@ -360,6 +360,7 @@ class NetSuiteClient:
             record_ref = self.RecordRef(type=recordType, externalId=externalId)
         else:
             raise ValueError('Either internalId or externalId is necessary to make a get request.')
+
         response = self.request('get', baseRef=record_ref)
         response = response.body.readResponse
 
