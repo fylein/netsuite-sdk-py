@@ -79,6 +79,12 @@ class ExpenseReports(ApiBase):
         if 'account' in data:
             er['account'] = self.ns_client.RecordRef(**(data['account']))
 
+        if 'accountingApproval' in data:
+            er['accountingApproval'] = data['accountingApproval']
+
+        if 'supervisorApproval' in data:
+            er['supervisorApproval'] = data['supervisorApproval']
+
         if 'externalId' in data:
             er['externalId'] = data['externalId']
 
