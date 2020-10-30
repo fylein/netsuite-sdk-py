@@ -14,6 +14,7 @@ from .api.files import Files
 from .api.expense_categories import ExpenseCategory
 from .api.custom_lists import CustomLists
 from .api.custom_records import CustomRecords
+from .api.vendor_payments import VendorPayments
 from .internal.client import NetSuiteClient
 
 
@@ -43,3 +44,4 @@ class NetSuiteConnection:
         self.expense_categories = ExpenseCategory(ns_client)
         self.custom_lists = CustomLists(ns_client)
         self.custom_records = CustomRecords(ns_client)
+        self.vendor_payments = VendorPayments(ns_client)

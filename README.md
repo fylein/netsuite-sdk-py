@@ -65,6 +65,7 @@ all_accounts = list(itertools.islice(nc.accounts.get_all_generator(), 100))
 accounts = [a for a in all_accounts if a['acctType'] == '_expense']
 vendor_bills = list(itertools.islice(nc.vendor_bills.get_all_generator(), 10))
 vendors = list(itertools.islice(nc.vendors.get_all_generator(), 10))
+vendor_payments = nc.vendor_payments.get_all()
 
 data = {
   'accounts': accounts,
@@ -76,7 +77,8 @@ data = {
   'vendor_bills': vendor_bills,
   'subsidiaries': subsidiaries,
   'expense_categories': expense_categories,
-  'employees': employees
+  'employees': employees,
+  'vendor_payments': vendor_payments
 }
 with open('/tmp/netsuite.json', 'w') as oj:
 	oj.write(json.dumps(data, default=str, indent=2))
@@ -88,7 +90,7 @@ for c in nc.currencies.get_all_generator():
 # Get a specific object
 nc.currencies.get(internalId='1')
 
-# Post operation is only supported on vendor_bills, expense_reports and journal_entries currently (see tests on how to construct vendor bill, expense report and journal entry)
+# Post operation is only supported on vendor_bills, expense_reports, journal_entries and vendor_payments currently (see tests on how to construct vendor bill, expense report and journal entry)
 vb = {...}
 nc.vendor_bills.post(vb)
 
@@ -97,6 +99,9 @@ nc.expense_reports.post(er)
 
 je = {...}
 nc.journal_entries.post(je)
+
+vp = {...}
+nc.vendor_payments.post(vp)
 
 ### Upsert Files
 file = open('receipt.pdf', 'rb').read()
