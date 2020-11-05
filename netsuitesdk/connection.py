@@ -19,8 +19,16 @@ from .internal.client import NetSuiteClient
 
 
 class NetSuiteConnection:
-    def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret):
-        ns_client = NetSuiteClient(account=account)
+    def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret, cache_settings=None):
+        """
+        :param str account: The account ID
+        :param str consumer_key: Netsuite Consumer Key
+        :param str consumer_secret: Netsuite Consumer Secret
+        :param str token_key: Netsuite Token Key
+        :param str token_secret: Netsuite Token Secret
+        :param dict cache_settings: Cache Settings for NetSuiteClient
+        """
+        ns_client = NetSuiteClient(account=account, caching=cache_settings)
         ns_client.connect_tba(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,
