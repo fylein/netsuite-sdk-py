@@ -79,7 +79,7 @@ class JournalEntries(ApiBase):
             for field in data['customFieldList']:
                 if field['type'] == 'String':
                     custom_fields.append(
-                        self.ns_client.client.StringCustomFieldRef(
+                        self.ns_client.StringCustomFieldRef(
                             scriptId=field['scriptId'] if 'scriptId' in field else None,
                             internalId=field['internalId'] if 'internalId' in field else None,
                             value=field['value']
@@ -87,15 +87,15 @@ class JournalEntries(ApiBase):
                     )
                 elif field['type'] == 'Select':
                     custom_fields.append(
-                        self.ns_client.client.SelectCustomFieldRef(
+                        self.ns_client.SelectCustomFieldRef(
                             scriptId=field['scriptId'] if 'scriptId' in field else None,
                             internalId=field['internalId'] if 'internalId' in field else None,
-                            value=self.ns_client.client.ListOrRecordRef(
+                            value=self.ns_client.ListOrRecordRef(
                                 internalId=field['value']
                             )
                         )
                     )
-            je['customFieldList'] = self.ns_client.client.CustomFieldList(custom_fields)
+            je['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
 
         logger.debug('able to create je = %s', je)
         res = self.ns_client.upsert(je)
