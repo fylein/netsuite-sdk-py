@@ -74,6 +74,29 @@ class JournalEntries(ApiBase):
         if 'department' in data:
             je['department'] = data['department']
 
+        if 'customFieldList' in data:
+            custom_fields = []
+            for field in data['customFieldList']:
+                if field['type'] == 'String':
+                    custom_fields.append(
+                        self.ns_client.client.StringCustomFieldRef(
+                            scriptId=field['scriptId'] if 'scriptId' in field else None,
+                            internalId=field['internalId'] if 'internalId' in field else None,
+                            value=field['value']
+                        )
+                    )
+                elif field['type'] == 'Select':
+                    custom_fields.append(
+                        self.ns_client.client.SelectCustomFieldRef(
+                            scriptId=field['scriptId'] if 'scriptId' in field else None,
+                            internalId=field['internalId'] if 'internalId' in field else None,
+                            value=self.ns_client.client.ListOrRecordRef(
+                                internalId=field['value']
+                            )
+                        )
+                    )
+            je['customFieldList'] = self.ns_client.client.CustomFieldList(custom_fields)
+
         logger.debug('able to create je = %s', je)
         res = self.ns_client.upsert(je)
         return self._serialize(res)
