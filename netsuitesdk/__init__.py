@@ -3,7 +3,7 @@ from .internal.exceptions import *
 
 
 __all__ = [
-    'NetSuiteConnection'
+    'NetSuiteConnection',
     'NetSuiteError',
     'NetSuiteLoginError',
     'NetSuiteRequestError',

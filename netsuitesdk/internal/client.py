@@ -22,6 +22,7 @@ from .exceptions import *
 from .netsuite_types import *
 from .utils import PaginatedSearch
 
+
 class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
@@ -40,17 +41,18 @@ class NetSuiteClient:
     _token_secret = None
     _app_id = None
 
-
-    def __init__(self, account=None, caching=True, caching_timeout=2592000):
+    def __init__(self, account=None, caching=None):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
         instance.
 
-        :param str account_id: Account ID to connect to
-        :param str caching: If caching = 'sqlite', setup Sqlite caching
-        :param int caching_timeout: Timeout in seconds for caching.
-                            If None, defaults to 30 days
+        :param str account: Account ID to connect to
+        :param dict caching: The available cache settings are the following
+                caching['enable'] bool: Indicates if
+                caching['timeout'] int: Timeout in seconds for caching. If None, defaults to 30 days
+                caching['path'] str: The path to store the database files
+                caching['engine'] str: The Database engine used for caching.
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         assert account, 'Invalid account'
@@ -60,13 +62,45 @@ class NetSuiteClient:
         self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'))
         self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'))
 
-        if caching:
-            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache.db')
-            timeout = caching_timeout
-            cache = SqliteCache(path=path, timeout=timeout)
-            transport = Transport(cache=cache)
-        else:
-            transport = None
+        if caching is None:
+            caching = {}
+
+        # Make sure that caching argument is an instance of dict
+        assert isinstance(caching, dict), '"caching" argument must be an instance of dict'
+
+        # Allowed cache setting keys
+        allowed_cache_settings = ['enable', 'engine', 'timeout', 'path']
+        allowed_cache_engines = ['sqlite']
+
+        # Default cache settings
+        cache_settings = {
+            'enable': True,
+            'engine': 'sqlite',
+            'timeout': 2592000,
+            'path': os.path.dirname(os.path.abspath(__file__))
+        }
+
+        # Filter out user input and get only the allowed keys
+        cache_settings_input = {key: caching[key] for key in caching if key in allowed_cache_settings}
+
+        # Merge default cache settings with input cache settings
+        cache_settings.update(cache_settings_input)
+
+        # Default transport set to None
+        transport = None
+
+        if cache_settings['enable']:
+            # Make sure that provided cache engine is allowed
+            assert cache_settings['engine'] in allowed_cache_engines, \
+                f'Cache engine "{cache_settings["engine"]}" is not available. You can use one of the following engines: ' + ','.join(allowed_cache_engines)
+
+            path = os.path.join(cache_settings['path'], 'cache.db')
+            timeout = cache_settings['timeout']
+
+            # Sqlite cache engine
+            if cache_settings['engine'] == 'sqlite':
+                cache = SqliteCache(path=path, timeout=timeout)
+                transport = Transport(cache=cache)
 
         # Initialize the Zeep Client
         self._client = Client(self._wsdl_url, transport=transport)
@@ -246,7 +280,6 @@ class NetSuiteClient:
         signature = self.TokenPassportSignature(value, algorithm=self._signature_algorithm)
         return self.TokenPassport(account=self._account, consumerKey=self._consumer_key, token=self._token_key,
                                   nonce=nonce, timestamp=timestamp, signature=signature)
-
 
     def connect_tba(self, consumer_key, consumer_secret, token_key, token_secret, signature_algorithm='HMAC-SHA1'):
         """
