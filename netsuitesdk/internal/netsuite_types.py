@@ -43,6 +43,7 @@ COMPLEX_TYPES = {
     'ns5': [
         'AccountSearchBasic',
         'CustomerSearchBasic',
+        'JobSearchBasic',
         'LocationSearchBasic',
         'TransactionSearchBasic',
         'VendorSearchBasic',
@@ -58,6 +59,7 @@ COMPLEX_TYPES = {
     'ns13': [
         'Customer', 'CustomerSearch',
         'Vendor', 'VendorSearch',
+        'Job', 'JobSearch'
     ],
 
     # urn:accounting_2017_2.lists.webservices.netsuite.com
