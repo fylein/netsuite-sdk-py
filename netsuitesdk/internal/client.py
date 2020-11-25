@@ -22,6 +22,7 @@ from .exceptions import *
 from .netsuite_types import *
 from .utils import PaginatedSearch
 
+
 class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
@@ -39,7 +40,6 @@ class NetSuiteClient:
     _token_key = None
     _token_secret = None
     _app_id = None
-
 
     def __init__(self, account=None, caching=True, caching_timeout=2592000):
         """
@@ -247,8 +247,7 @@ class NetSuiteClient:
         return self.TokenPassport(account=self._account, consumerKey=self._consumer_key, token=self._token_key,
                                   nonce=nonce, timestamp=timestamp, signature=signature)
 
-
-    def connect_tba(self, consumer_key, consumer_secret, token_key, token_secret, signature_algorithm='HMAC-SHA1'):
+    def connect_tba(self, consumer_key, consumer_secret, token_key, token_secret, signature_algorithm='HMAC-SHA256'):
         """
         Create a TokenPassport object holding credentials for Token based
         authentication which will be passed to NetSuiteClient.login
