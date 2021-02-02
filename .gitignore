@@ -12,6 +12,9 @@ dry_run.py
 # IDEs
 .DS_Store
 
+# Folders
+test_scripts/
+
 # cache file
 cache.db
 
