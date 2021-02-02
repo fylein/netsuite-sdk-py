@@ -54,18 +54,16 @@ class ApiBase:
         logger.debug('going to page %d', 0)
 
         num_records = paginated_search.num_records
-        for r in range(0, num_records):
-            record = paginated_search.records[r]
-            yield self._serialize(record=record)
 
-        for p in range(2, num_pages + 1):
+        records = []
+        
+        for p in range(1, num_pages + 1):
             logger.debug('going to page %d', p)
             paginated_search.goto_page(p)
             logger.debug(f'current page index {paginated_search.page_index}')
-            num_records = paginated_search.num_records
-            for r in range(0, num_records):
-                record = paginated_search.records[r]
-                yield self._serialize(record=record)
+            records.extend(paginated_search.records)
+
+        return records
 
     def _search_all_generator(self, page_size):
         ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)

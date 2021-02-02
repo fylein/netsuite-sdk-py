@@ -21,8 +21,10 @@ from .internal.client import NetSuiteClient
 
 
 class NetSuiteConnection:
-    def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret):
-        ns_client = NetSuiteClient(account=account)
+    def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret,
+                 search_body_fields_only=True, page_size: int = 100):
+        ns_client = NetSuiteClient(account=account, search_body_fields_only=search_body_fields_only,
+                                   page_size=page_size)
         ns_client.connect_tba(
             consumer_key=consumer_key,
             consumer_secret=consumer_secret,

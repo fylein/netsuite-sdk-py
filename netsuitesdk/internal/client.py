@@ -41,7 +41,8 @@ class NetSuiteClient:
     _token_secret = None
     _app_id = None
 
-    def __init__(self, account=None, caching=True, caching_timeout=2592000):
+    def __init__(self, account=None, caching=True, caching_timeout=2592000, search_body_fields_only=True,
+                 page_size: int = 100):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -82,11 +83,12 @@ class NetSuiteClient:
 
         self._app_info = None
         self._is_authenticated = False
-        self.set_search_preferences()
+        self.set_search_preferences(page_size=page_size, search_body_fields_only=search_body_fields_only)
 
-    def set_search_preferences(self, page_size: int = 5, return_search_columns: bool = False):
+    def set_search_preferences(self, page_size: int = 5, search_body_fields_only: bool = True,
+                               return_search_columns: bool = True):
         self._search_preferences = self.SearchPreferences(
-            bodyFieldsOnly=False,
+            bodyFieldsOnly=search_body_fields_only,
             pageSize=page_size,
             returnSearchColumns=return_search_columns
         )
