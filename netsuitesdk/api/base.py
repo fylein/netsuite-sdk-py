@@ -5,15 +5,17 @@ from netsuitesdk.internal.utils import PaginatedSearch
 from typing import List
 
 logger = logging.getLogger(__name__)
- 
- # TODO: introduce arg and return types
+
+
+# TODO: introduce arg and return types
 class ApiBase:
     def __init__(self, ns_client, type_name):
         self.ns_client = ns_client
         self.type_name = type_name
 
     def get_all(self):
-        return list(self.get_all_generator())
+        all_records = self.get_all_generator()
+        return list(all_records) if all_records else []
 
     def get_all_generator(self, page_size=20):
         """
@@ -25,7 +27,8 @@ class ApiBase:
         return self._get(internalId=internalId, externalId=externalId)
 
     def get_ref(self, internalId=None, externalId=None) -> OrderedDict:
-        return self._serialize(self.ns_client.RecordRef(type=self.type_name.lower(), internalId=internalId, externalId=externalId))
+        return self._serialize(self.ns_client.RecordRef(type=self.type_name.lower(),
+                                                        internalId=internalId, externalId=externalId))
 
     def post(self, data) -> OrderedDict:
         raise NotImplementedError('post method not implemented')
@@ -44,7 +47,8 @@ class ApiBase:
         """
         return zeep.helpers.serialize_object(records)
 
-    def _paginated_search_to_generator(self, paginated_search):
+    @staticmethod
+    def _paginated_search_to_generator(paginated_search):
         if paginated_search.num_records == 0:
             return
 
@@ -52,8 +56,6 @@ class ApiBase:
         logger.debug('total pages = %d, records in page = %d', paginated_search.total_pages, paginated_search.num_records)
         logger.debug(f'current page index {paginated_search.page_index}')
         logger.debug('going to page %d', 0)
-
-        num_records = paginated_search.num_records
 
         records = []
         
