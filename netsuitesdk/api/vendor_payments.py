@@ -34,6 +34,7 @@ class VendorPayments(ApiBase):
             apply_lists.append(vpal)
 
         vp['applyList'] = self.ns_client.VendorPaymentApplyList(apply=apply_lists)
+
         vp['currency'] = self.ns_client.RecordRef(**(data['currency']))
 
         if 'amount' in data:
@@ -50,6 +51,9 @@ class VendorPayments(ApiBase):
 
         if 'class' in data:
             vp['class'] = self.ns_client.RecordRef(**(data['class']))
+
+        if 'apAcct' in data:
+            vp['apAcct'] = self.ns_client.RecordRef(**(data['apAcct']))
 
         if 'location' in data:
             vp['location'] = self.ns_client.RecordRef(**(data['location']))
