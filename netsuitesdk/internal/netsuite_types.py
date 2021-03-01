@@ -112,7 +112,8 @@ COMPLEX_TYPES = {
 
     # https://webservices.netsuite.com/xsd/lists/v2019_2_0/employees.xsd
     'ns34': [
-        'EmployeeSearch'
+        'EmployeeSearch',
+        'Employee'
     ],
 
     # urn:employees_2019_2.transactions.webservices.netsuite.com
