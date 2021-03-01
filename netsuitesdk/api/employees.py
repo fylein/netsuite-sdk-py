@@ -38,6 +38,12 @@ class Employees(ApiBase):
         if 'payFrequency' in data:
             employee['payFrequency'] = data['payFrequency']
 
+        if 'location' in data:
+            employee['location'] = data['location']
+
+        if 'department' in data:
+            employee['department'] = data['department']
+
         logger.debug('able to create employee = %s', employee)
         res = self.ns_client.upsert(employee)
         return self._serialize(res)
