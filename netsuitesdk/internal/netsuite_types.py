@@ -13,6 +13,7 @@ COMPLEX_TYPES = {
         'RecordRef',
         'ListOrRecordRef',
         'SearchResult',
+        'SearchEnumMultiSelectField',
         'SearchStringField',
         'SearchMultiSelectField',
         'Status',
