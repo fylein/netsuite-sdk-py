@@ -17,6 +17,10 @@ class ApiBase:
         all_records = self.get_all_generator()
         return list(all_records) if all_records else []
 
+    def count(self):
+        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=10, perform_search=True)
+        return ps.total_records
+
     def get_all_generator(self, page_size=20):
         """
         Returns a generator which is more efficient memory-wise

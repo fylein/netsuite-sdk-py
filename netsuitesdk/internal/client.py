@@ -20,7 +20,6 @@ from zeep.exceptions import LookupError as ZeepLookupError
 from .constants import *
 from .exceptions import *
 from .netsuite_types import *
-from .utils import PaginatedSearch
 
 
 class NetSuiteClient:
@@ -73,7 +72,8 @@ class NetSuiteClient:
         self._client = Client(self._wsdl_url, transport=transport)
 
         # default service points to wrong data center. need to create a new service proxy and replace the default one
-        self._service_proxy = self._client.create_service('{urn:platform_2019_1.webservices.netsuite.com}NetSuiteBinding', self._datacenter_url)
+        self._service_proxy = self._client.create_service(
+            '{urn:platform_2019_1.webservices.netsuite.com}NetSuiteBinding', self._datacenter_url)
 
         # Parse all complex types specified in :const:`~netsuitesdk.netsuite_types.COMPLEX_TYPES`
         # and store them as attributes of this instance. Same for simple types.
