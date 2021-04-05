@@ -25,7 +25,7 @@ class ApiBase:
         """
         Returns a generator which is more efficient memory-wise
         """
-        return self._search_all_generator(page_size=page_size)
+        return self.create_pageinated_search(page_size=page_size)
 
     def get(self, internalId=None, externalId=None) -> OrderedDict:
         return self._get(internalId=internalId, externalId=externalId)
@@ -70,6 +70,26 @@ class ApiBase:
             records.extend(paginated_search.records)
 
         return records
+
+    @staticmethod
+    def _paginated_search_generator(paginated_search: PaginatedSearch):
+        if paginated_search.num_records == 0:
+            return
+
+        num_pages = paginated_search.total_pages
+        logger.debug('total pages = %d, records in page = %d', paginated_search.total_pages, paginated_search.num_records)
+        logger.debug(f'current page index {paginated_search.page_index}')
+        logger.debug('going to page %d', 0)
+
+        for p in range(1, num_pages + 1):
+            logger.debug('going to page %d', p)
+            paginated_search.goto_page(p)
+            logger.debug(f'current page index {paginated_search.page_index}')
+            yield paginated_search.records
+
+    def create_pageinated_search(self, page_size):
+        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)
+        return self._paginated_search_generator(paginated_search=ps)
 
     def _search_all_generator(self, page_size):
         ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=page_size)
