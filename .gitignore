@@ -6,8 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Dockerfile
+Dockerfile
+
 # test_files
 dry_run.py
+test_*
 
 # IDEs
 .DS_Store
