@@ -1,6 +1,8 @@
 import zeep
 import logging
 from collections import OrderedDict
+
+from netsuitesdk.internal.client import NetSuiteClient
 from netsuitesdk.internal.utils import PaginatedSearch
 from typing import List
 
@@ -9,9 +11,26 @@ logger = logging.getLogger(__name__)
 
 # TODO: introduce arg and return types
 class ApiBase:
-    def __init__(self, ns_client, type_name):
+    def __init__(self, ns_client: NetSuiteClient, type_name):
         self.ns_client = ns_client
         self.type_name = type_name
+
+    def search(self, attribute, value, operator):
+        """
+        Search Record
+        :param attribute: name of the field, eg. entityId
+        :param value: value of the field, eg. Amazon
+        :param operator: search matching operator, eg., 'contains', 'is', 'anyOf'
+        :return:
+        """
+        records = self.ns_client.basic_stringfield_search(
+            type_name=self.type_name,
+            attribute=attribute,
+            value=value,
+            operator=operator
+        )
+
+        return records
 
     def get_all(self):
         generated_records = self.get_all_generator()
@@ -109,4 +128,4 @@ class ApiBase:
 
     def _get(self, internalId=None, externalId=None) -> OrderedDict:
         record = self.ns_client.get(recordType=self.type_name, internalId=internalId, externalId=externalId)
-        return self._serialize(record=record)
+        return record

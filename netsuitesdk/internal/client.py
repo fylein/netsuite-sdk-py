@@ -134,7 +134,7 @@ class NetSuiteClient:
     def get_complex_type(self, type_name):
         # if ':' in type_name:
         #     namespace, type_name = type_name.split(':')
-            # namespace_index = namespace[2:]
+        # namespace_index = namespace[2:]
         return self._complex_types[type_name]
 
     def get_simple_type(self, type_name):
@@ -205,8 +205,8 @@ class NetSuiteClient:
         try:
             self._app_info = self.ApplicationInfo(applicationId=application_id)
             response = self._service_proxy.login(
-                                self._passport,
-                                _soapheaders={'applicationInfo': self._app_info}
+                self._passport,
+                _soapheaders={'applicationInfo': self._app_info}
             )
             if response.status.isSuccess:
                 self._is_authenticated = True
@@ -288,12 +288,12 @@ class NetSuiteClient:
         if error_cls is None:
             error_cls = NetSuiteRequestError
         exc = error_cls(
-                "An error occured in a {service_name} request: {msg}".format(
-                                                    service_name=service_name,
-                                                    msg=detail['message']),
-                code=detail['code']
+            "An error occured in a {service_name} request: {msg}".format(
+                service_name=service_name,
+                msg=detail['message']),
+            code=detail['code']
         )
-#        self.logger.error(str(exc))
+        #        self.logger.error(str(exc))
         return exc
 
     def _build_soap_headers(self, include_search_preferences: bool = False):
@@ -336,9 +336,9 @@ class NetSuiteClient:
         method = getattr(self._service_proxy, name)
         # call the service:
         include_search_preferences = (name == 'search')
-        response = method(*args, 
-                _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
-                , **kwargs)
+        response = method(*args,
+                          _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
+                          , **kwargs)
         return response
 
     def get(self, recordType, internalId=None, externalId=None):
@@ -493,12 +493,43 @@ class NetSuiteClient:
         status = response.status
         if status.isSuccess:
             record_ref = response['baseRef']
-            self.logger.debug('Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
+            self.logger.debug(
+                'Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
                     type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
             return record_ref
         else:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
             raise exc
+
+    def basic_stringfield_search(self, type_name, attribute, value, operator=None):
+        """
+        Searches for an object of type `type_name` whose name contains `value`
+
+        :param str type_name: the name of the NetSuite type to be searched in
+        :param str attribute: the attribute of the type to be used for the search
+        :param str value: the value to be used for the search
+        :param str operator: mode used to search for value, possible:
+                    'is', 'contains', 'doesNotContain',
+                    'doesNotStartWith', 'empty', 'hasKeywords',
+                    'isNot', 'notEmpty', 'startsWith'
+
+        See for example: http://www.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2017_2/schema/search/locationsearchbasic.html?mode=package
+        In general, one can find the possible search attributes for a basic search
+        in the type {type_name}SearchBasic
+        """
+
+        search_cls_name = '{type_name}SearchBasic'.format(type_name=type_name)
+        search_cls = getattr(self, search_cls_name)
+        if not operator:
+            operator = 'is'
+        string_field = self.SearchStringField(
+            searchValue=value,
+            operator=operator)
+        basic_search = search_cls()
+        setattr(basic_search, attribute, string_field)
+        result = self.search(basic_search)
+        if result.records:
+            return result.records
 
     # def upsertList(self, records):
     #     """
