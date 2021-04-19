@@ -39,6 +39,9 @@ class Customers(ApiBase):
         if 'email' in data:
             customer['email'] = data['email']
 
+        if 'addressbookList' in data:
+            customer['addressbookList'] = data['addressbookList']
+
         logger.debug('able to create customer = %s', customer)
         res = self.ns_client.upsert(customer)
         return self._serialize(res)
