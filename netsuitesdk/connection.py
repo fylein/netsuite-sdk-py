@@ -22,8 +22,10 @@ from .internal.client import NetSuiteClient
 
 class NetSuiteConnection:
     def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret,
+                 caching=True, caching_timeout=2592000, caching_path=None,
                  search_body_fields_only=True, page_size: int = 100):
-        ns_client = NetSuiteClient(account=account, search_body_fields_only=search_body_fields_only,
+        ns_client = NetSuiteClient(account=account, caching=caching, caching_timeout=caching_timeout,
+                                   caching_path=caching_path, search_body_fields_only=search_body_fields_only,
                                    page_size=page_size)
         ns_client.connect_tba(
             consumer_key=consumer_key,
