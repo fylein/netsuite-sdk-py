@@ -42,6 +42,9 @@ class Customers(ApiBase):
         if 'addressbookList' in data:
             customer['addressbookList'] = data['addressbookList']
 
+        if 'salesrep' in data:
+            customer['salesrep'] = self.ns_client.RecordRef(**(data['salesrep']))
+
         logger.debug('able to create customer = %s', customer)
         res = self.ns_client.upsert(customer)
         return self._serialize(res)
