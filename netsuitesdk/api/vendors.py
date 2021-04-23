@@ -40,6 +40,9 @@ class Vendors(ApiBase):
         if 'email' in data:
             vendor['email'] = data['email']
 
+        if 'addressbookList' in data:
+            vendor['addressbookList'] = data['addressbookList']
+
         logger.debug('able to create vendor = %s', vendor)
         res = self.ns_client.upsert(vendor)
         return self._serialize(res)

@@ -43,6 +43,7 @@ COMPLEX_TYPES = {
     # https://webservices.netsuite.com/xsd/platform/v2017_2_0/common.xsd
     'ns5': [
         'AccountSearchBasic',
+        'Address',
         'CustomerSearchBasic',
         'JobSearchBasic',
         'LocationSearchBasic',
@@ -58,9 +59,11 @@ COMPLEX_TYPES = {
 
     # urn:relationships.lists.webservices.netsuite.com
     'ns13': [
+        'CustomerAddressbook', 'CustomerAddressbookList',
         'Customer', 'CustomerSearch',
         'Vendor', 'VendorSearch',
-        'Job', 'JobSearch'
+        'Job', 'JobSearch',
+        'VendorAddressbook', 'VendorAddressbookList',
     ],
 
     # urn:accounting_2017_2.lists.webservices.netsuite.com
