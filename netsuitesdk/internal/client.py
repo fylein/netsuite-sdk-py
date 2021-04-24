@@ -40,7 +40,7 @@ class NetSuiteClient:
     _token_secret = None
     _app_id = None
 
-    def __init__(self, account=None, caching=True, caching_timeout=2592000, search_body_fields_only=True,
+    def __init__(self, account=None, caching=True, caching_timeout=2592000, caching_path=None, search_body_fields_only=True,
                  page_size: int = 100):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
@@ -48,9 +48,10 @@ class NetSuiteClient:
         instance.
 
         :param str account_id: Account ID to connect to
-        :param str caching: If caching = 'sqlite', setup Sqlite caching
+        :param bool caching: If caching = 'sqlite', setup Sqlite caching
         :param int caching_timeout: Timeout in seconds for caching.
                             If None, defaults to 30 days
+        :param str caching_path: Sqlite base file path. Default to python library path.
         """
         self.logger = logging.getLogger(self.__class__.__name__)
         assert account, 'Invalid account'
@@ -61,7 +62,8 @@ class NetSuiteClient:
         self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'))
 
         if caching:
-            path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache.db')
+            base_path = os.path.dirname(os.path.abspath(__file__)) if not caching_path else caching_path
+            path = os.path.join(base_path, 'cache.db')
             timeout = caching_timeout
             cache = SqliteCache(path=path, timeout=timeout)
             transport = Transport(cache=cache)
