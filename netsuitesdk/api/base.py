@@ -129,3 +129,13 @@ class ApiBase:
     def _get(self, internalId=None, externalId=None) -> OrderedDict:
         record = self.ns_client.get(recordType=self.type_name, internalId=internalId, externalId=externalId)
         return record
+
+    def build_simple_fields(self, fields, source, target):
+        for field in fields:
+            if field in source:
+                target[field] = source[field]
+
+    def build_record_ref_fields(self, fields, source, target):
+        for field in fields:
+            if field in source:
+                target[field] = self.ns_client.RecordRef(**(source[field]))
