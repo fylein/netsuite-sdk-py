@@ -162,7 +162,9 @@ class Customers(ApiBase):
         customer['monthlyClosing'] = self.ns_client.RecordRef(**(data['monthlyClosing']))
 
         self.build_simple_fields(self.SIMPLE_FIELDS, data, customer)
+
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, customer)
+
         logger.debug('able to create customer = %s', customer)
         res = self.ns_client.upsert(customer)
         return self._serialize(res)
