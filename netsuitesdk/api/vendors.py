@@ -7,6 +7,91 @@ logger = logging.getLogger(__name__)
 
 
 class Vendors(ApiBase):
+    SIMPLE_FIELDS = [
+        'accountNumber',
+        'addressbookList',
+        'altEmail',
+        'altName',
+        'altPhone',
+        'balance',
+        'balancePrimary',
+        'bcn',
+        'billPay',
+        'comments',
+        'companyName',
+        'creditLimit',
+        'currencyList',
+        'customFieldList',
+        'dateCreated',
+        'defaultAddress',
+        'eligibleForCommission',
+        'email',
+        'emailPreference',
+        'emailTransactions',
+        'entityId',
+        'fax',
+        'faxTransactions',
+        'firstName',
+        'giveAccess',
+        'globalSubscriptionStatus',
+        'homePhone',
+        'internalId',
+        'is1099Eligible',
+        'isAccountant',
+        'isInactive',
+        'isJobResourceVend',
+        'isPerson',
+        'laborCost',
+        'lastModifiedDate',
+        'lastName',
+        'legalName',
+        'middleName',
+        'mobilePhone',
+        'openingBalance',
+        'openingBalanceDate',
+        'password',
+        'password2',
+        'phone',
+        'phoneticName',
+        'predConfidence',
+        'predictedDays',
+        'pricingScheduleList',
+        'printOnCheckAs',
+        'printTransactions',
+        'purchaseOrderAmount',
+        'purchaseOrderQuantity',
+        'purchaseOrderQuantityDiff',
+        'receiptAmount',
+        'receiptQuantity',
+        'receiptQuantityDiff',
+        'requirePwdChange',
+        'rolesList',
+        'salutation',
+        'sendEmail',
+        'subscriptionsList',
+        'taxIdNum',
+        'taxRegistrationList',
+        'title',
+        'unbilledOrders',
+        'unbilledOrdersPrimary',
+        'url',
+        'vatRegNumber',
+        'nullFieldList',
+    ]
+
+    RECORD_REF_FIELDS = [
+        'category',
+        'customForm',
+        'defaultTaxReg',
+        'expenseAccount',
+        'image',
+        'incoterm',
+        'openingBalanceAccount',
+        'payablesAccount',
+        'taxItem',
+        'terms',
+    ]
+
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Vendor')
 
@@ -22,26 +107,9 @@ class Vendors(ApiBase):
 
         vendor['workCalendar'] = self.ns_client.RecordRef(**(data['workCalendar']))
 
-        if 'entityId' in data:
-            vendor['entityId'] = data['entityId']
+        self.build_simple_fields(self.SIMPLE_FIELDS, data, vendor)
 
-        if 'isPerson' in data:
-            vendor['isPerson'] = data['isPerson']
-
-        if 'companyName' in data:
-            vendor['companyName'] = data['companyName']
-
-        if 'firstName' in data:
-            vendor['firstName'] = data['firstName']
-
-        if 'lastName' in data:
-            vendor['lastName'] = data['lastName']
-
-        if 'email' in data:
-            vendor['email'] = data['email']
-
-        if 'addressbookList' in data:
-            vendor['addressbookList'] = data['addressbookList']
+        self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, vendor)
 
         logger.debug('able to create vendor = %s', vendor)
         res = self.ns_client.upsert(vendor)
