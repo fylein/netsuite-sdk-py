@@ -80,6 +80,9 @@ COMPLEX_TYPES = {
     ],
 
     'ns19': [
+        'Invoice',
+        'InvoiceItem',
+        'InvoiceItemList',
         'TransactionSearch'
     ],
 
