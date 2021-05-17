@@ -21,7 +21,9 @@ COMPLEX_TYPES = {
         'TokenPassport',
         'TokenPassportSignature',
         'WsRole',
+        'DateCustomFieldRef',
         'CustomFieldList',
+        'DoubleCustomFieldRef',
         'StringCustomFieldRef',
         'CustomRecordRef',
         'SelectCustomFieldRef'

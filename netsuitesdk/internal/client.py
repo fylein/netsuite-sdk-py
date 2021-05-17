@@ -496,8 +496,8 @@ class NetSuiteClient:
         if status.isSuccess:
             record_ref = response['baseRef']
             self.logger.debug(
-                'Successfully updated record of type {type}, internalId: {internalId}, externalId: {externalId}'.format(
-                    type=record_ref['type'], internalId=record_ref['internalId'], externalId=record_ref['externalId']))
+                'Successfully updated record of internalId: {internalId}, externalId: {externalId}, response: {recordRef}'.format(
+                     internalId=record_ref['internalId'], externalId=record_ref['externalId'], recordRef=record_ref))
             return record_ref
         else:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
