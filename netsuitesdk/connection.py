@@ -18,6 +18,7 @@ from .api.custom_lists import CustomLists
 from .api.custom_records import CustomRecords
 from .api.vendor_payments import VendorPayments
 from .api.invoices import Invoices
+from .api.terms import Terms
 from .internal.client import NetSuiteClient
 
 
@@ -55,3 +56,4 @@ class NetSuiteConnection:
         self.projects = Projects(ns_client)
         self.vendor_payments = VendorPayments(ns_client)
         self.invoices = Invoices(ns_client)
+        self.terms = Terms(ns_client)

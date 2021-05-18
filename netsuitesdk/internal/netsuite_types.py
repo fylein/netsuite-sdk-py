@@ -54,7 +54,8 @@ COMPLEX_TYPES = {
         'FolderSearchBasic',
         'FileSearchBasic',
         'CustomRecordSearchBasic',
-        'CustomListSearchBasic'
+        'CustomListSearchBasic',
+        'TermSearchBasic',
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -76,7 +77,8 @@ COMPLEX_TYPES = {
         'Department', 'DepartmentSearch',
         'Location', 'LocationSearch',
         'Subsidiary', 'SubsidiarySearch',
-        'VendorCategory', 'VendorCategorySearch'
+        'VendorCategory', 'VendorCategorySearch',
+        'Term', 'TermSearch',
     ],
 
     'ns19': [
