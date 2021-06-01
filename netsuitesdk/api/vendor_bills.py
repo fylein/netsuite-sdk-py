@@ -80,6 +80,12 @@ class VendorBills(ApiBase):
         if 'account' in data:
             vb['account'] = self.ns_client.RecordRef(**(data['account']))
 
+        if 'itemList' in data:
+            vb['itemList'] = data['itemList']
+
+        if 'customFieldList' in data:
+            vb['customFieldList'] = data['customFieldList']
+
         vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
         logger.debug('able to create vb = %s', vb)
         res = self.ns_client.upsert(vb)
