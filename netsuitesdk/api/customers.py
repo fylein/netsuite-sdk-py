@@ -1,7 +1,9 @@
 from collections import OrderedDict
+from sqlite3.dbapi2 import Date
 
 from .base import ApiBase
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,6 @@ class Customers(ApiBase):
         'creditHoldOverride',
         'creditLimit',
         'currencyList',
-        'customFieldList',
         'dateCreated',
         'daysOverdue',
         'defaultAddress',
@@ -144,26 +145,34 @@ class Customers(ApiBase):
         'taxItem',
         'terms',
         'territory',
+        'currency',
+        'subsidiary',
+        'representingSubsidiary',
+        'monthlyClosing',
     ]
+
+    READ_ONLY_FIELDS = ['internalId', 'balance', 'overdueBalance', 'representingSubsidiary',
+                        'monthlyClosing', 'balance', 'overdueBalance', 'unbilledOrders', 'depositBalance',
+                        'aging', 'aging1', 'aging2', 'aging3', 'aging4', 'lastModifiedDate', 'dateCreated',
+                        'defaultAddress', 'subsidiary', 'entityStatus', 'receivablesAccount',
+                        'currencyList']
+
 
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Customer')
+
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
         customer = self.ns_client.Customer(externalId=data['externalId'])
 
-        customer['currency'] = self.ns_client.RecordRef(**(data['currency']))
-
-        customer['subsidiary'] = self.ns_client.RecordRef(**(data['subsidiary']))
-
-        customer['representingSubsidiary'] = self.ns_client.RecordRef(**(data['representingSubsidiary']))
-
-        customer['monthlyClosing'] = self.ns_client.RecordRef(**(data['monthlyClosing']))
-
         self.build_simple_fields(self.SIMPLE_FIELDS, data, customer)
 
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, customer)
+
+        self.build_custom_fields(data, customer)
+
+        self.remove_readonly(customer,self.READ_ONLY_FIELDS)
 
         logger.debug('able to create customer = %s', customer)
         res = self.ns_client.upsert(customer)
