@@ -1,10 +1,11 @@
 import zeep
 import logging
-from collections import OrderedDict
+from typing import List
+from datetime import datetime
+from collections import OrderedDict, Mapping
 
 from netsuitesdk.internal.client import NetSuiteClient
 from netsuitesdk.internal.utils import PaginatedSearch
-from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -132,10 +133,44 @@ class ApiBase:
 
     def build_simple_fields(self, fields, source, target):
         for field in fields:
-            if field in source:
-                target[field] = source[field]
+            if field in dir(source):
+                target[field] = getattr(source,field)
 
     def build_record_ref_fields(self, fields, source, target):
         for field in fields:
-            if field in source:
-                target[field] = self.ns_client.RecordRef(**(source[field]))
+            if field in dir(source) and getattr(source,field) is not None:
+                if isinstance(getattr(source,field),Mapping):
+                    target[field] = self.ns_client.RecordRef(**(getattr(source,field)))
+                else:
+                    target[field] = getattr(source,field)
+
+    def build_custom_fields(self, data, customer):
+        custom_fields = []
+        for field in data.customFieldList['customField']:
+            if isinstance(field['value'],datetime):
+                custom_fields.append(
+                    self.ns_client.DateCustomFieldRef(
+                        scriptId=field['scriptId'] if 'scriptId' in field else None,
+                        internalId=field['internalId'] if 'internalId' in field else None,
+                        value=field['value']
+                    )
+                )
+            else:
+                custom_fields.append(
+                    self.ns_client.StringCustomFieldRef(
+                        scriptId=field['scriptId'] if 'scriptId' in field else None,
+                        internalId=field['internalId'] if 'internalId' in field else None,
+                        value=field['value']
+                    )
+                )
+
+        customer.customFieldList = self.ns_client.CustomFieldList(custom_fields)
+
+    def remove_readonly(self, data, readonly_fields):
+        for key in readonly_fields:
+            if key in dir(data):
+                data[key] = None
+
+
+
+
