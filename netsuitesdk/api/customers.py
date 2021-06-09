@@ -161,6 +161,19 @@ class Customers(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Customer')
 
+        self.customFieldList = self.ns_client.CustomFieldList([])
+
+        self.addressbookList = {'addressBook': []}
+
+    def get(self, internalId=None, externalId=None) -> OrderedDict:
+
+        customer = self._get(internalId=internalId, externalId=externalId)
+
+        if customer.addressbookList is None:
+            customer.addressbookList = {'addressbook': []}
+
+        return customer
+
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
