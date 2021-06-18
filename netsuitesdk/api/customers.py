@@ -1,9 +1,7 @@
 from collections import OrderedDict
-from sqlite3.dbapi2 import Date
 
 from .base import ApiBase
 import logging
-from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -163,13 +161,13 @@ class Customers(ApiBase):
 
         self.customFieldList = self.ns_client.CustomFieldList([])
 
-        self.addressbookList = {'addressBook': []}
+        self.addressbookList = {'addressbook': []}
 
     def get(self, internalId=None, externalId=None) -> OrderedDict:
 
         customer = self._get(internalId=internalId, externalId=externalId)
 
-        if customer.addressbookList is None:
+        if customer.addressbookList is None and 'addressbook' not in customer.addressbookList:
             customer.addressbookList = {'addressbook': []}
 
         return customer

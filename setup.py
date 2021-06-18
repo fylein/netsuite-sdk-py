@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='ucnetsuitesdk',
-    version='1.0.0',
+    version='1.0.3,
     author='Underground Cellar',
     author_email='support@undergroundcellar.com',
     description='Python SDK for accessing the NetSuite SOAP webservice',
@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     keywords=['netsuite', 'api', 'python', 'sdk'],
-    url='https://github.com/fylein/netsuite-sdk-py',
+    url='https://github.com/mattclark-uc/netsuite-sdk-py',
     packages=setuptools.find_packages(),
     install_requires=['zeep'],
     classifiers=[
