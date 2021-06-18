@@ -245,5 +245,3 @@ class InventoryItems(ApiBase):
 
         logger.debug('able to create inventoryitem = %s', inventoryitem)
         return self.ns_client.upsert(inventoryitem)
-        
-x_order_is_authorized_or_captured and not is_test_order and mf_suspended_dt
