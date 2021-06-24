@@ -26,7 +26,8 @@ COMPLEX_TYPES = {
         'DoubleCustomFieldRef',
         'StringCustomFieldRef',
         'CustomRecordRef',
-        'SelectCustomFieldRef'
+        'SelectCustomFieldRef',
+        'BooleanCustomFieldRef'
     ],
 
     # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
@@ -80,7 +81,8 @@ COMPLEX_TYPES = {
         'Location', 'LocationSearch',
         'Subsidiary', 'SubsidiarySearch',
         'VendorCategory', 'VendorCategorySearch',
-        'Term', 'TermSearch',
+        'Term', 'TermSearch','InventoryItem'
+
     ],
 
     'ns19': [

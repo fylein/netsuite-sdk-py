@@ -147,7 +147,7 @@ class ApiBase:
     def build_custom_fields(self, data, customer):
         custom_fields = []
         for field in data.customFieldList['customField']:
-            if isinstance(field['value'],datetime):
+            if isinstance(field['value'], datetime):
                 custom_fields.append(
                     self.ns_client.DateCustomFieldRef(
                         scriptId=field['scriptId'] if 'scriptId' in field else None,
@@ -155,6 +155,15 @@ class ApiBase:
                         value=field['value']
                     )
                 )
+            elif isinstance(field['value'], bool):
+                custom_fields.append(
+                    self.ns_client.BooleanCustomFieldRef(
+                        scriptId=field['scriptId'] if 'scriptId' in field else None,
+                        internalId=field['internalId'] if 'internalId' in field else None,
+                        value=field['value']
+                    )
+                )
+
             else:
                 custom_fields.append(
                     self.ns_client.StringCustomFieldRef(

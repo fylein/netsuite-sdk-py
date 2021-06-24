@@ -152,29 +152,26 @@ class Customers(ApiBase):
     READ_ONLY_FIELDS = ['internalId', 'balance', 'overdueBalance', 'representingSubsidiary',
                         'monthlyClosing', 'balance', 'overdueBalance', 'unbilledOrders', 'depositBalance',
                         'aging', 'aging1', 'aging2', 'aging3', 'aging4', 'lastModifiedDate', 'dateCreated',
-                        'defaultAddress', 'subsidiary', 'entityStatus', 'receivablesAccount',
+                        'defaultAddress', 'entityStatus', 'receivablesAccount',
                         'currencyList']
 
 
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Customer')
 
-        self.customFieldList = self.ns_client.CustomFieldList([])
+    def blank(self, externalId) -> OrderedDict:
 
-        self.addressbookList = {'addressbook': []}
+        blank = OrderedDict()
+        blank.externalId = externalId
+        blank.customFieldList = self.ns_client.CustomFieldList([])
+        blank.addressbookList = {'addressbook': []}
+        blank.isPerson = True
+        blank.subsidiary = self.ns_client.RecordRef(**({'internalId': '2'}))
 
-    def get(self, internalId=None, externalId=None) -> OrderedDict:
-
-        customer = self._get(internalId=internalId, externalId=externalId)
-
-        if customer.addressbookList is None and 'addressbook' not in customer.addressbookList:
-            customer.addressbookList = {'addressbook': []}
-
-        return customer
-
+        return blank
 
     def post(self, data) -> OrderedDict:
-        assert data['externalId'], 'missing external id'
+
         customer = self.ns_client.Customer(externalId=data['externalId'])
 
         self.build_simple_fields(self.SIMPLE_FIELDS, data, customer)

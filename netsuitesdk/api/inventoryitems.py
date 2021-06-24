@@ -228,12 +228,21 @@ class InventoryItems(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='InventoryItem')
 
+    def blank(self, externalId) -> OrderedDict:
 
-    def post(self, data) -> InventoryItems:
+        blank = OrderedDict()
+        blank.externalId = externalId
+        blank.customFieldList = self.ns_client.CustomFieldList([])
+        blank.subsidiary = self.ns_client.RecordRef(**({'internalId': '2'}))
+        blank.taxSchedule = self.ns_client.RecordRef(**({'internalId': '2'}))
+
+        return blank
+
+    def post(self, data) -> OrderedDict:
         if data.externalId in ['', None, 0, [], {}]:
             raise ValueError("externalId is required")
 
-        inventoryitem = self.ns_client.InventoryItem(externalId=data['externalId'])
+        inventoryitem = self.ns_client.InventoryItem(externalId=data.externalId)
 
         self.build_simple_fields(self.SIMPLE_FIELDS, data, inventoryitem)
 
