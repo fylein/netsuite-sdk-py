@@ -250,7 +250,23 @@ class InventoryItems(ApiBase):
 
         self.build_custom_fields(data, inventoryitem)
 
+        self.build_bin_list(data, inventoryitem)
+
         self.remove_readonly(inventoryitem, self.READ_ONLY_FIELDS)
 
         logger.debug('able to create inventoryitem = %s', inventoryitem)
         return self.ns_client.upsert(inventoryitem)
+
+
+    def build_bin_list(self, data, inventoryitem) -> OrderedDict:
+
+        if data.binNumberList is None:
+            inventoryitem.useBins = True
+
+            inventoryitem.binNumberList = self.ns_client.InventoryItemBinNumberList()
+            inventoryitem.binNumberList.binNumber = []
+            inventoryitem.binNumberList.binNumber.append(self.ns_client.InventoryItemBinNumber())
+            inventoryitem.binNumberList.binNumber[0].binNumber = self.ns_client.RecordRef(internalId='7710')
+            inventoryitem.binNumberList.binNumber[0].location = '1'
+
+        logger.debug('breakpoint')

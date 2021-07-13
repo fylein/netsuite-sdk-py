@@ -172,7 +172,7 @@ class Customers(ApiBase):
 
     def post(self, data) -> OrderedDict:
 
-        customer = self.ns_client.Customer(externalId=data['externalId'])
+        customer = self.ns_client.Customer(externalId=data.externalId)
 
         self.build_simple_fields(self.SIMPLE_FIELDS, data, customer)
 

@@ -81,7 +81,8 @@ COMPLEX_TYPES = {
         'Location', 'LocationSearch',
         'Subsidiary', 'SubsidiarySearch',
         'VendorCategory', 'VendorCategorySearch',
-        'Term', 'TermSearch','InventoryItem'
+        'Term', 'TermSearch','InventoryItem',
+        'InventoryItemBinNumber','InventoryItemBinNumberList'
 
     ],
 
