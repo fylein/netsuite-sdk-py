@@ -11,6 +11,9 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 class InventoryItems(ApiBase):
+
+    DEFAULT_SUBSIDIARY='2'
+
     SIMPLE_FIELDS = [
         'costEstimateUnits',
         'costingMethodDisplay',
@@ -119,6 +122,7 @@ class InventoryItems(ApiBase):
         'upperWarningLimit',
         'vsoePrice',
         'weight',
+        'weightUnit',
         'autoLeadTime',
         'autoPreferredStockLevel',
         'autoReorderPoint',
@@ -218,7 +222,7 @@ class InventoryItems(ApiBase):
         'supplyType',
         'taxSchedule',
         'unitsType',
-        'vendor',
+        'vendor'
     ]
 
     READ_ONLY_FIELDS = ['internalId', 'createdDate', 'lastModifiedDate', 'currency', 'averageCost',
@@ -233,7 +237,7 @@ class InventoryItems(ApiBase):
         blank = OrderedDict()
         blank.externalId = externalId
         blank.customFieldList = self.ns_client.CustomFieldList([])
-        blank.subsidiary = self.ns_client.RecordRef(**({'internalId': '2'}))
+        blank.subsidiaryList = {'recordRef': [self.ns_client.RecordRef(**({'internalId': '2'}))]}
         blank.taxSchedule = self.ns_client.RecordRef(**({'internalId': '2'}))
 
         return blank
@@ -254,13 +258,18 @@ class InventoryItems(ApiBase):
 
         self.remove_readonly(inventoryitem, self.READ_ONLY_FIELDS)
 
+        if hasattr(data, 'subsidiaryList'):
+            inventoryitem.subsidiaryList = data.subsidiaryList
+        else:
+            inventoryitem.subsidiaryList = self.blank().subsidiaryList
+
         logger.debug('able to create inventoryitem = %s', inventoryitem)
         return self.ns_client.upsert(inventoryitem)
 
 
     def build_bin_list(self, data, inventoryitem) -> OrderedDict:
 
-        if data.binNumberList is None:
+        if not hasattr(data, 'binNumberList'):
             inventoryitem.useBins = True
 
             inventoryitem.binNumberList = self.ns_client.InventoryItemBinNumberList()
