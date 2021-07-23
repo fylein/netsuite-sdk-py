@@ -66,7 +66,7 @@ class NetSuiteClient:
             path = os.path.join(base_path, 'cache.db')
             timeout = caching_timeout
             cache = SqliteCache(path=path, timeout=timeout)
-            transport = Transport(cache=cache)
+            transport = Transport(cache=cache, operation_timeout=60)
         else:
             transport = None
 
