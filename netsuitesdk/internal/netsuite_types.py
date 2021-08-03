@@ -45,6 +45,7 @@ COMPLEX_TYPES = {
     # https://webservices.netsuite.com/xsd/platform/v2017_2_0/common.xsd
     'ns5': [
         'AccountSearchBasic',
+        'AccountingPeriodSearchBasic',
         'Address',
         'CustomerSearchBasic',
         'JobSearchBasic',
@@ -73,8 +74,8 @@ COMPLEX_TYPES = {
     # https://webservices.netsuite.com/xsd/lists/v2017_2_0/accounting.xsd
     'ns17': [
         'Account', 'AccountSearch',
+        'AccountingPeriod', 'AccountingPeriodSearch',
         'ExpenseCategory', 'ExpenseCategorySearch',
-        'AccountingPeriod',
         'Classification', 'ClassificationSearch',
         'Department', 'DepartmentSearch',
         'Location', 'LocationSearch',
