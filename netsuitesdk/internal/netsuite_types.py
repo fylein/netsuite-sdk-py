@@ -16,6 +16,8 @@ COMPLEX_TYPES = {
         'SearchEnumMultiSelectField',
         'SearchStringField',
         'SearchMultiSelectField',
+        'SearchDateField',
+        'SearchLongField',
         'Status',
         'StatusDetail',
         'TokenPassport',
@@ -148,6 +150,9 @@ SIMPLE_TYPES = {
         'RecordType',
         'GetAllRecordType',
         'SearchRecordType',
+        'SearchEnumMultiSelectFieldOperator',
         'SearchStringFieldOperator',
+        'SearchDateFieldOperator',
+        'SearchLongFieldOperator',
     ],
 }
