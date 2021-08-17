@@ -20,6 +20,7 @@ from .api.custom_records import CustomRecords
 from .api.vendor_payments import VendorPayments
 from .api.invoices import Invoices
 from .api.terms import Terms
+from .api.tax_items import TaxItems
 from .internal.client import NetSuiteClient
 
 
@@ -59,3 +60,4 @@ class NetSuiteConnection:
         self.vendor_payments = VendorPayments(ns_client)
         self.invoices = Invoices(ns_client)
         self.terms = Terms(ns_client)
+        self.tax_items = TaxItems(ns_client)

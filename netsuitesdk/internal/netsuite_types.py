@@ -83,6 +83,7 @@ COMPLEX_TYPES = {
         'Subsidiary', 'SubsidiarySearch',
         'VendorCategory', 'VendorCategorySearch',
         'Term', 'TermSearch',
+        'SalesTaxItem', 'SalesTaxItemSearch'
     ],
 
     'ns19': [
