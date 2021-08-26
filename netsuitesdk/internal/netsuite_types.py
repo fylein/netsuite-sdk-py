@@ -12,6 +12,8 @@ COMPLEX_TYPES = {
         'RecordList',
         'RecordRef',
         'ListOrRecordRef',
+        'SearchColumnStringField',
+        'SearchColumnSelectField',
         'SearchResult',
         'SearchEnumMultiSelectField',
         'SearchStringField',
@@ -61,7 +63,7 @@ COMPLEX_TYPES = {
         'CustomListSearchBasic',
         'TermSearchBasic',
         'DepartmentSearchBasic',
-        'ItemSearchBasic',
+        'ItemSearchBasic', 'ItemSearchRowBasic',
         'ClassificationSearchBasic',
     ],
 
@@ -88,7 +90,7 @@ COMPLEX_TYPES = {
         'Term', 'TermSearch',
         'SalesTaxItem', 'SalesTaxItemSearch',
         'DepartmentSearch',
-        'ItemSearch',
+        'ItemSearch', 'ItemSearchAdvanced', 'ItemSearchRow',
         'ClassificationSearch',
     ],
 
