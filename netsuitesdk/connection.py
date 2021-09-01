@@ -1,5 +1,6 @@
 from .api.accounts import Accounts
 from .api.classifications import Classifications
+from .api.credit_memos import CreditMemos
 from .api.departments import Departments
 from .api.currencies import Currencies
 from .api.locations import Locations
@@ -61,3 +62,4 @@ class NetSuiteConnection:
         self.invoices = Invoices(ns_client)
         self.terms = Terms(ns_client)
         self.tax_items = TaxItems(ns_client)
+        self.credit_memos = CreditMemos(ns_client)
