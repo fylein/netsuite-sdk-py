@@ -116,6 +116,14 @@ COMPLEX_TYPES = {
         'VendorPaymentApply'
     ],
 
+    'ns23': [
+        'CreditMemo',
+        'CreditMemoApply',
+        'CreditMemoApplyList',
+        'CreditMemoItem',
+        'CreditMemoItemList',
+    ],
+
     # urn:general_2019_2.transactions.webservices.netsuite.com
     # https://webservices.netsuite.com/xsd/transactions/v2019_2_0/general.xsd
     'ns31': [
