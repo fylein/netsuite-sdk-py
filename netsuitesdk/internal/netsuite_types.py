@@ -12,6 +12,8 @@ COMPLEX_TYPES = {
         'RecordList',
         'RecordRef',
         'ListOrRecordRef',
+        'SearchColumnStringField',
+        'SearchColumnSelectField',
         'SearchResult',
         'SearchEnumMultiSelectField',
         'SearchStringField',
@@ -60,6 +62,9 @@ COMPLEX_TYPES = {
         'CustomRecordSearchBasic',
         'CustomListSearchBasic',
         'TermSearchBasic',
+        'DepartmentSearchBasic',
+        'ItemSearchBasic', 'ItemSearchRowBasic',
+        'ClassificationSearchBasic',
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
@@ -83,7 +88,10 @@ COMPLEX_TYPES = {
         'Subsidiary', 'SubsidiarySearch',
         'VendorCategory', 'VendorCategorySearch',
         'Term', 'TermSearch',
-        'SalesTaxItem', 'SalesTaxItemSearch'
+        'SalesTaxItem', 'SalesTaxItemSearch',
+        'DepartmentSearch',
+        'ItemSearch', 'ItemSearchAdvanced', 'ItemSearchRow',
+        'ClassificationSearch',
     ],
 
     'ns19': [
