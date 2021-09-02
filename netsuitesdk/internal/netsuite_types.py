@@ -67,6 +67,10 @@ COMPLEX_TYPES = {
         'ClassificationSearchBasic',
     ],
 
+    'ns6': [
+      'ItemCostEstimateType',
+    ],
+
     # urn:relationships.lists.webservices.netsuite.com
     'ns13': [
         'CustomerAddressbook', 'CustomerAddressbookList',
@@ -109,6 +113,13 @@ COMPLEX_TYPES = {
         'VendorBillExpenseList',
         'VendorBillItem',
         'VendorBillItemList',
+        'VendorCredit',
+        'VendorCreditApply',
+        'VendorCreditApplyList',
+        'VendorCreditExpense',
+        'VendorCreditExpenseList',
+        'VendorCreditItem',
+        'VendorCreditItemList',
         'VendorPayment',
         'VendorPaymentApplyList',
         'VendorPaymentCredit',
