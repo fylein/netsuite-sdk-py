@@ -102,7 +102,8 @@ COMPLEX_TYPES = {
         'Invoice',
         'InvoiceItem',
         'InvoiceItemList',
-        'TransactionSearch'
+        'TransactionSearch',
+        'TransactionSearchAdvanced',
     ],
 
     # urn:purchases_2017_2.transactions.webservices.netsuite.com
