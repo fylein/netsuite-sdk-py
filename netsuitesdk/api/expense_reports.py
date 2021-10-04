@@ -85,6 +85,9 @@ class ExpenseReports(ApiBase):
         if 'supervisorApproval' in data:
             er['supervisorApproval'] = data['supervisorApproval']
 
+        if 'acctCorpCardExp' in data:
+            er['acctCorpCardExp'] = data['acctCorpCardExp']
+
         if 'externalId' in data:
             er['externalId'] = data['externalId']
 
