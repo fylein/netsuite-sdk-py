@@ -23,6 +23,7 @@ from .api.vendor_payments import VendorPayments
 from .api.invoices import Invoices
 from .api.terms import Terms
 from .api.tax_items import TaxItems
+from .api.tax_groups import TaxGroups
 from .internal.client import NetSuiteClient
 
 
@@ -64,4 +65,5 @@ class NetSuiteConnection:
         self.invoices = Invoices(ns_client)
         self.terms = Terms(ns_client)
         self.tax_items = TaxItems(ns_client)
+        self.tax_groups = TaxGroups(ns_client)
         self.credit_memos = CreditMemos(ns_client)

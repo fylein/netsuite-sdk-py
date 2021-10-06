@@ -93,6 +93,7 @@ COMPLEX_TYPES = {
         'VendorCategory', 'VendorCategorySearch',
         'Term', 'TermSearch',
         'SalesTaxItem', 'SalesTaxItemSearch',
+        'TaxGroup', 'TaxGroupSearch',
         'DepartmentSearch',
         'ItemSearch', 'ItemSearchAdvanced', 'ItemSearchRow',
         'ClassificationSearch',
