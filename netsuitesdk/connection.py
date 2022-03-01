@@ -17,6 +17,7 @@ from .api.customers import Customers
 from .api.projects import Projects
 from .api.expense_categories import ExpenseCategory
 from .api.custom_lists import CustomLists
+from .api.custom_segments import CustomSegments
 from .api.custom_record_types import CustomRecordTypes
 from .api.custom_records import CustomRecords
 from .api.vendor_payments import VendorPayments
@@ -57,6 +58,7 @@ class NetSuiteConnection:
         self.files = Files(ns_client)
         self.expense_categories = ExpenseCategory(ns_client)
         self.custom_lists = CustomLists(ns_client)
+        self.custom_segments = CustomSegments(ns_client)
         self.custom_records = CustomRecords(ns_client)
         self.custom_record_types = CustomRecordTypes(ns_client)
         self.customers = Customers(ns_client)
