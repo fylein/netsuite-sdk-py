@@ -23,6 +23,7 @@ SEARCH_RECORD_TYPES = [
     'customerMessage',
     'customerStatus',
     'customList',
+    'customSegment',
     'customRecord',
     'department',
     'employee',
