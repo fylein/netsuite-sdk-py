@@ -29,6 +29,7 @@ COMPLEX_TYPES = {
         'CustomFieldList',
         'DoubleCustomFieldRef',
         'StringCustomFieldRef',
+        'BooleanCustomFieldRef',
         'CustomRecordRef',
         'SelectCustomFieldRef'
     ],
