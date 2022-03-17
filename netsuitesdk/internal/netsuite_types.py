@@ -74,6 +74,7 @@ COMPLEX_TYPES = {
 
     # urn:relationships.lists.webservices.netsuite.com
     'ns13': [
+        'BillingAccount',
         'CustomerAddressbook', 'CustomerAddressbookList',
         'Customer', 'CustomerSearch',
         'Vendor', 'VendorSearch',
@@ -106,6 +107,7 @@ COMPLEX_TYPES = {
         'InvoiceItemList',
         'TransactionSearch',
         'TransactionSearchAdvanced',
+        'Usage',
     ],
 
     # urn:purchases_2017_2.transactions.webservices.netsuite.com
