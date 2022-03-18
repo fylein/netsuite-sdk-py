@@ -1,4 +1,5 @@
 from .api.accounts import Accounts
+from .api.billing_account import BillingAccount
 from .api.classifications import Classifications
 from .api.credit_memos import CreditMemos
 from .api.departments import Departments
@@ -8,6 +9,7 @@ from .api.vendor_bills import VendorBills
 from .api.vendor_credits import VendorCredits
 from .api.vendors import Vendors
 from .api.subsidiaries import Subsidiaries
+from .api.usage import Usage
 from .api.journal_entries import JournalEntries
 from .api.employees import Employees
 from .api.expense_reports import ExpenseReports
@@ -43,6 +45,7 @@ class NetSuiteConnection:
         )
         self.client = ns_client
         self.accounts = Accounts(ns_client)
+        self.billing_accounts = BillingAccount(ns_client)
         self.classifications = Classifications(ns_client)
         self.departments = Departments(ns_client)
         self.currencies = Currencies(ns_client)
@@ -69,3 +72,4 @@ class NetSuiteConnection:
         self.tax_items = TaxItems(ns_client)
         self.tax_groups = TaxGroups(ns_client)
         self.credit_memos = CreditMemos(ns_client)
+        self.usages = Usage(ns_client)
