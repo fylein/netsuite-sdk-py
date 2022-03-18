@@ -76,7 +76,7 @@ COMPLEX_TYPES = {
     'ns13': [
         'BillingAccount',
         'CustomerAddressbook', 'CustomerAddressbookList',
-        'Customer', 'CustomerSearch',
+        'Customer', 'CustomerSearch', 'CustomerTaxRegistrationList', 'CustomerTaxRegistration',
         'Vendor', 'VendorSearch',
         'Job', 'JobSearch',
         'VendorAddressbook', 'VendorAddressbookList',
