@@ -542,11 +542,11 @@ class NetSuiteClient:
         Usage example:
             customer1 = self.Customer(externalId='customer', email='test1@example.com')
             customer2 = self.Customer(externalId='another_customer', email='test2@example.com')
-            self.upsertList(records=[customer1, customer2])
+            self.upsert_list(records=[customer1, customer2])
 
         :param list[CompoundValue] records: the records to be created or updated
-        :return: a reference to the newly created or updated records
-        :rtype: list[CompoundValue]
+        :return: a reference to the newly created or updated records, with a success/error status
+        :rtype: list[OrderedDict]
         """
 
         response = self.request('upsertList', record=records)
