@@ -105,8 +105,6 @@ class Vendors(ApiBase):
 
         vendor['representingSubsidiary'] = self.ns_client.RecordRef(**(data['representingSubsidiary']))
 
-        vendor['workCalendar'] = self.ns_client.RecordRef(**(data['workCalendar']))
-
         self.build_simple_fields(self.SIMPLE_FIELDS, data, vendor)
 
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, vendor)
