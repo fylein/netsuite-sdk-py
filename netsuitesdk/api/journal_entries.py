@@ -20,11 +20,11 @@ class JournalEntries(ApiBase):
                                            pageSize=20)
         return self._paginated_search_to_generator(paginated_search=paginated_search)
 
-    def post(self, data) -> OrderedDict:
-        assert data['externalId'], 'missing external id'
-        je = self.ns_client.JournalEntry(externalId=data['externalId'])
+    def _build_journal_entry_data(self, record):
+        assert record['externalId'], 'missing external id'
+        je = self.ns_client.JournalEntry(externalId=record['externalId'])
         line_list = []
-        for eod in data['lineList']:
+        for eod in record['lineList']:
             if 'customFieldList' in eod and eod['customFieldList']:
                 custom_fields = []
                 for field in eod['customFieldList']:
@@ -51,29 +51,40 @@ class JournalEntries(ApiBase):
             line_list.append(jee)
 
         je['lineList'] = self.ns_client.JournalEntryLineList(line=line_list)
-        je['currency'] = self.ns_client.RecordRef(**(data['currency']))
+        je['currency'] = self.ns_client.RecordRef(**(record['currency']))
 
-        if 'memo' in data:
-            je['memo'] = data['memo']
+        if 'memo' in record:
+            je['memo'] = record['memo']
 
-        if 'tranDate' in data:
-            je['tranDate'] = data['tranDate']
+        if 'tranDate' in record:
+            je['tranDate'] = record['tranDate']
 
-        if 'tranId' in data:
-            je['tranId'] = data['tranId']
+        if 'tranId' in record:
+            je['tranId'] = record['tranId']
 
-        if 'subsidiary' in data:
-            je['subsidiary'] = data['subsidiary']
+        if 'subsidiary' in record:
+            je['subsidiary'] = record['subsidiary']
 
-        if 'class' in data:
-            je['class'] = data['class']
+        if 'class' in record:
+            je['class'] = record['class']
 
-        if 'location' in data:
-            je['location'] = data['location']
+        if 'location' in record:
+            je['location'] = record['location']
 
-        if 'department' in data:
-            je['department'] = data['department']
+        if 'department' in record:
+            je['department'] = record['department']
+
+        return je
+
+    def post(self, data) -> OrderedDict:
+        je = self._build_journal_entry_data(data)
 
         logger.debug('able to create je = %s', je)
         res = self.ns_client.upsert(je)
         return self._serialize(res)
+
+    def post_batch(self, records) -> [OrderedDict]:
+        jes = [self._build_journal_entry_data(record) for record in records]
+
+        responses = self.ns_client.upsert_list(jes)
+        return [self._serialize(response) for response in responses]
