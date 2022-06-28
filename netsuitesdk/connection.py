@@ -11,6 +11,7 @@ from .api.vendors import Vendors
 from .api.subsidiaries import Subsidiaries
 from .api.usage import Usage
 from .api.journal_entries import JournalEntries
+from .api.adv_inter_company_journal_entries import AdvInterCompanyJournalEntries
 from .api.employees import Employees
 from .api.expense_reports import ExpenseReports
 from .api.folders import Folders
@@ -55,6 +56,7 @@ class NetSuiteConnection:
         self.vendors = Vendors(ns_client)
         self.subsidiaries = Subsidiaries(ns_client)
         self.journal_entries = JournalEntries(ns_client)
+        self.adv_inter_company_journal_entries = AdvInterCompanyJournalEntries(ns_client)
         self.employees = Employees(ns_client)
         self.expense_reports = ExpenseReports(ns_client)
         self.folders = Folders(ns_client)
