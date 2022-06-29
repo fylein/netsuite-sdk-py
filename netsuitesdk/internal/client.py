@@ -573,8 +573,8 @@ class NetSuiteClient:
         :param str recordType: the complex type (e.g. 'vendor')
         :param int internalId: id specifying the record to be deleted
         :param str externalId: str specifying the record to be deleted
-        :return: the matching record in case of success
-        :rtype: Record
+        :return: a reference to the deleted record (in case of success)
+        :rtype: RecordRef
         :raises ValueError: if neither internalId nor externalId was passed
         """
 
