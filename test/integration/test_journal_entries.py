@@ -5,39 +5,59 @@ import os
 
 logger = logging.getLogger(__name__)
 
-def load_je():
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
-    with open('./test/integration/data/journal_entries/' + filename) as oj:
-        s = oj.read()
-        return json.loads(s)
+TYPE = 'journalEntry'
+API = 'journal_entries'
 
-def validate_je(expected, result):
-    logger.debug('result = %s', result)
-    assert result, f'No object with externalId'
-    assert result['externalId'] == expected['externalId'], f'No object with externalId'
-    assert result['currency']['name'] == expected['currency']['name'], f'Currency does not match'
-    assert result['subsidiary']['internalId'] == expected['subsidiary']['internalId'], f'Subsidiary does not match'
+class TestJournalEntries():
 
-def test_post(nc):
-    je1 = load_je()
-    logger.debug('rvb1 = %s', je1)
-    res = nc.journal_entries.post(je1)
-    logger.debug('res = %s', res)
-    assert res['externalId'] == je1['externalId'], 'External ID does not match'
-    assert res['type'] == 'journalEntry', 'Type does not match'
+    @pytest.fixture(scope="class")
+    def je(self):
+        filename = os.getenv('NS_ACCOUNT').lower() + '.json'
+        with open(f'./test/integration/data/{API}/{filename}') as oj:
+            s = oj.read()
+            return json.loads(s)
 
-def test_get(nc):
-    je1 = load_je()
-    data = nc.journal_entries.get(externalId=je1['externalId'])
-    validate_je(je1, data)
+    def get_api(self, nc):
+        return getattr(nc, API)
 
-def test_get_all(nc):
-    je1 = load_je()
-    data = nc.journal_entries.get_all_generator()
-    logger.debug('data = %s', data)
-    assert data, 'get all generator didnt work'
-    assert len(data) > 0, f'No data found'
+    def validate_je(self, expected, result):
+        logger.debug('result = %s', result)
+        assert result, f'No object with externalId'
+        assert result['internalId'] == expected['internalId'], f'Internal ID does not match'
+        assert result['externalId'] == expected['externalId'], f'External ID does not match'
+        assert result['currency']['name'] == expected['currency']['name'], f'Currency does not match'
+        assert result['subsidiary']['internalId'] == expected['subsidiary']['internalId'], f'Subsidiary does not match'
 
-    je = next(je for je in data if je['externalId'] == je1['externalId'])
-    logger.debug('je = %s', je)
-    validate_je(je1, je)
+    def validate_result(self, expected, result):
+        logger.debug('result = %s', result)
+        assert result['internalId'] == expected['internalId'], 'Internal ID does not match'
+        assert result['externalId'] == expected['externalId'], 'External ID does not match'
+        assert result['type'] == TYPE, 'Type does not match'
+
+    def test_post(self, nc, je):
+        api = self.get_api(nc)
+        logger.debug('rvb1 = %s', je)
+
+        # Test post of new journal entry
+        res = api.post(je)
+        je['internalId'] = res['internalId']
+        self.validate_result(je, res)
+
+        # Test upsert of existing journal entry
+        res2 = api.post(je)
+        self.validate_result(je, res2)
+
+    def test_get(self, nc, je):
+        api = self.get_api(nc)
+        data = api.get(externalId=je['externalId'])
+        self.validate_je(je, data)
+
+    def test_get_all(self, nc, je):
+        api = self.get_api(nc)
+        data = api.get_all_generator()
+        logger.debug('data = %s', data)
+        assert data, 'get all generator didnt work'
+        assert len(data) > 0, f'No data found'
+
+        je2 = next(je2 for je2 in data if je2['externalId'] == je['externalId'])
+        self.validate_je(je, je2)
