@@ -61,3 +61,8 @@ class TestJournalEntries():
 
         je2 = next(je2 for je2 in data if je2['externalId'] == je['externalId'])
         self.validate_je(je, je2)
+
+    def test_delete(self, nc, je):
+        api = self.get_api(nc)
+        res = api.delete(externalId=je['externalId'])
+        self.validate_result(je, res)
