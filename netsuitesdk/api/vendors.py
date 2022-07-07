@@ -103,7 +103,8 @@ class Vendors(ApiBase):
 
         vendor['subsidiary'] = self.ns_client.RecordRef(**(data['subsidiary']))
 
-        vendor['representingSubsidiary'] = self.ns_client.RecordRef(**(data['representingSubsidiary']))
+        if data.get('representingSubsidiary'):
+            vendor['representingSubsidiary'] = self.ns_client.RecordRef(**(data['representingSubsidiary']))
 
         self.build_simple_fields(self.SIMPLE_FIELDS, data, vendor)
 
