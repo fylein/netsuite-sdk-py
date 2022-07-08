@@ -148,6 +148,9 @@ COMPLEX_TYPES = {
         'JournalEntry',
         'JournalEntryLine',
         'JournalEntryLineList',
+        'AdvInterCompanyJournalEntry',
+        'AdvInterCompanyJournalEntryLine',
+        'AdvInterCompanyJournalEntryLineList'
     ],
 
     'ns32': [

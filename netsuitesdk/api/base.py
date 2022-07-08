@@ -59,6 +59,10 @@ class ApiBase:
     def post(self, data) -> OrderedDict:
         raise NotImplementedError('post method not implemented')
 
+    def delete(self, internalId=None, externalId=None) -> OrderedDict:
+        record = self.ns_client.delete(recordType=self.type_name, internalId=internalId, externalId=externalId)
+        return record
+
     def _serialize(self, record) -> OrderedDict:
         """
         record: single record
@@ -84,7 +88,7 @@ class ApiBase:
         logger.debug('going to page %d', 0)
 
         records = []
-        
+
         for p in range(1, num_pages + 1):
             logger.debug('going to page %d', p)
             paginated_search.goto_page(p)
@@ -120,7 +124,7 @@ class ApiBase:
     def _get_all(self) -> List[OrderedDict]:
         records = self.ns_client.getAll(recordType=self.type_name)
         return self._serialize_array(records)
-    
+
     def _get_all_generator(self):
         res = self._get_all()
         for r in res:
