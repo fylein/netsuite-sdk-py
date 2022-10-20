@@ -4,6 +4,7 @@ of a :class:`~netsuitesdk.client.NetSuiteClient` instance `ns`.
 """
 
 COMPLEX_TYPES = {
+    # https://webservices.netsuite.com/xsd/platform/v2022_2_0/core.xsd
     'ns0': [
         'BaseRef',
         'GetAllRecord',
@@ -14,9 +15,11 @@ COMPLEX_TYPES = {
         'ListOrRecordRef',
         'SearchColumnStringField',
         'SearchColumnSelectField',
+        "SearchCustomFieldList",
         'SearchResult',
         'SearchEnumMultiSelectField',
         'SearchStringField',
+        "SearchMultiSelectCustomField",
         'SearchMultiSelectField',
         'SearchDateField',
         'SearchLongField',
