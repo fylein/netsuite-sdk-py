@@ -68,6 +68,7 @@ COMPLEX_TYPES = {
         'ClassificationSearchBasic',
         'CurrencyRateSearchBasic',
         'ConsolidatedExchangeRateSearchBasic',
+        'BillingAccountSearchBasic'
     ],
 
     'ns6': [
@@ -81,7 +82,7 @@ COMPLEX_TYPES = {
         'Customer', 'CustomerSearch', 'CustomerTaxRegistrationList', 'CustomerTaxRegistration',
         'Vendor', 'VendorSearch',
         'Job', 'JobSearch',
-        'VendorAddressbook', 'VendorAddressbookList',
+        'VendorAddressbook', 'VendorAddressbookList', 'BillingAccountSearch'
     ],
 
     # urn:accounting_2017_2.lists.webservices.netsuite.com
