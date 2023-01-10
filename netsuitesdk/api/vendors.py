@@ -20,7 +20,6 @@ class Vendors(ApiBase):
         'comments',
         'companyName',
         'creditLimit',
-        'currencyList',
         'customFieldList',
         'dateCreated',
         'defaultAddress',
@@ -99,7 +98,11 @@ class Vendors(ApiBase):
         assert data['externalId'], 'missing external id'
         vendor = self.ns_client.Vendor(externalId=data['externalId'])
 
-        vendor['currency'] = self.ns_client.RecordRef(**(data['currency']))
+        if data.get('currency'):
+            vendor['currency'] = self.ns_client.RecordRef(**(data['currency']))
+
+        if data.get('currencyList'):
+            vendor['currencyList'] = self.ns_client.VendorCurrencyList(**(data['currencyList']))
 
         vendor['subsidiary'] = self.ns_client.RecordRef(**(data['subsidiary']))
 
