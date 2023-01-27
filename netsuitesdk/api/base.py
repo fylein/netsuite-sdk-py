@@ -141,5 +141,5 @@ class ApiBase:
 
     def build_record_ref_fields(self, fields, source, target):
         for field in fields:
-            if field in source:
+            if field in source and source[field]:
                 target[field] = self.ns_client.RecordRef(**(source[field]))
