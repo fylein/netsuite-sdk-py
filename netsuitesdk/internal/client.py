@@ -335,13 +335,22 @@ class NetSuiteClient:
         :return: the request response object
         :rtype: the exact type depends on the request
         """
-        method = getattr(self._service_proxy, name)
-        # call the service:
-        include_search_preferences = (name == 'search')
-        response = method(*args,
-                          _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
-                          , **kwargs)
-        return response
+        try:
+            method = getattr(self._service_proxy, name)
+            # call the service:
+            include_search_preferences = (name == 'search')
+            response = method(*args,
+                            _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
+                            , **kwargs)
+            return response
+        except Fault as e:
+            if 'SuiteTalk concurrent request limit exceeded. Request blocked' in str(e):
+                raise NetSuiteRateLimitError(str(e))
+            else:
+                raise
+        except Exception as e:
+            raise
+
 
     def get(self, recordType, internalId=None, externalId=None):
         """
