@@ -3,6 +3,7 @@
     :class:`NetSuiteLoginError`
     :class:`NetSuiteRequestError`
     :class:`NetSuiteTypeError`
+    :class:`NetSuiteRateLimitError`
 """
 
 class NetSuiteError(Exception):
@@ -37,5 +38,10 @@ class NetSuiteRequestError(NetSuiteError):
 
 class NetSuiteTypeError(NetSuiteError):
     """Exception raised when requested an invalid netsuite type"""
+
+    pass
+
+class NetSuiteRateLimitError(NetSuiteError):
+    """Exception raised for errors during rate limit requests like get, search, .."""
 
     pass
