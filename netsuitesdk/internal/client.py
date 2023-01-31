@@ -346,6 +346,8 @@ class NetSuiteClient:
         except Fault as e:
             if 'SuiteTalk concurrent request limit exceeded. Request blocked' in str(e):
                 raise NetSuiteRateLimitError(str(e))
+            elif 'Invalid login attempt' in str(e):
+                raise NetSuiteLoginError(str(e), e.code)
             else:
                 raise
         except Exception as e:
