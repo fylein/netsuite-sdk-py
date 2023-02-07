@@ -57,7 +57,9 @@ class VendorBills(ApiBase):
             expense_list.append(vbe)
         
         vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
-        vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
+
+        if 'currency' in data:
+            vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
 
         if 'memo' in data:
             vb['memo'] = data['memo']
@@ -86,7 +88,9 @@ class VendorBills(ApiBase):
         if 'customFieldList' in data:
             vb['customFieldList'] = data['customFieldList']
 
-        vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
+        if 'entity' in data:
+            vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
+
         logger.debug('able to create vb = %s', vb)
         res = self.ns_client.upsert(vb)
         return self._serialize(res)
