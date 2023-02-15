@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from netsuitesdk.internal.client import NetSuiteClient
 from netsuitesdk.internal.utils import PaginatedSearch
-from typing import List
+from typing import List, Generator
 
 logger = logging.getLogger(__name__)
 
@@ -78,16 +78,16 @@ class ApiBase:
         return zeep.helpers.serialize_object(records)
 
     @staticmethod
-    def _paginated_search_to_generator(paginated_search):
+    def _paginated_search_to_generator(paginated_search) -> List:
+        records = []
+
         if paginated_search.num_records == 0:
-            return
+            return records
 
         num_pages = paginated_search.total_pages
         logger.debug('total pages = %d, records in page = %d', paginated_search.total_pages, paginated_search.num_records)
         logger.debug(f'current page index {paginated_search.page_index}')
         logger.debug('going to page %d', 0)
-
-        records = []
 
         for p in range(1, num_pages + 1):
             logger.debug('going to page %d', p)
