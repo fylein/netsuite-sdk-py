@@ -11,7 +11,6 @@ Dockerfile
 
 # test_files
 dry_run.py
-test_*
 
 # IDEs
 .DS_Store
@@ -121,6 +120,7 @@ venv.bak/
 .mypy_cache/
 
 test.py
+secrets.sh
 
 make_mock.py
 private/

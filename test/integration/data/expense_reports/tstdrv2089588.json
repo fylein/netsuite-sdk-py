@@ -6,7 +6,7 @@
     "customForm": null,
     "account": {
         "name": null,
-        "internalId": "25",
+        "internalId": "635027",
         "externalId": null,
         "type": "account"
     },
@@ -17,7 +17,7 @@
         "type": "vendor"
     },
     "expenseReportCurrency": {
-        "name": "USD",
+        "name": "USA",
         "internalId": null,
         "externalId": null,
         "type": "currency"

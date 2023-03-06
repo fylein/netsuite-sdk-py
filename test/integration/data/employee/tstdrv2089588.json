@@ -1,0 +1,54 @@
+{
+    "externalId": "1237",
+    "accountNumber": null,
+    "adpId": null,
+    "altName": null,
+    "approvalLimit": null,
+    "approver": null,
+    "baseWage": null,
+    "baseWageType": null,
+    "billingClass": null,
+    "billPay": null,
+    "birthDate": null,
+    "class": null,
+    "comments": null,
+    "commissionPaymentPreference": null,
+    "compensationCurrency": null,
+    "concurrentWebServicesUser": null,
+    "currency": null,
+    "customForm": null,
+    "inheritIPRules": true,
+    "dateCreated": null,
+    "defaultAcctCorpCardExp": {
+        "internalId": "213",
+        "externalId": null,
+        "type": "account"
+    },
+    "directDeposit": null,
+    "eligibleForCommission": null,
+    "email": "testemployeenetsuitesdk@example.com",
+    "employeeStatus": null,
+    "employeeType": null,
+    "ethnicity": null,
+    "expenseLimit": null,
+    "defaultExpenseReportCurrency": {
+        "name": "USD",
+        "internalId": 1,
+        "externalId": null,
+        "type": "currency"
+    },
+    "subsidiary": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "fax": null,
+    "firstName": null,
+    "gender": null,
+    "workCalendar":{
+        "externalId": null,
+        "internalId": null,
+        "type": null
+    }
+}

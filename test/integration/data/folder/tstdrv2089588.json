@@ -1,0 +1,26 @@
+{
+    "externalId": "1237",
+    "bundleable": null,
+    "class": null,
+    "department": null,
+    "description": "Test description",
+    "folderType": "_documentsAndFiles",
+    "group": null,
+    "hideInBundle": null,
+    "isInactive": null,
+    "isOnline": null,
+    "isPrivate": null,
+    "location": null,
+    "name": "testFolder",
+    "parent": {
+        "internalId": 8197,
+        "externalId": null,
+        "type": "folder"
+    },
+    "subsidiary":{
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    }
+}

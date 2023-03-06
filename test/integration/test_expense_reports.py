@@ -6,11 +6,11 @@ import os
 logger = logging.getLogger(__name__)
 
 def test_get(nc):
-    data = next(nc.expense_reports.get_all_generator())
+    data = nc.expense_reports.get_all_generator()
     logger.debug('data = %s', data)
     assert data, 'get all generator didnt work'
-    assert data['externalId'] == 'entity-5', f'No object found with externalId'
-    assert data['internalId'] == '-5', f'No object found with internalId'
+    assert data[0]['externalId'] == 'entity-5', f'No object found with externalId'
+    assert data[0]['internalId'] == '-5', f'No object found with internalId'
 
     data = nc.expense_reports.get(externalId='EXPR_1')
     logger.debug('data = %s', data)
