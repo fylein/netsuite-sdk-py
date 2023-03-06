@@ -29,6 +29,9 @@ class JournalEntries(ApiBase):
         ApiBase.__init__(self, ns_client=ns_client, type_name=self.TYPE_NAME)
         # Uppercase the first letter of the type name to get the class name
         self.class_name = self.type_name[:1].upper() + self.type_name[1:]
+        self.class_ = getattr(ns_client, self.class_name)
+        self.line_class_ = getattr(ns_client, self.class_name + 'Line')
+        self.line_list_class_ = getattr(ns_client, self.class_name + 'LineList')
 
     def get_all_generator(self):
         record_type_search_field = self.ns_client.SearchStringField(searchValue=self.class_name, operator='contains')
@@ -41,7 +44,7 @@ class JournalEntries(ApiBase):
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
-        je = self.ns_client.JournalEntry(externalId=data['externalId'])
+        je = self.class_(externalId=data['externalId'])
         line_list = []
         for eod in data['lineList']:
             if 'customFieldList' in eod and eod['customFieldList']:
@@ -66,10 +69,10 @@ class JournalEntries(ApiBase):
                             )
                         )
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
-            jee = self.ns_client.JournalEntryLine(**eod)
+            jee = self.line_class_(**eod)
             line_list.append(jee)
 
-        je['lineList'] = self.ns_client.JournalEntryLineList(line=line_list)
+        je['lineList'] = self.line_list_class_(line=line_list)
         self.build_simple_fields(self.SIMPLE_FIELDS, data, je)
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, je)
 
