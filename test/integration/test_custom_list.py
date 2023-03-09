@@ -3,7 +3,7 @@ import pytest
 
 logger = logging.getLogger(__name__)
 
-@pytest.mark.skip(reason="Can't taste this due to persmission issues")
+@pytest.mark.skip(reason="Can't test this due to persmission issues")
 def test_get(nc):
     data = nc.custom_lists.get_all()
     logger.debug('data = %s', data)
@@ -14,7 +14,7 @@ def test_get(nc):
     logger.debug('data = %s', data)
     assert data, f'No object with internalId {internal_id}'
 
-@pytest.mark.skip(reason="Can't taste this due to persmission issues")
+@pytest.mark.skip(reason="Can't test this due to persmission issues")
 def test_get_all_generator(nc):
     res1 = nc.custom_lists.get_all()
     res2 = []

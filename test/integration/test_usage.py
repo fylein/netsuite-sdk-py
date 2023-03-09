@@ -6,7 +6,7 @@ import pytest
 logger = logging.getLogger(__name__)
 
 
-@pytest.mark.skip(reason="Can't taste this due to persmission issues")
+@pytest.mark.skip(reason="Can't test this due to persmission issues")
 def test_post(nc):
     filename = os.getenv('NS_ACCOUNT').lower() + '.json'
     with open('./test/integration/data/usage/' + filename) as oj:
