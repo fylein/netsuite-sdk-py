@@ -21,7 +21,7 @@ def test_get_all_generator(nc):
     len_get_all_generator_response = 0
     for i in get_all_generator_response:
         len_get_all_generator_response += len(i)
-    assert len(get_all_respose) == get_all_generator_response, 'changing page size is returning different results'
+    assert len(get_all_respose) == len_get_all_generator_response, 'changing page size is returning different results'
 
 def test_post(nc):
     data = {}

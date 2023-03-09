@@ -20,12 +20,6 @@
     "discountRate": null,
     "discountTotal": null,
     "email": null,
-    "entity": {
-        "name": null,
-        "internalId": "14452",
-        "externalId": null,
-        "type": "vendor"
-    },
     "entityTaxRegNum": null,
     "estGrossProfit": null,
     "estGrossProfitPercent": null,
@@ -41,12 +35,7 @@
     "job": null,
     "lastModifiedDate": null,
     "leadSource": null,
-    "location": {
-        "name": null,
-        "internalId": "1",
-        "externalId": null,
-        "type": "location"
-    },
+    "location":null,
     "memo": "Testing CreditMemos using Fyle SDK",
     "nexus": null,
     "partner": null,
@@ -77,10 +66,16 @@
     "toBePrinted": null,
     "total": null,
     "totalCostEstimate": null,
-    "tranDate": "2022-07-21T17:32:28Z",
+    "tranDate": null,
     "tranId": null,
     "tranIsVsoeBundle": null,
     "unapplied": null,
     "vatRegNum": null,
-    "vsoeAutoCalc": null
+    "vsoeAutoCalc": null,
+    "entity": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "vendor"
+    }
 }

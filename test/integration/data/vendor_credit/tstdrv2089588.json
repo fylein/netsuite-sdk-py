@@ -43,12 +43,35 @@
     "itemList": {
         "item": [
             {
-                "taxCode": {
-                    "internalId":"1",
+               "amount": null,
+               "class": null,
+               "customer": {
+                "internalId": "1",
+                "externalId": null,
+                "type": null
+               },
+               "customFieldList": null,
+               "department": {
+                "name": null,
+                "internalId": "10",
+                "externalId": null,
+                "type": "department"
+                },
+                "description": "test vendor credit",
+                "item": {
+                    "internalId": "20",
                     "externalId": null,
-                    "type": "taxType"
+                    "type": "vendorCredit"
+                },
+                "location": {
+                    "name": null,
+                    "internalId": "1",
+                    "externalId": null,
+                    "type": "location"
                 }
+
             }
-        ]
+        ],
+        "replaceAll": true
     }
 }
