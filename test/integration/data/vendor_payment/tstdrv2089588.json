@@ -6,6 +6,8 @@
         "externalId": null,
         "type": "account"
     },
+    "amount": null,
+    "apAcct": null,
     "applyList": {
         "apply": [
             {

@@ -4,6 +4,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def test_get(nc):
+    get_all_respose = nc.vendor_payments.get_all()
+    get_all_generator_response = []
+    for r in nc.vendor_payments.get_all_generator():
+        get_all_generator_response.append(r)
+    len_get_all_generator_response = 0
+    for i in get_all_generator_response:
+        len_get_all_generator_response += len(i)
+    assert len(get_all_respose) == len_get_all_generator_response, 'changing page size is returning different results'
+    
+
 def test_post(nc):
     filename = os.getenv('NS_ACCOUNT').lower() + '.json'
     with open('./test/integration/data/vendor_payment/' + filename) as oj:
