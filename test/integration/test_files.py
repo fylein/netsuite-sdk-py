@@ -5,8 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def test_post(nc):
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
-    with open('./test/integration/data/file/' + filename) as oj:
+    with open('./test/integration/data/file/data.json') as oj:
         s = oj.read()
         file_data = json.loads(s)
     file_data['content'] = b"test_file"

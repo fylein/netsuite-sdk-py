@@ -19,8 +19,7 @@ def test_get(nc):
     assert data['internalId'] == '10613', f'No object with internalId'
 
 def test_post(nc):
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
-    with open('./test/integration/data/expense_reports/' + filename) as oj:
+    with open('./test/integration/data/expense_reports/data.json') as oj:
         s = oj.read()
         expr1 = json.loads(s)
     logger.debug('expr1 = %s', expr1)

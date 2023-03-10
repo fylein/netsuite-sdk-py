@@ -7,8 +7,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.skip(reason="Can't test this due to persmission issues")
 def test_post(nc):
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
-    with open('./test/integration/data/vendor_credit/' + filename) as oj:
+    with open('./test/integration/data/vendor_credit/data.json') as oj:
         s = oj.read()
         vendor_credit = json.loads(s)
     logger.debug('vendor_credit = %s', vendor_credit)

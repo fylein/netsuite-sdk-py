@@ -16,9 +16,8 @@ def test_get(nc):
     assert data, f'No object with internalId {internal_id}'
 
 def test_post(nc):
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
     vb1 = {}
-    with open('./test/integration/data/vendor_bills/' + filename) as oj:
+    with open('./test/integration/data/vendor_bills/data.json') as oj:
         s = oj.read()
         vb1 = json.loads(s)
     logger.debug('rvb1 = %s', vb1)

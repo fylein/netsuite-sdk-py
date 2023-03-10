@@ -1,5 +1,5 @@
 {
-    "externalId": "1237",
+    "externalId": "1235",
     "accountNumber": null,
     "adpId": null,
     "altName": null,
@@ -17,8 +17,9 @@
     "concurrentWebServicesUser": null,
     "currency": null,
     "customForm": null,
-    "inheritIPRules": true,
+    "inheritIPRules": false,
     "dateCreated": null,
+    "entityId": "1",
     "defaultAcctCorpCardExp": {
         "internalId": "213",
         "externalId": null,
@@ -32,7 +33,7 @@
     "ethnicity": null,
     "expenseLimit": null,
     "defaultExpenseReportCurrency": {
-        "name": "USD",
+        "name": "USA",
         "internalId": 1,
         "externalId": null,
         "type": "currency"
@@ -44,11 +45,25 @@
         "type": "subsidiary"
     },
     "fax": null,
-    "firstName": null,
+    "firstName": "Test Netsuite",
+    "lastName": "SDK",
     "gender": null,
     "workCalendar":{
         "externalId": null,
         "internalId": null,
         "type": null
+    },
+    "payFrequency":"_monthly",
+    "location": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "location"
+    },
+    "department": {
+        "name": null,
+        "internalId": "10",
+        "externalId": null,
+        "type": "department"
     }
 }
