@@ -1,6 +1,7 @@
 from netsuitesdk.internal.utils import PaginatedSearch
 import logging
 import pytest
+from netsuitesdk.internal.exceptions import NetSuiteRequestError
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,11 @@ def test_get_employee(ns):
 def test_get_expense_report(ns):
     record = ns.get(recordType='ExpenseReport', externalId='EXPR_1')
     assert record, 'No expense report found'
+
+def test_get_currency_not_supported(ns):
+    with pytest.raises(NetSuiteRequestError) as ex:
+        record = ns.get(recordType='currency', internalId='15')
+    assert 'An error occured in a get request' in str(ex.value.message)
 
 # def test_get_currency1(nc):
 #     currency = nc.currency.get(internal_id='1')
