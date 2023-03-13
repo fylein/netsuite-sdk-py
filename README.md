@@ -272,4 +272,4 @@ as well as `make html`
 
 ## Contributions
 
-We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this. (Please write test cases for new added features.)
+We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this. (Please write test cases for new additions.)
