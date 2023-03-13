@@ -11,6 +11,9 @@ Dockerfile
 
 # test_files
 dry_run.py
+test_*
+!test/*/*
+!test/*
 
 # IDEs
 .DS_Store

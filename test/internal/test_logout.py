@@ -8,7 +8,6 @@ from netsuitesdk.internal.utils import PaginatedSearch
 
 logger = logging.getLogger(__name__)
 
-@pytest.mark.skip(reason="We will not use this often")
 def test_logout():
     """
     Test if logout method is supported. We will not use this often.
