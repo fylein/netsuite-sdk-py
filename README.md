@@ -230,6 +230,13 @@ export NS_TOKEN_SECRET=xxxx
 python -m pytest test/integration
 ```
 
+To run integration tests on a newly added / modified file
+
+```python
+python -m pytest -vv test/integration/test_filename.py; 
+
+```
+
 ## Code coverage
 
 To get code coverage report, run this command:
@@ -265,4 +272,4 @@ as well as `make html`
 
 ## Contributions
 
-We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this.
+We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this. (Please write test cases for new added features.)
