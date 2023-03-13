@@ -19,6 +19,8 @@ jobs:
           NS_TOKEN_KEY: ${{ secrets.NS_TOKEN_KEY }}
           NS_TOKEN_SECRET: ${{ secrets.NS_TOKEN_SECRET }}
           NS_APPID: ${{ secrets.NS_APPID }}
+          NS_EMAIL: ${{ secrets.NS_EMAIL }}
+          NS_PASSWORD: ${{ secrets.NS_PASSWORD }}
         run: |
           pip install -r requirements.txt && pip install pytest pytest-coverage
           python -m pytest test/ --cov --junit-xml=test-reports/report.xml --cov-report=term-missing --cov-fail-under=90 | tee pytest-coverage.txt
