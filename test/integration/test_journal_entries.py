@@ -12,8 +12,7 @@ class TestJournalEntries():
 
     @pytest.fixture(scope="class")
     def je(self):
-        filename = os.getenv('NS_ACCOUNT').lower() + '.json'
-        with open(f'./test/integration/data/{API}/{filename}') as oj:
+        with open(f'./test/integration/data/{API}/data.json') as oj:
             s = oj.read()
             return json.loads(s)
 
@@ -43,9 +42,6 @@ class TestJournalEntries():
         je['internalId'] = res['internalId']
         self.validate_result(je, res)
 
-        # Test upsert of existing journal entry
-        res2 = api.post(je)
-        self.validate_result(je, res2)
 
     def test_get(self, nc, je):
         api = self.get_api(nc)

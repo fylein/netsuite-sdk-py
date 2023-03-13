@@ -229,6 +229,14 @@ export NS_TOKEN_SECRET=xxxx
 
 python -m pytest test/integration
 ```
+Currently the code coverage is at 90%
+
+To run integration tests on a newly added / modified file
+
+```python
+python -m pytest -vv test/integration/test_filename.py; 
+
+```
 
 ## Code coverage
 
@@ -238,16 +246,44 @@ To get code coverage report, run this command:
 python -m pytest --cov=netsuitesdk
 
 <snipped output>
-Name                            Stmts   Miss  Cover
----------------------------------------------------
-netsuitesdk/__init__.py             5      0   100%
-netsuitesdk/client.py             343    198    42%
-netsuitesdk/constants.py            3      0   100%
-netsuitesdk/exceptions.py          14      5    64%
-netsuitesdk/netsuite_types.py       2      0   100%
-netsuitesdk/utils.py               47     19    60%
----------------------------------------------------
-TOTAL                             414    222    46%
+Name                                                   Stmts   Miss  Cover   
+----------------------------------------------------------------------------
+netsuitesdk/__init__.py                                    4      0   100%
+netsuitesdk/api/__init__.py                                0      0   100%
+netsuitesdk/api/accounts.py                                6      0   100%
+netsuitesdk/api/adv_inter_company_journal_entries.py       7      0   100%
+netsuitesdk/api/base.py                                   90      9    90%   
+netsuitesdk/api/classifications.py                         6      0   100%
+netsuitesdk/api/currencies.py                             10      0   100%
+netsuitesdk/api/custom_record_types.py                    11      0   100%
+netsuitesdk/api/custom_records.py                         17      0   100%
+netsuitesdk/api/customers.py                              21      0   100%
+netsuitesdk/api/departments.py                             6      0   100%
+netsuitesdk/api/employees.py                              34      0   100%
+netsuitesdk/api/expense_categories.py                      6      0   100%
+netsuitesdk/api/expense_reports.py                        58      2    97%   
+netsuitesdk/api/files.py                                  23      0   100%
+netsuitesdk/api/folders.py                                17      0   100%
+netsuitesdk/api/journal_entries.py                        41      0   100%
+netsuitesdk/api/locations.py                               6      0   100%
+netsuitesdk/api/price_level.py                             6      0   100%
+netsuitesdk/api/projects.py                                6      0   100%
+netsuitesdk/api/subsidiaries.py                            6      0   100%
+netsuitesdk/api/tax_groups.py                              6      0   100%
+netsuitesdk/api/tax_items.py                               6      0   100%
+netsuitesdk/api/vendor_bills.py                           55      1    98%  
+netsuitesdk/api/vendor_payments.py                        46      1    98%   
+netsuitesdk/api/vendors.py                                21      0   100%
+netsuitesdk/connection.py                                 68      0   100%
+netsuitesdk/internal/__init__.py                           0      0   100%
+netsuitesdk/internal/client.py                           305     79    74%   
+netsuitesdk/internal/constants.py                          4      0   100%
+netsuitesdk/internal/exceptions.py                        16      3    81%   
+netsuitesdk/internal/netsuite_types.py                     2      0   100%
+netsuitesdk/internal/utils.py                             40      4    90%   
+----------------------------------------------------------------------------
+TOTAL                                                    950     99    90%
+
 ```
 
 To get an html report, run this command:
@@ -256,7 +292,7 @@ To get an html report, run this command:
 python -m pytest --cov=netsuitesdk --cov-report html:cov_html
 ```
 
-We want to maintain code coverage of more than 95% for this project at all times.
+We want to maintain code coverage of more than 90% for this project at all times.
 
 ## Documentation
 Documentation can be found in the docs/_build/html folder (open index.html) and soon in readthedocs.
@@ -265,4 +301,4 @@ as well as `make html`
 
 ## Contributions
 
-We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this.
+We are actively accepting contributions. Please mail shwetabh.kumar@fylehq.com if you wish to collaborate on this. (Please write test cases for new additions.)

@@ -21,4 +21,4 @@ def test_login_disallowed():
     ns = NetSuiteClient(account=NS_ACCOUNT)
     with pytest.raises(NetSuiteLoginError) as ex:
         ns.login(email=NS_EMAIL, password=NS_PASSWORD, role=NS_ROLE, application_id=NS_APPID)
-    assert 'Integration blocked' in str(ex.value), 'credentials are allowing login - this is not recommended'
+    assert 'Two-Factor Authentication required' in str(ex.value.message), 'Two factor authentication required'

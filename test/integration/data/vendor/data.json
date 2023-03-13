@@ -1,0 +1,27 @@
+{
+    "externalId": "1237",
+    "currency":{
+        "name": "USA",
+        "internalId": null,
+        "externalId": null,
+        "type": "currency"
+    },
+    "representingSubsidiary":{
+        "name": null,
+        "internalId": "4",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "subsidiary":{
+        "name": null,
+        "internalId": "6",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "workCalendar": {
+        "externalId": null,
+        "internalId": null,
+        "type": null
+    },
+    "companyName": "Netsuite SDK Testing"
+}

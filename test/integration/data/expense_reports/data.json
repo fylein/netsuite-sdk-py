@@ -6,7 +6,7 @@
     "customForm": null,
     "account": {
         "name": null,
-        "internalId": "25",
+        "internalId": "118",
         "externalId": null,
         "type": "account"
     },
@@ -17,7 +17,7 @@
         "type": "vendor"
     },
     "expenseReportCurrency": {
-        "name": "USD",
+        "name": "USA",
         "internalId": null,
         "externalId": null,
         "type": "currency"
@@ -68,7 +68,16 @@
                 "type": "currency"
             },
             "customer": null,
-            "customFieldList": null,
+            "customFieldList": [
+                {
+                    "type": "string",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "select",
+                    "value": "45"
+                }
+            ],
             "department": null,
             "exchangeRate": null,
             "expenseDate": null,
@@ -83,7 +92,7 @@
             "quantity": null,
             "rate": null,
             "receipt": null,
-            "refNumber": null,
+            "refNumber": null, 
             "tax1Amt": null,
             "taxCode": null,
             "taxRate1": null,

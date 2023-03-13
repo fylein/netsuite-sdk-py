@@ -32,7 +32,17 @@
                 "type": "account"
             },
             "credit": 500,
-            "memo": "Testing JournalEntry via Fyle SDK 3"
+            "memo": "Testing JournalEntry via Fyle SDK 3",
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ]
         },
         {
             "lineSubsidiary": {
@@ -48,6 +58,16 @@
                 "type": "account"
             },
             "debit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "memo": "Testing JournalEntry via Fyle SDK 3"
         },
         {
@@ -64,6 +84,16 @@
                 "type": "account"
             },
             "credit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "memo": "Testing JournalEntry via Fyle SDK 3"
         },
         {
@@ -80,6 +110,16 @@
                 "type": "account"
             },
             "debit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "memo": "Testing JournalEntry via Fyle SDK 3"
         }
     ],

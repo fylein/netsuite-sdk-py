@@ -1,5 +1,7 @@
 import logging
 import pytest
+import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +16,11 @@ def test_get(nc):
     assert data, f'No object with internalId {internal_id}'
 
 def test_post(nc):
-    data = {}
-    with pytest.raises(NotImplementedError) as ex:
-        nc.vendors.post(data)
+    with open('./test/integration/data/vendor/data.json') as oj:
+        s = oj.read()
+        vendor = json.loads(s)
+    logger.debug('vendor = %s', vendor)
+    res = nc.vendors.post(vendor)
+    logger.debug('res = %s', res)
+    assert res['externalId'] == vendor['externalId'], 'Transaction Number does not match'
+    assert res['type'] == 'vendor', 'Type does not match'

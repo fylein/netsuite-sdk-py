@@ -6,7 +6,7 @@
     "createdDate": null,
     "createdFrom": null,
     "currency": {
-        "name": "USD",
+        "name": "USA",
         "internalId": null,
         "externalId": null,
         "type": "currency"
@@ -51,7 +51,16 @@
             },
             "credit": 500,
             "creditTax": null,
-            "customFieldList": null,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field1"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "debit": null,
             "debitTax": null,
             "eliminate": null,
@@ -101,7 +110,16 @@
             },
             "credit": null,
             "creditTax": null,
-            "customFieldList": null,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field2"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "debit": 500,
             "debitTax": null,
             "eliminate": null,
@@ -150,5 +168,5 @@
     "toSubsidiary": null,
     "tranDate": null,
     "tranId": null,
-    "externalId": "JE_04"
+    "externalId": "JE_05"
 }

@@ -14,7 +14,7 @@ def test_get(nc):
     assert data, f'No object with internalId {internal_id}'
 
 def test_post(nc):
-    with open('./test/integration/data/customers/customer.json') as oj:
+    with open('./test/integration/data/customers/data.json') as oj:
         s = oj.read()
         expr1 = json.loads(s)
     logger.debug('expr1 = %s', expr1)

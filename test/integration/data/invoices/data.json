@@ -1,0 +1,67 @@
+{
+    "externalId": "1237",
+    "account": null,
+    "accountingBookDetailList": null,
+    "expCostDiscount": null,
+    "expCostDiscPrint": null,
+    "expCostDiscRate": null,
+    "expCostDiscTax1Amt":  null,
+    "expCostDiscTaxable": null,
+    "expCostList": null,
+    "expCostTaxCode": null,
+    "handlingCost": null,
+    "itemCostList": null,
+    "message": null,
+    "messageSel": null,
+    "nextApprover": null,
+    "partner": null,
+    "promotionsList": null,
+    "salesGroup": null,
+    "shipMethod": null,
+    "shippingCost": null,
+    "tranDate": "2022-07-21T17:32:28Z",
+    "entity": {
+        "name": null,
+        "internalId": "14452",
+        "externalId": null,
+        "type": "vendor"
+    },
+    "dueDate": "2023-02-15T17:32:28Z",
+    "currency": null,
+    "invoiceItemList": {
+        "item": [
+            {
+                "amount": null,
+                "amountOrdered": null,
+                "binNumbers": null,
+                "catchUpPeriod": null,
+                "chargesList": null,
+                "chargeType": null,
+                "class": null,
+                "costEstimate": null,
+                "costEstimateType": null,
+                "currentPercent": null,
+                "customFieldList": null,
+                "deferRevRec": null,
+                "department":null,
+                "description": "Test Invoice item",
+                "excludeFromRateRequest": null,
+                "giftCertFrom": null,
+                "item": null,
+                "itemIsFulfilled": null,
+                "line": null,
+                "location": {
+                    "name": null,
+                    "internalId": "1",
+                    "externalId": null,
+                    "type": "location"
+                },
+                "price": null,
+                "quantity": 10,
+                "rate": null,
+                "units": null
+            }
+        ],
+        "replaceAll": true
+    }
+}
