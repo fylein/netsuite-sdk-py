@@ -1,3 +1,4 @@
+from .api.customer_payment import CustomerPayment
 from .api.accounts import Accounts
 from .api.billing_account import BillingAccount
 from .api.classifications import Classifications
@@ -77,3 +78,4 @@ class NetSuiteConnection:
         self.credit_memos = CreditMemos(ns_client)
         self.price_level = PriceLevel(ns_client)
         self.usages = Usage(ns_client)
+        self.customer_payment = CustomerPayment(ns_client)
