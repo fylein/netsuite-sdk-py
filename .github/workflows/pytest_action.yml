@@ -6,6 +6,7 @@ on:
 
 jobs:
   pytest:
+    if: github.repository == 'fylein/netsuite-sdk-py'
     runs-on: ubuntu-latest
     environment: CI Environment
     steps:
