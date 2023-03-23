@@ -1,0 +1,39 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    environment: CI Environment
+    steps:
+      - uses: actions/checkout@v2 
+        continue-on-error: true
+      - name: Run Tests
+        env:
+          NS_ACCOUNT: ${{ secrets.NS_ACCOUNT }}
+          NS_CONSUMER_KEY: ${{ secrets.NS_CONSUMER_KEY }}
+          NS_CONSUMER_SECRET: ${{ secrets.NS_CONSUMER_SECRET }}
+          NS_TOKEN_KEY: ${{ secrets.NS_TOKEN_KEY }}
+          NS_TOKEN_SECRET: ${{ secrets.NS_TOKEN_SECRET }}
+          NS_APPID: ${{ secrets.NS_APPID }}
+          NS_EMAIL: ${{ secrets.NS_EMAIL }}
+          NS_PASSWORD: ${{ secrets.NS_PASSWORD }}
+        run: |
+          pip install -r requirements.txt && pip install pytest pytest-coverage
+          python -m pytest test/ --cov --junit-xml=test-reports/report.xml --cov-report=term-missing --cov-fail-under=85 | tee pytest-coverage.txt
+          echo "STATUS=$(cat pytest-coverage.txt | grep 'Required test' | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "${{ env.STATUS }}"
+          echo "FAILED=$(cat test-reports/report.xml | awk -F'=' '{print $5}' | awk -F' ' '{gsub(/"/, "", $1); print $1}')" >> $GITHUB_ENV
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        if: ${{ always() && github.ref != 'refs/heads/master' }}
+        with:
+          create-new-comment: true
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./test-reports/report.xml
+      - name: Evaluate Coverage
+        if: ${{ (env.STATUS == 'FAIL') || (env.FAILED > 0) }}
+        run: exit 1

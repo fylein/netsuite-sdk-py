@@ -1,0 +1,98 @@
+{
+    "nullFieldList": null, 
+    "createdDate": null, 
+    "lastModifiedDate": null, 
+    "customForm": null, 
+    "account": {
+        "name": null, 
+        "internalId": "213", 
+        "externalId": null, 
+        "type": null
+    }, 
+    "balance": null, 
+    "apAcct": {
+        "name": null, 
+        "internalId": "176", 
+        "externalId": null, 
+        "type": null
+    }, 
+    "entity": {
+        "name": null, 
+        "internalId": "2780", 
+        "externalId": null, 
+        "type": null
+    }, 
+    "address": null, 
+    "tranDate": null, 
+    "voidJournal": null, 
+    "postingPeriod": null, 
+    "currencyName": null, 
+    "exchangeRate": null, 
+    "toAch": "false", 
+    "toBePrinted": "false", 
+    "printVoucher": "false", 
+    "tranId": null, 
+    "total": null, 
+    "currency": {
+        "name": null, 
+        "internalId": "1", 
+        "externalId": null, 
+        "type": null
+    }, 
+    "department": {
+        "name": null, 
+        "internalId": null, 
+        "externalId": null, 
+        "type": "department"
+    }, 
+    "memo": "Testing for netsuite SDK", 
+    "subsidiary": {
+        "name": null, 
+        "internalId": "1", 
+        "externalId": null, 
+        "type": null
+    }, 
+    "class": {
+        "name": null, 
+        "internalId": null, 
+        "externalId": null, 
+        "type": "classification"
+    }, 
+    "location": {
+        "name": null, 
+        "internalId": null, 
+        "externalId": null, 
+        "type": "location"
+    }, 
+    "status": null, 
+    "transactionNumber": null, 
+    "applyList": {
+        "apply": [
+            {
+                "apply": "true", 
+                "doc": "642024", 
+                "line": 0, 
+                "job": null, 
+                "applyDate": null, 
+                "type": null, 
+                "refNum": null, 
+                "total": null, 
+                "due": null, 
+                "currency": null, 
+                "discDate": null, 
+                "discAmt": null, 
+                "disc": null, 
+                "amount": null
+            }], 
+        "replaceAll": "true"
+    }, 
+    "creditList": null, 
+    "billPay": null, 
+    "accountingBookDetailList": null, 
+    "availableBalance": null, 
+    "isInTransitPayment": null, 
+    "approvalStatus": null, 
+    "nextApprover": null, 
+    "customFieldList": null, 
+    "internalId": null, 
+    "externalId": "bill 7 - user1@fyleforintacct.refactor-3"}

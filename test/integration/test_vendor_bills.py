@@ -6,19 +6,18 @@ import os
 logger = logging.getLogger(__name__)
 
 def test_get(nc):
-    data = next(nc.vendor_bills.get_all_generator())
+    data = nc.vendor_bills.get_all_generator()
     logger.debug('data = %s', data)
     assert data, 'get all generator didnt work'
 
-    internal_id = data['internalId']
+    internal_id = data[0]['internalId']
     data = nc.vendor_bills.get(internalId=internal_id)
     logger.debug('data = %s', data)
     assert data, f'No object with internalId {internal_id}'
 
 def test_post(nc):
-    filename = os.getenv('NS_ACCOUNT').lower() + '.json'
     vb1 = {}
-    with open('./test/integration/data/vendor_bills/' + filename) as oj:
+    with open('./test/integration/data/vendor_bills/data.json') as oj:
         s = oj.read()
         vb1 = json.loads(s)
     logger.debug('rvb1 = %s', vb1)

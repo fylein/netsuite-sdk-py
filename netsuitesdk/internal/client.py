@@ -335,13 +335,24 @@ class NetSuiteClient:
         :return: the request response object
         :rtype: the exact type depends on the request
         """
-        method = getattr(self._service_proxy, name)
-        # call the service:
-        include_search_preferences = (name == 'search')
-        response = method(*args,
-                          _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
-                          , **kwargs)
-        return response
+        try:
+            method = getattr(self._service_proxy, name)
+            # call the service:
+            include_search_preferences = (name == 'search')
+            response = method(*args,
+                            _soapheaders=self._build_soap_headers(include_search_preferences=include_search_preferences)
+                            , **kwargs)
+            return response
+        except Fault as e:
+            if 'SuiteTalk concurrent request limit exceeded. Request blocked' in str(e):
+                raise NetSuiteRateLimitError(str(e))
+            elif 'Invalid login attempt' in str(e):
+                raise NetSuiteLoginError(str(e), e.code)
+            else:
+                raise
+        except Exception as e:
+            raise
+
 
     def get(self, recordType, internalId=None, externalId=None):
         """
@@ -568,3 +579,37 @@ class NetSuiteClient:
             raise exc
 
         return record_refs
+
+    def delete(self, recordType, internalId=None, externalId=None):
+        """
+        Make a delete request to remove an object of type recordType
+        specified by either internalId or externalId
+
+        :param str recordType: the complex type (e.g. 'vendor')
+        :param int internalId: id specifying the record to be deleted
+        :param str externalId: str specifying the record to be deleted
+        :return: a reference to the deleted record (in case of success)
+        :rtype: RecordRef
+        :raises ValueError: if neither internalId nor externalId was passed
+        """
+
+        recordType = recordType[0].lower() + recordType[1:]
+        if internalId is not None:
+            record_ref = self.RecordRef(type=recordType, internalId=internalId)
+        elif externalId is not None:
+            record_ref = self.RecordRef(type=recordType, externalId=externalId)
+        else:
+            raise ValueError('Either internalId or externalId is necessary to make a delete request.')
+
+        response = self.request('delete', baseRef=record_ref)
+        response = response.body.writeResponse
+        status = response.status
+        if status.isSuccess:
+            record_ref = response['baseRef']
+            self.logger.debug(
+                'Successfully deleted record of internalId: {internalId}, externalId: {externalId}, response: {recordRef}'.format(
+                     internalId=record_ref['internalId'], externalId=record_ref['externalId'], recordRef=record_ref))
+            return record_ref
+        else:
+            exc = self._request_error('delete', detail=status['statusDetail'][0])
+            raise exc

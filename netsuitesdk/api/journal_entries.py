@@ -8,11 +8,32 @@ logger = logging.getLogger(__name__)
 
 
 class JournalEntries(ApiBase):
+    SIMPLE_FIELDS = [
+        'memo',
+        'tranDate',
+        'tranId'
+    ]
+
+    RECORD_REF_FIELDS = [
+        'class',
+        'department',
+        'location',
+        'subsidiary',
+        'toSubsidiary'
+    ]
+
+    TYPE_NAME = 'journalEntry'
+
     def __init__(self, ns_client):
-        ApiBase.__init__(self, ns_client=ns_client, type_name='journalEntry')
+        ApiBase.__init__(self, ns_client=ns_client, type_name=self.TYPE_NAME)
+        # Uppercase the first letter of the type name to get the class name
+        self.class_name = self.type_name[:1].upper() + self.type_name[1:]
+        self.class_ = getattr(ns_client, self.class_name)
+        self.line_class_ = getattr(ns_client, self.class_name + 'Line')
+        self.line_list_class_ = getattr(ns_client, self.class_name + 'LineList')
 
     def get_all_generator(self):
-        record_type_search_field = self.ns_client.SearchStringField(searchValue='JournalEntry', operator='contains')
+        record_type_search_field = self.ns_client.SearchStringField(searchValue=self.class_name, operator='contains')
         basic_search = self.ns_client.basic_search_factory('Transaction', recordType=record_type_search_field)
         paginated_search = PaginatedSearch(client=self.ns_client,
                                            type_name='Transaction',
@@ -20,11 +41,11 @@ class JournalEntries(ApiBase):
                                            pageSize=20)
         return self._paginated_search_to_generator(paginated_search=paginated_search)
 
-    def _build_journal_entry_data(self, record):
-        assert record['externalId'], 'missing external id'
-        je = self.ns_client.JournalEntry(externalId=record['externalId'])
+    def _build_journal_entry_data(self, data) -> OrderedDict:
+        assert data['externalId'], 'missing external id'
+        je = self.class_(externalId=data['externalId'])
         line_list = []
-        for eod in record['lineList']:
+        for eod in data['lineList']:
             if 'customFieldList' in eod and eod['customFieldList']:
                 custom_fields = []
                 for field in eod['customFieldList']:
@@ -47,32 +68,18 @@ class JournalEntries(ApiBase):
                             )
                         )
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
-            jee = self.ns_client.JournalEntryLine(**eod)
+            jee = self.line_class_(**eod)
             line_list.append(jee)
 
-        je['lineList'] = self.ns_client.JournalEntryLineList(line=line_list)
-        je['currency'] = self.ns_client.RecordRef(**(record['currency']))
+        je['lineList'] = self.line_list_class_(line=line_list)
 
-        if 'memo' in record:
-            je['memo'] = record['memo']
+        if 'currency' not in data:
+            raise Exception('Currency is required!')
 
-        if 'tranDate' in record:
-            je['tranDate'] = record['tranDate']
+        je['currency'] = self.ns_client.RecordRef(**(data['currency']))
 
-        if 'tranId' in record:
-            je['tranId'] = record['tranId']
-
-        if 'subsidiary' in record:
-            je['subsidiary'] = record['subsidiary']
-
-        if 'class' in record:
-            je['class'] = record['class']
-
-        if 'location' in record:
-            je['location'] = record['location']
-
-        if 'department' in record:
-            je['department'] = record['department']
+        self.build_simple_fields(self.SIMPLE_FIELDS, data, je)
+        self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, je)
 
         return je
 

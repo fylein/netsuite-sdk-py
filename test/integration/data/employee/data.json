@@ -1,0 +1,69 @@
+{
+    "externalId": "1235",
+    "accountNumber": null,
+    "adpId": null,
+    "altName": null,
+    "approvalLimit": null,
+    "approver": null,
+    "baseWage": null,
+    "baseWageType": null,
+    "billingClass": null,
+    "billPay": null,
+    "birthDate": null,
+    "class": null,
+    "comments": null,
+    "commissionPaymentPreference": null,
+    "compensationCurrency": null,
+    "concurrentWebServicesUser": null,
+    "currency": null,
+    "customForm": null,
+    "inheritIPRules": false,
+    "dateCreated": null,
+    "entityId": "1",
+    "defaultAcctCorpCardExp": {
+        "internalId": "213",
+        "externalId": null,
+        "type": "account"
+    },
+    "directDeposit": null,
+    "eligibleForCommission": null,
+    "email": "testemployeenetsuitesdk@example.com",
+    "employeeStatus": null,
+    "employeeType": null,
+    "ethnicity": null,
+    "expenseLimit": null,
+    "defaultExpenseReportCurrency": {
+        "name": "USA",
+        "internalId": 1,
+        "externalId": null,
+        "type": "currency"
+    },
+    "subsidiary": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "fax": null,
+    "firstName": "Test Netsuite",
+    "lastName": "SDK",
+    "gender": null,
+    "workCalendar":{
+        "externalId": null,
+        "internalId": null,
+        "type": null
+    },
+    "payFrequency":"_monthly",
+    "location": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "location"
+    },
+    "department": {
+        "name": null,
+        "internalId": "10",
+        "externalId": null,
+        "type": "department"
+    }
+}

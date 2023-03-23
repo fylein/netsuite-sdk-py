@@ -1,0 +1,3 @@
+[run]
+source = netsuitesdk/
+omit = ./venv/*, tests/*, netsuitesdk/api/billing_account.py, netsuitesdk/api/credit_memos.py, netsuitesdk/api/custom_lists.py, netsuitesdk/api/vendor_credits.py, netsuitesdk/api/usage.py, netsuitesdk/api/invoices.py, netsuitesdk/api/terms.py, netsuitesdk/api/custom_segments.py

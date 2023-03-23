@@ -20,6 +20,9 @@ class Employees(ApiBase):
 
         employee['workCalendar'] = self.ns_client.RecordRef(**(data['workCalendar']))
 
+        if 'defaultAcctCorpCardExp' in data and data['defaultAcctCorpCardExp']:
+            employee['defaultAcctCorpCardExp'] = self.ns_client.RecordRef(**(data['defaultAcctCorpCardExp']))
+
         if 'entityId' in data:
             employee['entityId'] = data['entityId']
 

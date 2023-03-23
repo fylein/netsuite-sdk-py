@@ -15,11 +15,14 @@ def test_get(nc):
 
 
 def test_get_all_generator(nc):
-    res1 = nc.accounts.get_all()
-    res2 = []
+    get_all_response = nc.accounts.get_all()
+    get_all_generator_response = []
     for r in nc.accounts.get_all_generator(page_size=200):
-        res2.append(r)
-    assert len(res1) == len(res2), 'changing page size is returning different results'
+        get_all_generator_response.append(r)
+    len_get_all_genrator_respose = 0
+    for i in get_all_generator_response:
+        len_get_all_genrator_respose = len_get_all_genrator_respose + len(i)
+    assert len(get_all_response) == len_get_all_genrator_respose, 'changing page size is returning different results'
 
 
 def test_post(nc):

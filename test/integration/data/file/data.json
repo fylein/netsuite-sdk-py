@@ -1,0 +1,33 @@
+{
+    "externalId": "1237",
+    "altTagCaption": null,
+    "attachFrom": "_computer",
+    "bundleable": null,
+    "caption": null,
+    "encoding": "_utf8",
+    "class": null,
+    "createdDate": null,
+    "department": null,
+    "description": null,
+    "featuredDescription": null,
+    "fileType": null,
+    "hideInBundle": null,
+    "isInactive": null,
+    "isOnline": null,
+    "isPrivate": null,
+    "lastModifiedDate": null,
+    "mediaFile": null,
+    "mediaTypeName": "_JSON",
+    "mediaType": null,
+    "name": "TestFolder",
+    "folder": {
+        "internalId": 8197,
+        "externalId": null,
+        "type": "folder"
+    },
+    "siteDescription": null,
+    "storeDisplayThumbnail": null,
+    "textFileEncoding": null,
+    "url": null,
+    "urlComponent": null
+}

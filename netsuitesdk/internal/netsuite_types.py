@@ -55,6 +55,7 @@ COMPLEX_TYPES = {
         'JobSearchBasic',
         'LocationSearchBasic',
         'TransactionSearchBasic',
+        'InboundShipmentSearchBasic',
         'VendorSearchBasic',
         'SubsidiarySearchBasic',
         'EmployeeSearchBasic',
@@ -68,6 +69,7 @@ COMPLEX_TYPES = {
         'ClassificationSearchBasic',
         'CurrencyRateSearchBasic',
         'ConsolidatedExchangeRateSearchBasic',
+        'BillingAccountSearchBasic'
     ],
 
     'ns6': [
@@ -81,7 +83,7 @@ COMPLEX_TYPES = {
         'Customer', 'CustomerSearch', 'CustomerTaxRegistrationList', 'CustomerTaxRegistration',
         'Vendor', 'VendorSearch',
         'Job', 'JobSearch',
-        'VendorAddressbook', 'VendorAddressbookList', 'VendorCurrencyList',
+        'VendorAddressbook', 'VendorAddressbookList', 'BillingAccountSearch', 'VendorCurrencyList'
     ],
 
     # urn:accounting_2017_2.lists.webservices.netsuite.com
@@ -101,6 +103,7 @@ COMPLEX_TYPES = {
         'DepartmentSearch',
         'ItemSearch', 'ItemSearchAdvanced', 'ItemSearchRow',
         'ClassificationSearch',
+        'PriceLevelSearch'
     ],
 
     'ns19': [
@@ -131,6 +134,7 @@ COMPLEX_TYPES = {
         'VendorPaymentApplyList',
         'VendorPaymentCredit',
         'VendorPaymentCreditList',
+        'InboundShipmentSearch',
         'VendorPaymentApply'
     ],
 
@@ -148,6 +152,9 @@ COMPLEX_TYPES = {
         'JournalEntry',
         'JournalEntryLine',
         'JournalEntryLineList',
+        'AdvInterCompanyJournalEntry',
+        'AdvInterCompanyJournalEntryLine',
+        'AdvInterCompanyJournalEntryLineList'
     ],
 
     'ns32': [
