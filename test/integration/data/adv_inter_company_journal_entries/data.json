@@ -1,0 +1,152 @@
+{
+    "accountingBook": null,
+    "accountingBookDetailList": null,
+    "approved": null,
+    "class": null,
+    "createdDate": null,
+    "createdFrom": null,
+    "currency": {
+        "name": "USD",
+        "internalId": null,
+        "externalId": null,
+        "type": "currency"
+    },
+    "customFieldList": null,
+    "customForm": null,
+    "department": null,
+    "exchangeRate": null,
+    "isBookSpecific": null,
+    "lastModifiedDate": null,
+    "lineList": [
+        {
+            "lineSubsidiary": {
+                "name": null,
+                "internalId": "6",
+                "externalId": null,
+                "type": "subsidiary"
+            },
+            "account": {
+                "name": null,
+                "internalId": "326",
+                "externalId": null,
+                "type": "account"
+            },
+            "credit": 500,
+            "memo": "Testing JournalEntry via Fyle SDK 3",
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ]
+        },
+        {
+            "lineSubsidiary": {
+                "name": null,
+                "internalId": "6",
+                "externalId": null,
+                "type": "subsidiary"
+            },
+            "account": {
+                "name": null,
+                "internalId": "326",
+                "externalId": null,
+                "type": "account"
+            },
+            "debit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
+            "memo": "Testing JournalEntry via Fyle SDK 3"
+        },
+        {
+            "lineSubsidiary": {
+                "name": null,
+                "internalId": "4",
+                "externalId": null,
+                "type": "subsidiary"
+            },
+            "account": {
+                "name": null,
+                "internalId": "326",
+                "externalId": null,
+                "type": "account"
+            },
+            "credit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
+            "memo": "Testing JournalEntry via Fyle SDK 3"
+        },
+        {
+            "lineSubsidiary": {
+                "name": null,
+                "internalId": "4",
+                "externalId": null,
+                "type": "subsidiary"
+            },
+            "account": {
+                "name": null,
+                "internalId": "326",
+                "externalId": null,
+                "type": "account"
+            },
+            "debit": 500,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
+            "memo": "Testing JournalEntry via Fyle SDK 3"
+        }
+    ],
+    "location": null,
+    "memo": "JE Testing Fyle SDK 3",
+    "nexus": null,
+    "parentExpenseAlloc": null,
+    "postingPeriod": null,
+    "reversalDate": null,
+    "reversalDefer": null,
+    "reversalEntry": null,
+    "subsidiary": {
+        "name": null,
+        "internalId": "6",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "toSubsidiary": {
+        "name": null,
+        "internalId": "4",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "subsidiaryTaxRegNum": null,
+    "taxPointDate": null,
+    "toSubsidiary": null,
+    "tranDate": null,
+    "tranId": null,
+    "externalId": "ADV_INTERCO_JE_04"
+}

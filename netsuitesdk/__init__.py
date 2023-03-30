@@ -8,6 +8,7 @@ __all__ = [
     'NetSuiteLoginError',
     'NetSuiteRequestError',
     'NetSuiteTypeError',
+    'NetSuiteRateLimitError'
 ]
 
 name = "netsuitesdk"

@@ -15,9 +15,9 @@ help:
 .PHONY: help Makefile
 
 buildapi:
-    sphinx-apidoc -fMeT ../netsuitesdk -o _api
-    @echo "Auto-generation of API documentation finished. " \
-          "The generated files are in '_api/'"
+	sphinx-apidoc -fMeT ../netsuitesdk -o _api
+	@echo "Auto-generation of API documentation finished. " \
+	      "The generated files are in '_api/'"
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

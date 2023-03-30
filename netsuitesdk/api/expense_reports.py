@@ -56,7 +56,9 @@ class ExpenseReports(ApiBase):
             expense_list.append(ere)
 
         er['expenseList'] = self.ns_client.ExpenseReportExpenseList(expense=expense_list)
-        er['expenseReportCurrency'] = self.ns_client.RecordRef(**(data['expenseReportCurrency']))
+
+        if 'expenseReportCurrency' in data:
+            er['expenseReportCurrency'] = self.ns_client.RecordRef(**(data['expenseReportCurrency']))
 
         if 'memo' in data:
             er['memo'] = data['memo']
@@ -91,7 +93,9 @@ class ExpenseReports(ApiBase):
         if 'externalId' in data:
             er['externalId'] = data['externalId']
 
-        er['entity'] = self.ns_client.RecordRef(**(data['entity']))
+        if 'entity' in data:
+            er['entity'] = self.ns_client.RecordRef(**(data['entity']))
+
         logger.debug('able to create er = %s', er)
         res = self.ns_client.upsert(er)
         return self._serialize(res)

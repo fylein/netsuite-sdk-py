@@ -1,0 +1,77 @@
+{
+    "externalId": "1237",
+    "account": null,
+    "applied": null,
+    "autoApply": null,
+    "billAddressList": null,
+    "billingAddress": null,
+    "class": null,
+    "createdDate": null,
+    "createdFrom": null,
+    "currency": null,
+    "currencyName": null,
+    "customForm": null,
+    "department": null,
+    "entity": {
+        "name": null,
+        "internalId": "14452",
+        "externalId": null,
+        "type": "vendor"
+    },
+    "entityTaxRegNum": null,
+    "lastModifiedDate": null,
+    "location": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "location"
+    },
+    "memo": "Testing VendorCredits using Fyle SDK",
+    "nexus": null,
+    "postingPeriod": null,
+    "subsidiary": null,
+    "subsidiaryTaxRegNum": null,
+    "taxDetailsOverride": null,
+    "taxPointDate": null,
+    "taxRegOverride": null,
+    "total": null,
+    "tranDate": "2022-07-21T17:32:28Z",
+    "tranId": null,
+    "unApplied": null,
+    "userTaxTotal": null,
+    "userTotal": null,
+    "itemList": {
+        "item": [
+            {
+               "amount": null,
+               "class": null,
+               "customer": {
+                "internalId": "1",
+                "externalId": null,
+                "type": null
+               },
+               "customFieldList": null,
+               "department": {
+                "name": null,
+                "internalId": "10",
+                "externalId": null,
+                "type": "department"
+                },
+                "description": "test vendor credit",
+                "item": {
+                    "internalId": "20",
+                    "externalId": null,
+                    "type": "vendorCredit"
+                },
+                "location": {
+                    "name": null,
+                    "internalId": "1",
+                    "externalId": null,
+                    "type": "location"
+                }
+
+            }
+        ],
+        "replaceAll": true
+    }
+}

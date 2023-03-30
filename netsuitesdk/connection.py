@@ -11,6 +11,7 @@ from .api.vendors import Vendors
 from .api.subsidiaries import Subsidiaries
 from .api.usage import Usage
 from .api.journal_entries import JournalEntries
+from .api.adv_inter_company_journal_entries import AdvInterCompanyJournalEntries
 from .api.employees import Employees
 from .api.expense_reports import ExpenseReports
 from .api.folders import Folders
@@ -27,6 +28,7 @@ from .api.invoices import Invoices
 from .api.terms import Terms
 from .api.tax_items import TaxItems
 from .api.tax_groups import TaxGroups
+from .api.price_level import PriceLevel
 from .internal.client import NetSuiteClient
 
 
@@ -55,6 +57,7 @@ class NetSuiteConnection:
         self.vendors = Vendors(ns_client)
         self.subsidiaries = Subsidiaries(ns_client)
         self.journal_entries = JournalEntries(ns_client)
+        self.adv_inter_company_journal_entries = AdvInterCompanyJournalEntries(ns_client)
         self.employees = Employees(ns_client)
         self.expense_reports = ExpenseReports(ns_client)
         self.folders = Folders(ns_client)
@@ -72,4 +75,5 @@ class NetSuiteConnection:
         self.tax_items = TaxItems(ns_client)
         self.tax_groups = TaxGroups(ns_client)
         self.credit_memos = CreditMemos(ns_client)
+        self.price_level = PriceLevel(ns_client)
         self.usages = Usage(ns_client)

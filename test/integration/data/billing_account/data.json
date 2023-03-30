@@ -1,0 +1,36 @@
+{
+    "billingSchedule": {
+        "externalId": null,
+        "internalId": 1,
+        "type": "billingSchedule"
+    },
+    "cashSaleForm": null,
+    "class": null,
+    "createdBy": null,
+    "createdDate": null,
+    "currency": {
+        "name": "USA",
+        "internalId": null,
+        "externalId": null,
+        "type": "currency"
+    },
+    "customer": {
+        "externalId": null,
+        "internalId": 1,
+        "type": "customer"
+    },
+    "customForm": null,
+    "department": null,
+    "frequency": null,
+    "inactive": null,
+    "invoiceForm": null,
+    "lastBillCycleDate": null,
+    "lastBillDate": null,
+    "location": null,
+    "memo": "Testing BillingAccounts using Fyle SDK",
+    "name": "Test Case Account",
+    "nextBillCycleDate": null,
+    "startDate": "2022-07-21T17:32:28Z",
+    "subsidiary": null,
+    "externalId": "1237"
+}

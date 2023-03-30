@@ -1,5 +1,13 @@
 {
     "externalId": "1237",
+    "tranId": "E/2023/17/02",
+    "tranDate": "2023-01-30T17:32:28Z",
+    "account":{
+        "internalId": null,
+        "externalId": null,
+        "type": "account"
+    },
+    "itemList": null,
     "currency": {
         "name": null,
         "internalId": "1",
@@ -15,6 +23,16 @@
                 "type": "account"
             },
             "amount": 10.0,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field1"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "department": {
                 "name": null,
                 "internalId": "1",
@@ -43,6 +61,16 @@
                 "type": "account"
             },
             "amount": 20.0,
+            "customFieldList": [
+                {
+                    "type": "String",
+                    "value": "NetsuiteSDK test field1"
+                },
+                {
+                    "type": "Select",
+                    "value": "45"
+                }
+            ],
             "department": {
                 "name": null,
                 "internalId": "1",
