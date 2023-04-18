@@ -71,6 +71,28 @@ class JournalEntries(ApiBase):
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             jee = self.line_class_(**eod)
             line_list.append(jee)
+        if 'customFieldList' in data and data['customFieldList']:
+            custom_fields2 = []
+            for field in data['customFieldList']:
+                if field['type'] == 'String':
+                        custom_fields2.append(
+                            self.ns_client.StringCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=field['value']
+                            )
+                        )
+                elif field['type'] == 'Select':
+                        custom_fields2.append(
+                            self.ns_client.SelectCustomFieldRef(
+                                scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                internalId=field['internalId'] if 'internalId' in field else None,
+                                value=self.ns_client.ListOrRecordRef(
+                                    internalId=field['value']
+                                )
+                            )
+                        )
+            je['customFieldList'] = self.ns_client.CustomFieldList(custom_fields2)
 
         je['lineList'] = self.line_list_class_(line=line_list)
         self.build_simple_fields(self.SIMPLE_FIELDS, data, je)
