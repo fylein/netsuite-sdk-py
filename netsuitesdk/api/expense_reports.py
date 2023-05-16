@@ -5,7 +5,7 @@ import logging
 
 from netsuitesdk.internal.utils import PaginatedSearch
 from netsuitesdk.internal.exceptions import NetSuiteRequestError
-from netsuitesdk.internal.error_parser import error_matcher, replace_numbers
+from netsuitesdk.internal.error_parser import expense_report_error_matcher, replace_numbers, decode_project_or_customer_name
 
 logger = logging.getLogger(__name__)
 
@@ -102,15 +102,35 @@ class ExpenseReports(ApiBase):
         try:
             res = self.ns_client.upsert(er)
         except Exception as e:
-            print('jere')
-            error_dict = error_matcher(e.message)
+            error_dict = expense_report_error_matcher(e.message)
             message = e.message
-            if error_dict:
+            if list(error_dict) == ['category', 'entity']:
                 category = self.ns_client.get('ExpenseCategory', error_dict['category'])['name']
-                entity = self.ns_client.get('Employee', error_dict['entity'])['email']
-                message = replace_numbers(e.message, category, entity, error_dict['category'], error_dict['entity'])
+                entity = self.ns_client.get('Employee', error_dict['entity'])
+                entity_name = entity['email'] if entity['email'] else entity['firstName'] + " " + entity['lastName']
+                message = replace_numbers(e.message, category, entity_name, error_dict['category'], error_dict['entity'])
                 raise NetSuiteRequestError(message, e.code)
             
+            elif list(error_dict) == ['account', 'subsidiary']:
+                account = self.ns_client.get('Account', error_dict['account'])['acctName']
+                subsdiary = self.ns_client.get('Subsidiary', error_dict['subsidiary'])['name']
+                message = replace_numbers(e.message, account, subsdiary, error_dict['account'], error_dict['subsidiary'])
+                raise NetSuiteRequestError(message, e.code)
+            
+            elif list(error_dict) == ['customer', 'entity']:
+                customer = self.ns_client.get('Customer', error_dict['customer'])['entityId']
+                customer_name = decode_project_or_customer_name(customer)
+                entity = self.ns_client.get('Employee', error_dict['entity'])
+                entity_name = entity['email'] if entity['email'] else entity['firstName'] + " " + entity['lastName']
+                message = replace_numbers(e.message, customer_name, entity_name, error_dict['customer'], error_dict['entity'])
+                raise NetSuiteRequestError(message, e.code)
+            
+            elif list(error_dict) == ['location', 'subsidiary']:
+                location = self.ns_client.get('Location', error_dict['location'])['name']
+                subsdiary = self.ns_client.get('Subsidiary', error_dict['subsidiary'])['name']
+                message = replace_numbers(e.message, location, subsdiary, error_dict['location'], error_dict['subsidiary'])
+                raise NetSuiteRequestError(message, e.code)
+
             raise NetSuiteRequestError(e.message, e.code)
             
         return self._serialize(res)
