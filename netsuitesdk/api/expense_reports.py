@@ -4,6 +4,8 @@ from .base import ApiBase
 import logging
 
 from netsuitesdk.internal.utils import PaginatedSearch
+from netsuitesdk.internal.exceptions import NetSuiteRequestError
+from netsuitesdk.internal.error_parser import error_matcher, replace_numbers
 
 logger = logging.getLogger(__name__)
 
@@ -97,5 +99,18 @@ class ExpenseReports(ApiBase):
             er['entity'] = self.ns_client.RecordRef(**(data['entity']))
 
         logger.debug('able to create er = %s', er)
-        res = self.ns_client.upsert(er)
+        try:
+            res = self.ns_client.upsert(er)
+        except Exception as e:
+            print('jere')
+            error_dict = error_matcher(e.message)
+            message = e.message
+            if error_dict:
+                category = self.ns_client.get('ExpenseCategory', error_dict['category'])['name']
+                entity = self.ns_client.get('Employee', error_dict['entity'])['email']
+                message = replace_numbers(e.message, category, entity, error_dict['category'], error_dict['entity'])
+                raise NetSuiteRequestError(message, e.code)
+            
+            raise NetSuiteRequestError(e.message, e.code)
+            
         return self._serialize(res)
