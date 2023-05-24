@@ -576,6 +576,30 @@ class NetSuiteClient:
     #             raise exc
     #     return record_refs
 
+    def checkAsyncStatus(self, job_id):
+        time.sleep(10)
+        response = self.request('checkAsyncStatus', jobId=job_id)
+        job = response.body.asyncStatusResult
+        if job.status in ['pending', 'processing']:
+            print(f"Still in {job.status} state")
+            return self.checkAsyncStatus(job_id)
+        elif job.status == 'finished':
+            return "Job Finished!"
+        elif job.status == 'failed':
+            # print("JOB FAILED:", job)
+            return "Job Failed!"
+        else: # finishedWithErrors
+            # print("JOB finished with errors:", job)
+            return "Job Finished with Error!"
+
+    def asyncUpsertList(self, records):
+        response = self.request('asyncUpsertList', record=records)
+        job_response = response.body.asyncStatusResult
+        # print("FIRST RESPONSE", job_response)
+        job_id = job_response.jobId
+        final_job =  self.checkAsyncStatus(job_id)
+        return final_job
+
     def delete(self, recordType, internalId=None, externalId=None):
         """
         Make a delete request to remove an object of type recordType

@@ -42,7 +42,7 @@ class JournalEntries(ApiBase):
                                            pageSize=20)
         return self._paginated_search_to_generator(paginated_search=paginated_search)
 
-    def post(self, data) -> OrderedDict:
+    def build_je(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
         je = self.class_(externalId=data['externalId'])
         line_list = []
@@ -77,5 +77,14 @@ class JournalEntries(ApiBase):
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, je)
 
         logger.debug('able to create je = %s', je)
+        return je
+
+    def post(self, data) -> OrderedDict:
+        je = self.build_je(data)
         res = self.ns_client.upsert(je)
+        return self._serialize(res)
+
+    def post_async(self, data) -> OrderedDict:
+        je = self.build_je(data)
+        res = self.ns_client.asyncUpsertList([je])
         return self._serialize(res)
