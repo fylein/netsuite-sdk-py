@@ -1,28 +1,4 @@
-import re
-
-from .errors import error_reference
 from .helpers import decode_project_or_customer_name, replace_numbers
-
-
-def expense_report_error_matcher(string):
-
-    if re.match(error_reference['category_reference_error'], string):
-        numbers = re.findall(r'\d+', string)
-        return {"category": numbers[0], "entity": numbers[1]}
-    
-    if re.match(error_reference['account_reference_error'], string):
-        numbers = re.findall(r'\d+', string)
-        return {"account": numbers[0], "subsidiary": numbers[1]}
-    
-    if re.match(error_reference['project_reference_error'], string):
-        numbers = re.findall(r'\d+', string)
-        return {"customer": numbers[0], "entity": numbers[1]}
-    
-    if re.match(error_reference['location_reference_error'], string):
-        numbers = re.findall(r'\d+', string)
-        return {"location": numbers[0], "subsidiary": numbers[1]}
-
-    return {}
 
 
 def expense_report_error_parser(error_dict, ns_client, message):
