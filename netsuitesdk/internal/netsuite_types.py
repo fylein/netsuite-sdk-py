@@ -20,6 +20,7 @@ COMPLEX_TYPES = {
         'SearchMultiSelectField',
         'SearchDateField',
         'SearchLongField',
+        'SearchBooleanField',
         'Status',
         'StatusDetail',
         'TokenPassport',

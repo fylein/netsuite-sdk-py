@@ -29,7 +29,7 @@ def get_currency(ns):
     return ns.get(recordType='currency', internalId='1')
 
 def get_employee(ns):
-    return ns.get(recordType='employee', internalId='1648')
+    return ns.get(recordType='employee', internalId='3482')
 
 def test_upsert_vendor_bill(ns):
     vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
@@ -121,7 +121,7 @@ def test_upsert_journal_entry(ns):
 def test_upsert_expense_report(ns):
     employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
     bill_account_ref = ns.RecordRef(type='account', internalId=25)
-    cat_account_ref = ns.RecordRef(type='account', internalId='1')
+    cat_account_ref = ns.RecordRef(type='account', internalId='3')
     loc_ref = ns.RecordRef(type='location', internalId=get_location(ns).internalId)
     dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
     class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)

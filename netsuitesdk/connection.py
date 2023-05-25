@@ -29,6 +29,7 @@ from .api.terms import Terms
 from .api.tax_items import TaxItems
 from .api.tax_groups import TaxGroups
 from .api.price_level import PriceLevel
+from .api.items import Items
 from .internal.client import NetSuiteClient
 
 
@@ -77,3 +78,4 @@ class NetSuiteConnection:
         self.credit_memos = CreditMemos(ns_client)
         self.price_level = PriceLevel(ns_client)
         self.usages = Usage(ns_client)
+        self.items = Items(ns_client)
