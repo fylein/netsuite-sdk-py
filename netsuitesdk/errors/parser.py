@@ -26,4 +26,14 @@ def expense_report_error_parser(error_dict, ns_client, message):
         subsdiary = ns_client.get('Subsidiary', error_dict['subsidiary'])['name']
         message = replace_numbers(message, location, subsdiary, error_dict['location'], error_dict['subsidiary'])
     
+    elif list(error_dict) == ['department', 'subsidiary']:
+        department = ns_client.get('Department', error_dict['department'])['name']
+        subsdiary = ns_client.get('Subsidiary', error_dict['subsidiary'])['name']
+        message = replace_numbers(message, department, subsdiary, error_dict['department'], error_dict['subsidiary'])
+    
+    elif list(error_dict) == ['currency', 'subsidiary']:
+        currency = ns_client.get('Currency', error_dict['currency'])['name']
+        subsdiary = ns_client.get('Subsidiary', error_dict['subsidiary'])['name']
+        message = replace_numbers(message, currency, subsdiary, error_dict['currency'], error_dict['subsidiary'])
+    
     return message
