@@ -5,7 +5,7 @@ import logging
 
 from netsuitesdk.internal.utils import PaginatedSearch
 from netsuitesdk.internal.exceptions import NetSuiteRequestError
-from netsuitesdk.errors.parser import expense_report_error_parser
+from netsuitesdk.errors.parser import export_error_parser
 from netsuitesdk.errors.helpers import export_error_matcher
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ class ExpenseReports(ApiBase):
             res = self.ns_client.upsert(er)
         except Exception as e:
             error_dict = export_error_matcher(e.message, 'expense_report')
-            message = expense_report_error_parser(error_dict, self.ns_client, e.message)
+            message = export_error_parser(error_dict, self.ns_client, e.message)
             raise NetSuiteRequestError(message, e.code)
             
         return self._serialize(res)
