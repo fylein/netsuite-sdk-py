@@ -11,8 +11,6 @@ def convert_to_camelcase(word):
     return ''.join(word.title().split('_'))
 
 
-import re
-
 def export_error_matcher(string, export_type):
     for _, error_data in error_reference[export_type].items():
         if re.match(error_data['regex'], string):
