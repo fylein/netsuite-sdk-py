@@ -1,6 +1,6 @@
 
 error_reference = {
- "expense_report": 
+ "er": 
     {
         "category_reference_error": r"An error occured in a upsert request: Invalid category reference key \d+ for entity \d+",
         "account_reference_error": r"An error occured in a upsert request: Invalid account reference key \d+ for subsidiary \d+",
@@ -12,7 +12,7 @@ error_reference = {
 }
 
 list_of_dicts = [
-        ['category', 'entity'], ['account', 'subsidiary'],
-        ['customer', 'entity'], ['location', 'subsidiary'],
+        ['expense_category', 'employee'], ['account', 'subsidiary'],
+        ['customer', 'employee'], ['location', 'subsidiary'],
         ['department', 'subsidiary'], ['currency', 'subsidiary']
     ]
