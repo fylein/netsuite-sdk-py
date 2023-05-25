@@ -10,3 +10,9 @@ error_reference = {
         "currency_reference_error": r"An error occured in a upsert request: Invalid currency reference key \d+ for subsidiary \d+",
     }
 }
+
+list_of_dicts = {
+        ['category', 'entity'], ['account', 'subsidiary'],
+        ['customer', 'entity'], ['location', 'subsidiary'],
+        ['department', 'subsidiary'], ['currency', 'subsidiary']
+    }
