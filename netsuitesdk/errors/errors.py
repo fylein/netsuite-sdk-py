@@ -11,8 +11,8 @@ error_reference = {
     }
 }
 
-list_of_dicts = {
+list_of_dicts = [
         ['category', 'entity'], ['account', 'subsidiary'],
         ['customer', 'entity'], ['location', 'subsidiary'],
         ['department', 'subsidiary'], ['currency', 'subsidiary']
-    }
+    ]
