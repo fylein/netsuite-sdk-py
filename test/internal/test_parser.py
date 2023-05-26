@@ -6,7 +6,7 @@ def test_export_error_parser(mocker, ns):
     
     mocker.patch(
         'netsuitesdk.errors.parser.ErrorParser.get_entity_values',
-        return_value={'John Doe', 'Travel'}
+        return_value={'Travel', 'John Doe'}
     )
 
     parser = ErrorParser(ns)
