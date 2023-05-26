@@ -1,0 +1,194 @@
+{
+    "nullFieldList": null,
+    "createdDate": null,
+    "lastModifiedDate": null,
+    "nexus": null,
+    "subsidiaryTaxRegNum": null,
+    "taxRegOverride": null,
+    "taxDetailsOverride": null,
+    "customForm": null,
+    "billAddressList": null,
+    "account": {
+        "name": null,
+        "internalId": "25",
+        "externalId": null,
+        "type": "account"
+    },
+    "entity": {
+        "name": null,
+        "internalId": "1674",
+        "externalId": null,
+        "type": "vendor"
+    },
+    "subsidiary": {
+        "name": null,
+        "internalId": "3",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "location": {
+        "name": null,
+        "internalId": "8",
+        "externalId": null,
+        "type": "location"
+    },
+    "approvalStatus": null,
+    "nextApprover": null,
+    "vatRegNum": null,
+    "postingPeriod": null,
+    "tranDate": "2023-05-11T07:06:21",
+    "currencyName": null,
+    "billingAddress": null,
+    "exchangeRate": null,
+    "entityTaxRegNum": null,
+    "taxPointDate": null,
+    "terms": null,
+    "dueDate": null,
+    "discountDate": null,
+    "tranId": null,
+    "userTotal": null,
+    "discountAmount": null,
+    "taxTotal": null,
+    "paymentHold": null,
+    "memo": null,
+    "tax2Total": null,
+    "creditLimit": null,
+    "availableVendorCredit": null,
+    "currency": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "currency"
+    },
+    "status": null,
+    "landedCostMethod": null,
+    "landedCostPerLine": null,
+    "transactionNumber": null,
+    "itemList": [
+        {
+            "item": {
+                "name": null,
+                "internalId": "504",
+                "externalId": null,
+                "type": null
+            },
+            "line": null,
+            "vendorName": null,
+            "orderDoc": null,
+            "orderLine": null,
+            "quantity": 1.0,
+            "units": null,
+            "inventoryDetail": null,
+            "description": "custom thing",
+            "serialNumbers": null,
+            "binNumbers": null,
+            "expirationDate": null,
+            "taxCode": null,
+            "taxRate1": null,
+            "taxRate2": null,
+            "grossAmt": null,
+            "tax1Amt": null,
+            "rate": "71.00",
+            "amount": 71.0,
+            "options": null,
+            "department": null,
+            "class": null,
+            "location": {
+                "name": null,
+                "internalId": "8",
+                "externalId": null,
+                "type": null
+            },
+            "customer": null,
+            "customFieldList":[
+                {
+                    "scriptId":"custcolfyle_expense_url",
+                    "type":"String",
+                    "value":"https://localhost:8000/api/app/main/#/enterprise/view_expense/tx4Suhvjafbd?org_id=orpMfWO2KOsU"
+                },
+                {
+                    "scriptId":"custcol788",
+                    "type":"Select",
+                    "value":"1"
+                }
+            ],
+                "landedCostCategory": null,
+            "isBillable": null,
+            "billVarianceStatus": null,
+            "billreceiptsList": null,
+            "amortizationSched": null,
+            "amortizStartDate": null,
+            "amortizationEndDate": null,
+            "amortizationResidual": null,
+            "taxAmount": null,
+            "taxDetailsReference": null,
+            "landedCost": null
+        },
+        {
+            "item": {
+                "name": null,
+                "internalId": "387",
+                "externalId": null,
+                "type": null
+            },
+            "line": null,
+            "vendorName": null,
+            "orderDoc": null,
+            "orderLine": null,
+            "quantity": 1.0,
+            "units": null,
+            "inventoryDetail": null,
+            "description": "custom thing",
+            "serialNumbers": null,
+            "binNumbers": null,
+            "expirationDate": null,
+            "taxCode": null,
+            "taxRate1": null,
+            "taxRate2": null,
+            "grossAmt": null,
+            "tax1Amt": null,
+            "rate": "101.00",
+            "amount": 101.0,
+            "options": null,
+            "department": null,
+            "class": null,
+            "location": {
+                "name": null,
+                "internalId": "8",
+                "externalId": null,
+                "type": null
+            },
+            "customer": null,
+            "customFieldList":[
+                {
+                "scriptId":"custcolfyle_expense_url",
+                "type":"String",
+                "value":"https://localhost:8000/api/app/main/#/enterprise/view_expense/tx4Suhvjafbd?org_id=orpMfWO2KOsU"
+                },
+                {
+                    "scriptId":"custcol788",
+                    "type":"Select",
+                    "value":"1"
+                }
+            ],
+            "landedCostCategory": null,
+            "isBillable": null,
+            "billVarianceStatus": null,
+            "billreceiptsList": null,
+            "amortizationSched": null,
+            "amortizStartDate": null,
+            "amortizationEndDate": null,
+            "amortizationResidual": null,
+            "taxAmount": null,
+            "taxDetailsReference": null,
+            "landedCost": null
+        }
+    ],
+    "accountingBookDetailList": null,
+    "landedCostsList": null,
+    "purchaseOrderList": null,
+    "taxDetailsList": null,
+    "customFieldList": null,
+    "internalId": null,
+    "externalId": "G/2022/05/R/tims"
+}

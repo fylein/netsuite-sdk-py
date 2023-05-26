@@ -29,34 +29,68 @@ class VendorBills(ApiBase):
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
         vb = self.ns_client.VendorBill(externalId=data['externalId'])
-        expense_list = []
-        for eod in data['expenseList']:
-            if 'customFieldList' in eod and eod['customFieldList']:
-                custom_fields = []
-                for field in eod['customFieldList']:
-                    if field['type'] == 'String':
-                        custom_fields.append(
-                            self.ns_client.StringCustomFieldRef(
-                                scriptId=field['scriptId'] if 'scriptId' in field else None,
-                                internalId=field['internalId'] if 'internalId' in field else None,
-                                value=field['value']
-                            )
-                        )
-                    elif field['type'] == 'Select':
-                        custom_fields.append(
-                            self.ns_client.SelectCustomFieldRef(
-                                scriptId=field['scriptId'] if 'scriptId' in field else None,
-                                internalId=field['internalId'] if 'internalId' in field else None,
-                                value=self.ns_client.ListOrRecordRef(
-                                    internalId=field['value']
+        # If expesess are present, add them 
+        if 'expenseList' in data and data['expenseList']:
+            expense_list = []
+            for eod in data['expenseList']:
+                if 'customFieldList' in eod and eod['customFieldList']:
+                    custom_fields = []
+                    for field in eod['customFieldList']:
+                        if field['type'] == 'String':
+                            custom_fields.append(
+                                self.ns_client.StringCustomFieldRef(
+                                    scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                    internalId=field['internalId'] if 'internalId' in field else None,
+                                    value=field['value']
                                 )
                             )
-                        )
-                eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
-            vbe = self.ns_client.VendorBillExpense(**eod)
-            expense_list.append(vbe)
-        
-        vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
+                        elif field['type'] == 'Select':
+                            custom_fields.append(
+                                self.ns_client.SelectCustomFieldRef(
+                                    scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                    internalId=field['internalId'] if 'internalId' in field else None,
+                                    value=self.ns_client.ListOrRecordRef(
+                                        internalId=field['value']
+                                    )
+                                )
+                            )
+                    eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
+                vbe = self.ns_client.VendorBillExpense(**eod)
+                expense_list.append(vbe)
+
+            vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
+
+        # If items are present, add them
+        if 'itemList' in data and data['itemList']:
+            item_list = []
+            for eod in data['itemList']:
+                if 'customFieldList' in eod and eod['customFieldList']:
+                    custom_fields = []
+                    for field in eod['customFieldList']:
+                        print(field['value'])
+                        if field['type'] == 'String':
+                            custom_fields.append(
+                                self.ns_client.StringCustomFieldRef(
+                                    scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                    internalId=field['internalId'] if 'internalId' in field else None,
+                                    value=field['value']
+                                )
+                            )
+                        elif field['type'] == 'Select':
+                            custom_fields.append(
+                                self.ns_client.SelectCustomFieldRef(
+                                    scriptId=field['scriptId'] if 'scriptId' in field else None,
+                                    internalId=field['internalId'] if 'internalId' in field else None,
+                                    value=self.ns_client.ListOrRecordRef(
+                                        internalId=field['value']
+                                    )
+                                )
+                            )
+                    eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
+                vbe = self.ns_client.VendorBillItem(**eod)
+                item_list.append(vbe)
+
+            vb['itemList']= self.ns_client.VendorBillItemList(item=item_list)
 
         if 'currency' in data:
             vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
@@ -81,9 +115,6 @@ class VendorBills(ApiBase):
 
         if 'account' in data:
             vb['account'] = self.ns_client.RecordRef(**(data['account']))
-
-        if 'itemList' in data:
-            vb['itemList'] = data['itemList']
 
         if 'customFieldList' in data:
             vb['customFieldList'] = data['customFieldList']
