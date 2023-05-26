@@ -100,12 +100,6 @@ class ExpenseReports(ApiBase):
             er['entity'] = self.ns_client.RecordRef(**(data['entity']))
 
         logger.debug('able to create er = %s', er)
-        try:
-            res = self.ns_client.upsert(er)
-        except Exception as e:
-            error_parser = ErrorParser(self.ns_client)
-            error_dict = export_error_matcher(e.message, 'er')
-            message = error_parser.export_error_parser(error_dict, e.message)
-            raise NetSuiteRequestError(message, e.code)
+        res = self.ns_client.upsert(er,  'er')
             
         return self._serialize(res)
