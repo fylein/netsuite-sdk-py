@@ -11,9 +11,8 @@ errors = [
 ]
 
 def test_replace_number():
-    final_string = "An error occured in a upsert request: Invalid category reference key John Doe for entity Travel"
+    final_string = "An error occured in a upsert request: Invalid category reference key Travel for entity John Doe"
     replaced_string = replace_numbers('An error occured in a upsert request: Invalid category reference key 1 for entity 2', 'Travel', 'John Doe', '1', '2')
-    
     assert final_string == replaced_string
 
 
