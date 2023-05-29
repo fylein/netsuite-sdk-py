@@ -11,7 +11,7 @@ errors = [
 ]
 
 def test_replace_number():
-    final_string = "An error occured in a upsert request: Invalid category reference key Travel for entity John Doe"
+    final_string = "An error occured in a upsert request: Invalid category reference key John Doe for entity Travel"
     replaced_string = replace_numbers('An error occured in a upsert request: Invalid category reference key 1 for entity 2', 'Travel', 'John Doe', '1', '2')
     
     assert final_string == replaced_string
@@ -30,5 +30,5 @@ def test_convert_to_camelcase():
 @pytest.mark.parametrize("input, output", errors)
 def test_export_error_matcher(input, output):
     
-    result = export_error_matcher(input, 'er')
+    result = export_error_matcher(input, 'expense_report')
     assert result == output

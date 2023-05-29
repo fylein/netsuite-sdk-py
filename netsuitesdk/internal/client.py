@@ -518,7 +518,7 @@ class NetSuiteClient:
 
             if record_type:
                 error_parser = ErrorParser(self.get)
-                error_dict = export_error_matcher(exc.message, 'er')
+                error_dict = export_error_matcher(exc.message, 'expense_report')
                 message = error_parser.export_error_parser(error_dict, exc.message)
                 exc.message = message
 
