@@ -3,7 +3,7 @@ from .errors import error_reference
 
 
 def replace_numbers(string , replacement1, replacement2, number1, number2):
-    replaced_string = re.sub(r'\b({}|{})\b'.format(number1, number2), lambda m: replacement1 if m.group() == number1 else replacement2, string)
+    replaced_string = string.replace(str(number1), replacement1).replace(str(number2), replacement2)
     return replaced_string
 
 
