@@ -10,5 +10,5 @@ def test_export_error_parser(mocker, ns):
     )
 
     parser = ErrorParser(ns)
-    result = parser.export_error_parser({'expense_category': '1', 'employee': '22'}, 'An error occured in a upsert request: Invalid category reference key 1 for entity 22')
-    assert result == "An error occured in a upsert request: Invalid category reference key Travel for entity jhon@gmail.com"
+    result = parser.export_error_parser({'test': '1', 'employee': '22'}, 'An error occured in a upsert request: Invalid wiered reference key 1 for entity 22')
+    assert result == "An error occured in a upsert request: Invalid wiered reference key 1 for entity 22"
