@@ -152,7 +152,7 @@ def test_failed_expense_report(ns):
         record_ref = ns.upsert(expense_report, record_type='expense_report')
         logger.debug('record_ref = %s', record_ref)
     except NetSuiteRequestError as e:
-        assert e.message == 'An error occured in a upsert request: Invalid location reference key Honeycomb Mfg. for subsidiary Honeycomb Mfg..'
+        assert e.message == 'An error occured in a upsert request: Invalid location reference key UK Location for subsidiary Honeycomb Mfg..'
         assert e.code == 'INVALID_KEY_OR_REF'
 
 def test_upsert_expense_report(ns):
