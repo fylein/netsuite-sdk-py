@@ -77,5 +77,5 @@ class JournalEntries(ApiBase):
         self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, je)
 
         logger.debug('able to create je = %s', je)
-        res = self.ns_client.upsert(je)
+        res = self.ns_client.upsert(je, 'journal_entry')
         return self._serialize(res)
