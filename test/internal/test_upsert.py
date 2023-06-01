@@ -75,7 +75,8 @@ def test_upsert_vendor_bill(ns):
     logger.debug('bill2 = %s', str(bill2))
     assert (29.99 < bill2['userTotal']) and (bill2['userTotal'] < 30.01), 'Bill total is not 30.0'
 
-def test_upsert_journal_entry(ns):
+
+def test_failed_upsert_journal_entry(ns):
     vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
     cat_account_ref = ns.RecordRef(type='account', internalId=get_category_account(ns).internalId)
     loc_ref = ns.RecordRef(type='location', internalId=get_location(ns).internalId)
@@ -119,6 +120,52 @@ def test_upsert_journal_entry(ns):
     assert (je['externalId'] == 'JE_1234'), 'Journal Entry External ID does not match'
 
 
+
+
+def test_upsert_journal_entry(ns):
+    vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
+    cat_account_ref = ns.RecordRef(type='account', internalId=237)
+    loc_ref = ns.RecordRef(type='location', internalId=get_location(ns).internalId)
+    dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
+    class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)
+    lines = []
+
+    credit_line = ns.JournalEntryLine()
+    credit_line['account'] = cat_account_ref
+    credit_line['department'] = dep_ref
+    credit_line['class'] = class_ref
+    credit_line['location'] = loc_ref
+    credit_line['entity'] = vendor_ref
+    credit_line['credit'] = 20.0
+
+    lines.append(credit_line)
+
+    debit_line = ns.JournalEntryLine()
+    debit_line['account'] = cat_account_ref
+    debit_line['department'] = dep_ref
+    debit_line['class'] = class_ref
+    debit_line['location'] = loc_ref
+    debit_line['entity'] = vendor_ref
+    debit_line['debit'] = 20.0
+
+    lines.append(debit_line)
+
+    journal_entry = ns.JournalEntry(externalId='JE_1234')
+    journal_entry['currency'] = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId)  # US dollar
+    journal_entry['subsidiary'] = ns.RecordRef(type='subsidiary', internalId='1')
+    journal_entry['exchangerate'] = 1.0
+    journal_entry['lineList'] = ns.JournalEntryLineList(line=lines)
+    journal_entry['memo'] = 'test memo'
+    logger.debug('upserting journal entry %s', journal_entry)
+    
+    try:
+        record_ref = ns.upsert(journal_entry, 'journal_entry')
+        logger.debug('record_ref = %s', record_ref)
+    except NetSuiteRequestError as e:
+        assert e.message == 'An error occured in a upsert request: Invalid account reference key UK EXP Account for subsidiary Honeycomb Mfg..'
+        assert e.code == 'INVALID_KEY_OR_REF'
+
+
 def test_failed_expense_report(ns):
     employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
     cat_account_ref = ns.RecordRef(type='account', internalId='3')
@@ -155,6 +202,7 @@ def test_failed_expense_report(ns):
         assert e.message == 'An error occured in a upsert request: Invalid location reference key UK Location for subsidiary Honeycomb Mfg..'
         assert e.code == 'INVALID_KEY_OR_REF'
 
+
 def test_upsert_expense_report(ns):
     employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
     bill_account_ref = ns.RecordRef(type='account', internalId=25)
@@ -188,3 +236,49 @@ def test_upsert_expense_report(ns):
 
     expr = ns.get(recordType='ExpenseReport', externalId='EXPR_1')
     logger.debug('expense report = %s', str(expr))
+
+
+def test_failed_upsert_vendor_bill(ns):
+    vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
+    bill_account_ref = ns.RecordRef(type='account', internalId=237)
+    cat_account_ref = ns.RecordRef(type='account', internalId=get_category_account(ns).internalId)
+    subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
+    dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
+    class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)
+    expenses = []
+
+    vbe1 = ns.VendorBillExpense()
+    vbe1['account'] = cat_account_ref
+    vbe1['amount'] = 10.0
+    vbe1['department'] = dep_ref
+    vbe1['class'] = class_ref
+    vbe1['account'] = bill_account_ref
+    vbe1['subsdiary'] = subs_ref
+
+
+    expenses.append(vbe1)
+    vbe1 = ns.VendorBillExpense()
+    vbe1['account'] = cat_account_ref
+    vbe1['amount'] = 20.0
+    vbe1['department'] = dep_ref
+    vbe1['class'] = class_ref
+    vbe1['account'] = bill_account_ref
+    vbe1['subsdiary'] = subs_ref
+
+    expenses.append(vbe1)
+
+    bill = ns.VendorBill(externalId='1234')
+    bill['currency'] = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId) # US dollar
+    bill['exchangerate'] = 1.0
+    bill['expenseList'] = ns.VendorBillExpenseList(expense=expenses)
+    bill['memo'] = 'test memo'
+    bill['class'] = class_ref
+    bill['entity'] = vendor_ref
+    logger.debug('upserting bill %s', bill)
+    
+    try:
+        record_ref = ns.upsert(bill, record_type='bills')
+        logger.debug('record_ref = %s', record_ref)
+    except NetSuiteRequestError as e:
+        assert e.message == 'An error occured in a upsert request: Invalid account reference key UK EXP Account for subsidiary Honeycomb Mfg..'
+        assert e.code == 'INVALID_KEY_OR_REF'
