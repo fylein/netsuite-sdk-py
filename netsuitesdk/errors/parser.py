@@ -13,6 +13,11 @@ class ErrorParser():
         object_2 = self.get_instance(convert_to_camelcase(entity_keys[1]), error_dict[entity_keys[1]])
 
         if object_1 and object_2:
+            if entity_keys[0] == 'customer' and entity_keys[1] == 'employee':
+                object_1 = object_1['entityId']
+                object_2 = object_2['email'] if object_2['email'] else object_2['firstName'] + " " + object_2['lastName']
+                return object_1, object_2
+
             if entity_keys[1] == 'employee':
                 object_2 = object_2['email'] if object_2['email'] else object_2['firstName'] + " " + object_2['lastName']
                 return object_1['name'], object_2
