@@ -67,7 +67,6 @@ class VendorBills(ApiBase):
                 if 'customFieldList' in eod and eod['customFieldList']:
                     custom_fields = []
                     for field in eod['customFieldList']:
-                        print(field['value'])
                         if field['type'] == 'String':
                             custom_fields.append(
                                 self.ns_client.StringCustomFieldRef(
@@ -123,5 +122,5 @@ class VendorBills(ApiBase):
             vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
 
         logger.debug('able to create vb = %s', vb)
-        res = self.ns_client.upsert(vb)
+        res = self.ns_client.upsert(vb, 'bills')
         return self._serialize(res)

@@ -26,15 +26,18 @@ class ErrorParser():
                 object_1 = object_1['acctName']
                 return object_1, object_2['name']
 
+            if entity_keys[0] == 'vendor':
+                object_1 = object_1['companyName'] if object_1['companyName'] else object_1['entityId']
+                return object_1, object_2['name']
             return object_1['name'], object_2['name']
 
 
     def export_error_parser(self, error_dict, message):
 
         parsed_message = message
+        print('dsdf', list(error_dict))
         if list(error_dict) in list_of_dicts:
             object_1, object_2 = self.get_entity_values(error_dict)
             entity_keys = list(error_dict)
             parsed_message = replace_numbers(message, object_1, object_2, error_dict[entity_keys[0]], error_dict[entity_keys[1]])
-
         return parsed_message
