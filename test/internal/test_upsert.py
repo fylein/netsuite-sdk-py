@@ -1,8 +1,7 @@
 from netsuitesdk.internal.utils import PaginatedSearch
 from netsuitesdk.internal.exceptions import NetSuiteRequestError
 import logging
-import pytest
-import zeep
+
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +73,19 @@ def test_upsert_vendor_bill(ns):
     bill2 = ns.get(recordType='vendorBill', externalId='1234')
     logger.debug('bill2 = %s', str(bill2))
     assert (29.99 < bill2['userTotal']) and (bill2['userTotal'] < 30.01), 'Bill total is not 30.0'
+    
+    subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
+    bill_account_ref = ns.RecordRef(type='account', internalId=237)
+    vbe1['account'] = bill_account_ref
+    vbe1['subsdiary'] = subs_ref
+    
+    try:
+        record_ref = ns.upsert(bill, record_type='bills')
+        logger.debug('record_ref = %s', record_ref)
+    except NetSuiteRequestError as e:
+        assert e.message == 'An error occured in a upsert request: Invalid account reference key UK EXP Account for subsidiary Honeycomb Mfg..'
+        assert e.code == 'INVALID_KEY_OR_REF'
+
 
 def test_upsert_journal_entry(ns):
     vendor_ref = ns.RecordRef(type='vendor', internalId=get_vendor(ns).internalId)
@@ -117,48 +129,23 @@ def test_upsert_journal_entry(ns):
     je = ns.get(recordType='journalEntry', externalId='JE_1234')
     logger.debug('je = %s', str(je))
     assert (je['externalId'] == 'JE_1234'), 'Journal Entry External ID does not match'
-
-
-def test_failed_expense_report(ns):
-    employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
-    cat_account_ref = ns.RecordRef(type='account', internalId='3')
-    loc_ref = ns.RecordRef(type='location', internalId=12)
-    subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
-    dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
-    class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)
-    currency_ref = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId)
-    expenses = []
-
-    er = ns.ExpenseReportExpense()
-    er['category'] = cat_account_ref
-    er['amount'] = 10.0
-    er['department'] = dep_ref
-    er['class'] = class_ref
-    er['location'] = loc_ref
-    er['currency'] = currency_ref
-    er['subsdiary'] = subs_ref
     
-    expenses.append(er)
+    cat_account_ref = ns.RecordRef(type='account', internalId=237)
+    credit_line['account'] = cat_account_ref
 
-    expense_report = ns.ExpenseReport(externalId='EXPR_1')
-    expense_report['expenseReportCurrency'] = currency_ref  # US dollar
-    expense_report['exchangerate'] = 1.0
-    expense_report['expenseList'] = ns.ExpenseReportExpenseList(expense=expenses)
-    expense_report['memo'] = 'test memo'
-    expense_report['entity'] = employee_ref
-    logger.debug('upserting expense report %s', expense_report)
-    
     try:
-        record_ref = ns.upsert(expense_report, record_type='expense_report')
+        record_ref = ns.upsert(journal_entry, 'journal_entry')
         logger.debug('record_ref = %s', record_ref)
     except NetSuiteRequestError as e:
-        assert e.message == 'An error occured in a upsert request: Invalid location reference key UK Location for subsidiary Honeycomb Mfg..'
+        assert e.message == 'An error occured in a upsert request: Invalid account reference key UK EXP Account for subsidiary Honeycomb Mfg..'
         assert e.code == 'INVALID_KEY_OR_REF'
+
 
 def test_upsert_expense_report(ns):
     employee_ref = ns.RecordRef(type='employee', internalId=get_employee(ns).internalId)
     bill_account_ref = ns.RecordRef(type='account', internalId=25)
     cat_account_ref = ns.RecordRef(type='account', internalId='3')
+
     loc_ref = ns.RecordRef(type='location', internalId=get_location(ns).internalId)
     dep_ref = ns.RecordRef(type='department', internalId=get_department(ns).internalId)
     class_ref = ns.RecordRef(type='classification', internalId=get_department(ns).internalId)
@@ -188,3 +175,17 @@ def test_upsert_expense_report(ns):
 
     expr = ns.get(recordType='ExpenseReport', externalId='EXPR_1')
     logger.debug('expense report = %s', str(expr))
+
+
+    loc_ref = ns.RecordRef(type='location', internalId=12)
+    subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
+    
+    er['location'] = loc_ref
+    er['subsdiary'] = subs_ref 
+    
+    try:
+        record_ref = ns.upsert(expense_report, record_type='expense_report')
+        logger.debug('record_ref = %s', record_ref)
+    except NetSuiteRequestError as e:
+        assert e.message == 'An error occured in a upsert request: Invalid location reference key UK Location for subsidiary Honeycomb Mfg..'
+        assert e.code == 'INVALID_KEY_OR_REF'
