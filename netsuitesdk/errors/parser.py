@@ -14,28 +14,24 @@ class ErrorParser():
 
         if object_1 and object_2:
             if entity_keys[0] == 'customer' and entity_keys[1] == 'employee':
-                object_1 = object_1['entityId']
-                object_2 = object_2['email'] if object_2['email'] else object_2['firstName'] + " " + object_2['lastName']
-                return object_1, object_2
+                return object_1['entityId'], object_2['entityId']
 
             if entity_keys[1] == 'employee':
-                object_2 = object_2['email'] if object_2['email'] else object_2['firstName'] + " " + object_2['lastName']
-                return object_1['name'], object_2
+                return object_1['name'], object_2['entityId']
 
             if entity_keys[0] == 'account':
                 object_1 = object_1['acctName']
                 return object_1, object_2['name']
 
             if entity_keys[0] == 'vendor':
-                object_1 = object_1['companyName'] if object_1['companyName'] else object_1['entityId']
-                return object_1, object_2['name']
+                return object_1['entityId'], object_2['name']
+
             return object_1['name'], object_2['name']
 
 
     def export_error_parser(self, error_dict, message):
 
         parsed_message = message
-        print('dsdf', list(error_dict))
         if list(error_dict) in list_of_dicts:
             object_1, object_2 = self.get_entity_values(error_dict)
             entity_keys = list(error_dict)
