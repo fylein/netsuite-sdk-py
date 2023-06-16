@@ -517,10 +517,13 @@ class NetSuiteClient:
             exc = self._request_error('upsert', detail=status['statusDetail'][0])
 
             if record_type:
-                error_parser = ErrorParser(self.get)
-                error_dict = export_error_matcher(exc.message, record_type)
-                message = error_parser.export_error_parser(error_dict, exc.message)
-                exc.message = message
+                try: 
+                    error_parser = ErrorParser(self.get)
+                    error_dict = export_error_matcher(exc.message, record_type)
+                    message = error_parser.export_error_parser(error_dict, exc.message)
+                    exc.message = message
+                except Exception as e:
+                    self.logger.debug('Error parsing error message', e.message)
 
             raise exc
 
