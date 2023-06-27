@@ -1,10 +1,8 @@
 import logging
+from collections import OrderedDict
 
 from netsuitesdk.internal.utils import PaginatedSearch
-
 from .base import ApiBase
-from typing import List
-from collections import OrderedDict
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +11,23 @@ class VendorBills(ApiBase):
     """
     VendorBills are not directly searchable - only via as transactions
     """
+
+    SIMPLE_FIELDS = [
+        'memo',
+        'tranDate',
+        'tranId',
+        'itemList',
+        'customFieldList'
+    ]
+
+    RECORD_REF_FIELDS = [
+        'currency',
+        'class',
+        'location',
+        'department',
+        'account',
+        'entity'
+    ]
 
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='vendorBill')
@@ -26,7 +41,7 @@ class VendorBills(ApiBase):
                                            pageSize=20)
         return self._paginated_search_to_generator(paginated_search=paginated_search)
 
-    def post(self, data) -> OrderedDict:
+    def _build_vendor_bill(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
         vb = self.ns_client.VendorBill(externalId=data['externalId'])
         expense_list = []
@@ -55,42 +70,23 @@ class VendorBills(ApiBase):
                 eod['customFieldList'] = self.ns_client.CustomFieldList(custom_fields)
             vbe = self.ns_client.VendorBillExpense(**eod)
             expense_list.append(vbe)
-        
+
         vb['expenseList'] = self.ns_client.VendorBillExpenseList(expense=expense_list)
 
-        if 'currency' in data:
-            vb['currency'] = self.ns_client.RecordRef(**(data['currency']))
+        self.build_simple_fields(self.SIMPLE_FIELDS, data, vb)
+        self.build_record_ref_fields(self.RECORD_REF_FIELDS, data, vb)
 
-        if 'memo' in data:
-            vb['memo'] = data['memo']
+        return vb
 
-        if 'tranDate' in data:
-            vb['tranDate'] = data['tranDate']
+    def post(self, data) -> OrderedDict:
+        vendor_bill = self._build_vendor_bill(data)
 
-        if 'tranId' in data:
-            vb['tranId'] = data['tranId']
-
-        if 'class' in data:
-            vb['class'] = self.ns_client.RecordRef(**(data['class']))
-
-        if 'location' in data:
-            vb['location'] = self.ns_client.RecordRef(**(data['location']))
-
-        if 'department' in data:
-            vb['department'] = self.ns_client.RecordRef(**(data['department']))
-
-        if 'account' in data:
-            vb['account'] = self.ns_client.RecordRef(**(data['account']))
-
-        if 'itemList' in data:
-            vb['itemList'] = data['itemList']
-
-        if 'customFieldList' in data:
-            vb['customFieldList'] = data['customFieldList']
-
-        if 'entity' in data:
-            vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
-
-        logger.debug('able to create vb = %s', vb)
-        res = self.ns_client.upsert(vb)
+        logger.debug('able to create VendorBill = %s', vendor_bill)
+        res = self.ns_client.upsert(vendor_bill)
         return self._serialize(res)
+
+    def post_batch(self, records) -> [OrderedDict]:
+        vendor_bills = [self._build_vendor_bill(record) for record in records]
+
+        responses = self.ns_client.upsert_list(vendor_bills)
+        return [self._serialize(response) for response in responses]
