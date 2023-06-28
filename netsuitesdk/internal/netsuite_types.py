@@ -83,7 +83,8 @@ COMPLEX_TYPES = {
         'Customer', 'CustomerSearch', 'CustomerTaxRegistrationList', 'CustomerTaxRegistration',
         'Vendor', 'VendorSearch',
         'Job', 'JobSearch',
-        'VendorAddressbook', 'VendorAddressbookList', 'BillingAccountSearch', 'VendorCurrencyList'
+        'VendorAddressbook', 'VendorAddressbookList', 'BillingAccountSearch', 'VendorCurrencyList',
+        'VendorSubsidiaryRelationshipSearch',
     ],
 
     # urn:accounting_2017_2.lists.webservices.netsuite.com

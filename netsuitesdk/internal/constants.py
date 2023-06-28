@@ -87,6 +87,7 @@ SEARCH_RECORD_TYPES = [
     'usage',
     'vendor',
     'vendorCategory',
+    'vendorSubsidiaryRelationship',
     'winLossReason',
 ]
 """ As defined in `SearchRecordType` in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd"""
