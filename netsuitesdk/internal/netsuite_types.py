@@ -74,6 +74,10 @@ COMPLEX_TYPES = {
     ],
 
     'ns6': [
+      'Bom',
+    ],
+
+    'ns7': [
       'ItemCostEstimateType',
     ],
 
