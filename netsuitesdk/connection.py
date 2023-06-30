@@ -1,5 +1,6 @@
 from .api.accounts import Accounts
 from .api.billing_account import BillingAccount
+from .api.bom import Bom
 from .api.classifications import Classifications
 from .api.credit_memos import CreditMemos
 from .api.departments import Departments
@@ -49,6 +50,7 @@ class NetSuiteConnection:
         self.client = ns_client
         self.accounts = Accounts(ns_client)
         self.billing_accounts = BillingAccount(ns_client)
+        self.bom = Bom(ns_client)
         self.classifications = Classifications(ns_client)
         self.departments = Departments(ns_client)
         self.currencies = Currencies(ns_client)

@@ -77,6 +77,10 @@ COMPLEX_TYPES = {
       'ItemCostEstimateType',
     ],
 
+    'ns7': [
+      'Bom',
+    ],
+
     # urn:relationships.lists.webservices.netsuite.com
     'ns13': [
         'BillingAccount',
