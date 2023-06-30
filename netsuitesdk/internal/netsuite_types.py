@@ -74,11 +74,11 @@ COMPLEX_TYPES = {
     ],
 
     'ns6': [
-      'Bom',
+      'ItemCostEstimateType',
     ],
 
     'ns7': [
-      'ItemCostEstimateType',
+      'Bom',
     ],
 
     # urn:relationships.lists.webservices.netsuite.com
