@@ -84,6 +84,7 @@ COMPLEX_TYPES = {
         'Vendor', 'VendorSearch',
         'Job', 'JobSearch',
         'VendorAddressbook', 'VendorAddressbookList', 'BillingAccountSearch', 'VendorCurrencyList',
+        'VendorSubsidiaryRelationship',
         'VendorSubsidiaryRelationshipSearch',
     ],
 
