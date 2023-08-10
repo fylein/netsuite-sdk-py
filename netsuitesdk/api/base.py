@@ -4,12 +4,11 @@ from collections import OrderedDict
 
 from netsuitesdk.internal.client import NetSuiteClient
 from netsuitesdk.internal.utils import PaginatedSearch
-from typing import List, Generator
+from typing import List
 
 logger = logging.getLogger(__name__)
 
 
-# TODO: introduce arg and return types
 class ApiBase:
     def __init__(self, ns_client: NetSuiteClient, type_name):
         self.ns_client = ns_client

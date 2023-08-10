@@ -4,6 +4,7 @@ of a :class:`~netsuitesdk.client.NetSuiteClient` instance `ns`.
 """
 
 COMPLEX_TYPES = {
+    # https://webservices.netsuite.com/xsd/platform/v2019_1_0/core.xsd
     'ns0': [
         'BaseRef',
         'GetAllRecord',
@@ -34,7 +35,7 @@ COMPLEX_TYPES = {
         'SelectCustomFieldRef'
     ],
 
-    # ns4: https://webservices.netsuite.com/xsd/platform/v2017_2_0/messages.xsd
+    # ns4: https://webservices.netsuite.com/xsd/platform/v2019_1_0/messages.xsd
     'ns4': [
         'ApplicationInfo',
         'GetAllRequest',
@@ -47,7 +48,7 @@ COMPLEX_TYPES = {
         'SearchResponse'
     ],
 
-    # https://webservices.netsuite.com/xsd/platform/v2017_2_0/common.xsd
+    # https://webservices.netsuite.com/xsd/platform/v2019_1_0/common.xsd
     'ns5': [
         'AccountSearchBasic',
         'Address',
@@ -76,7 +77,7 @@ COMPLEX_TYPES = {
       'ItemCostEstimateType',
     ],
 
-    # urn:relationships.lists.webservices.netsuite.com
+    # https://webservices.netsuite.com/xsd/lists/v2019_1_0/relationships.xsd
     'ns13': [
         'BillingAccount',
         'CustomerAddressbook', 'CustomerAddressbookList',
@@ -88,8 +89,7 @@ COMPLEX_TYPES = {
         'VendorSubsidiaryRelationshipSearch',
     ],
 
-    # urn:accounting_2017_2.lists.webservices.netsuite.com
-    # https://webservices.netsuite.com/xsd/lists/v2017_2_0/accounting.xsd
+    # https://webservices.netsuite.com/xsd/lists/v2019_1_0/accounting.xsd
     'ns17': [
         'Account', 'AccountSearch',
         'ExpenseCategory', 'ExpenseCategorySearch',
@@ -117,8 +117,7 @@ COMPLEX_TYPES = {
         'Usage',
     ],
 
-    # urn:purchases_2017_2.transactions.webservices.netsuite.com
-    # https://webservices.netsuite.com/xsd/transactions/v2017_2_0/purchases.xsd
+    # https://webservices.netsuite.com/xsd/transactions/v2019_1_0/purchases.xsd
     'ns21': [
         'VendorBill',
         'VendorBillExpense',
@@ -148,8 +147,7 @@ COMPLEX_TYPES = {
         'CreditMemoItemList',
     ],
 
-    # urn:general_2019_2.transactions.webservices.netsuite.com
-    # https://webservices.netsuite.com/xsd/transactions/v2019_2_0/general.xsd
+    # https://webservices.netsuite.com/xsd/transactions/v2019_1_0/general.xsd
     'ns31': [
         'JournalEntry',
         'JournalEntryLine',
@@ -167,14 +165,13 @@ COMPLEX_TYPES = {
         'CustomRecordType'
     ],
 
-    # https://webservices.netsuite.com/xsd/lists/v2019_2_0/employees.xsd
+    # https://webservices.netsuite.com/xsd/lists/v2019_1_0/employees.xsd
     'ns34': [
         'EmployeeSearch',
         'Employee'
     ],
 
-    # urn:employees_2019_2.transactions.webservices.netsuite.com
-    # https://webservices.netsuite.com/xsd/transactions/v2019_2_0/employees.xsd
+    # https://webservices.netsuite.com/xsd/transactions/v2019_1_0/employees.xsd
     'ns38': [
         'ExpenseReport',
         'ExpenseReportExpense',
@@ -189,7 +186,7 @@ COMPLEX_TYPES = {
 }
 
 SIMPLE_TYPES = {
-    # ns1: view-source:https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd
+    # ns1: https://webservices.netsuite.com/xsd/platform/v2019_1_0/coreTypes.xsd
     'ns1': [
         'RecordType',
         'GetAllRecordType',
