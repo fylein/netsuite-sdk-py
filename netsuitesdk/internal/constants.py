@@ -1,5 +1,6 @@
-
-
+"""
+As defined in `SearchRecordType` in https://webservices.netsuite.com/xsd/platform/v2019_1_0/coreTypes.xsd
+"""
 SEARCH_RECORD_TYPES = [
     'account',
     'accountingPeriod',
@@ -90,8 +91,10 @@ SEARCH_RECORD_TYPES = [
     'vendorSubsidiaryRelationship',
     'winLossReason',
 ]
-""" As defined in `SearchRecordType` in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd"""
 
+"""
+As defined in `GetAllRecordType` in https://webservices.netsuite.com/xsd/platform/v2019_1_0/coreTypes.xsd
+"""
 GET_ALL_RECORD_TYPES = [
     'budgetCategory',
     'campaignAudience',
@@ -112,4 +115,3 @@ GET_ALL_RECORD_TYPES = [
     'supportCaseType',
     'taxAcct',
 ]
-""" As defined in `GetAllRecordType` in https://webservices.netsuite.com/xsd/platform/v2017_2_0/coreTypes.xsd"""

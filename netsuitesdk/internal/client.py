@@ -134,9 +134,6 @@ class NetSuiteClient:
                     self._namespaces[namespace].append(simple_type)
 
     def get_complex_type(self, type_name):
-        # if ':' in type_name:
-        #     namespace, type_name = type_name.split(':')
-        # namespace_index = namespace[2:]
         return self._complex_types[type_name]
 
     def get_simple_type(self, type_name):
@@ -295,7 +292,6 @@ class NetSuiteClient:
                 msg=detail['message']),
             code=detail['code']
         )
-        #        self.logger.error(str(exc))
         return exc
 
     def _build_soap_headers(self, include_search_preferences: bool = False):
@@ -353,7 +349,6 @@ class NetSuiteClient:
         except Exception as e:
             raise
 
-
     def get(self, recordType, internalId=None, externalId=None):
         """
         Make a get request to retrieve an object of type recordType
@@ -393,8 +388,6 @@ class NetSuiteClient:
         are listed under :const:`constants.GET_ALL_RECORD_TYPES`.
 
         :param str recordType: the complex type (e.g. 'vendor')
-        :param int internalId: id specifying the record to be retrieved
-        :param str externalId: str specifying the record to be retrieved
         :return: the matching record in case of success
         :rtype: Record
         """
@@ -440,7 +433,7 @@ class NetSuiteClient:
 
         :param Record searchRecord: data object holding all parameters for the search.
                     The utility function `search_factory` can be used to create one.
-        :return: result records and meta data about search result
+        :return: result records and metadata about search result
         :rtype: SearchResult(type):
                     int totalRecords: total number of records
                     int pageSize: number of records per page
@@ -495,8 +488,6 @@ class NetSuiteClient:
             customer.email = 'test@example.com'
             self.upsert(record=customer)
 
-        :param str recordType: the complex type (e.g. either 'Customer' or 'vendors')
-        :param str externalId: str specifying the record to be retrieved
         :return: a reference to the newly created or updated record (in case of success)
         :rtype: RecordRef
         """
@@ -526,7 +517,7 @@ class NetSuiteClient:
                     'doesNotStartWith', 'empty', 'hasKeywords',
                     'isNot', 'notEmpty', 'startsWith'
 
-        See for example: http://www.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2017_2/schema/search/locationsearchbasic.html?mode=package
+        See for example: https://www.netsuite.com/help/helpcenter/en_US/srbrowser/Browser2019_1/schema/search/locationsearchbasic.html?mode=package
         In general, one can find the possible search attributes for a basic search
         in the type {type_name}SearchBasic
         """
