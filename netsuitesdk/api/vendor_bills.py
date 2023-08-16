@@ -26,7 +26,8 @@ class VendorBills(ApiBase):
         'location',
         'department',
         'account',
-        'entity'
+        'entity',
+        'subsidiary'
     ]
 
     def __init__(self, ns_client):
