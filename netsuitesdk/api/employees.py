@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+from netsuitesdk.internal.utils import PaginatedSearch
+
 from .base import ApiBase
 import logging
 
@@ -9,6 +11,36 @@ logger = logging.getLogger(__name__)
 class Employees(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Employee')
+
+    def get_all_generator(self, is_inactive=False, last_modified_date_query={
+        'search_value',
+        'operator',
+    }):
+        # Get Only Employee Items using SearchBooleanField
+        record_type_search_field = self.ns_client.SearchBooleanField(searchValue=is_inactive)
+
+        date_search = None
+        if 'search_value' in last_modified_date_query and 'operator' in last_modified_date_query:
+            if last_modified_date_query['search_value'] and last_modified_date_query['operator']:
+                date_search = self.ns_client.SearchDateField(
+                    searchValue=last_modified_date_query['search_value'],
+                    operator=last_modified_date_query['operator']
+                )
+
+        basic_search = self.ns_client.basic_search_factory(
+            type_name='Employee',
+            isInactive=record_type_search_field,
+            lastModifiedDate=date_search
+        )
+
+        paginated_search = PaginatedSearch(
+            client=self.ns_client,
+            type_name='Employee',
+            basic_search=basic_search,
+            pageSize=500
+        )
+
+        return self._paginated_search_generator(paginated_search=paginated_search)
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
