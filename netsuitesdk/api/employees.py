@@ -12,7 +12,7 @@ class Employees(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Employee')
 
-    def get_all_generator(self, is_inactive=False, last_modified_date_query={
+    def get_all_generator(self, is_inactive=False, page_size=50, last_modified_date_query={
         'search_value',
         'operator',
     }):
@@ -37,7 +37,7 @@ class Employees(ApiBase):
             client=self.ns_client,
             type_name='Employee',
             basic_search=basic_search,
-            pageSize=500
+            pageSize=page_size
         )
 
         return self._paginated_search_generator(paginated_search=paginated_search)
