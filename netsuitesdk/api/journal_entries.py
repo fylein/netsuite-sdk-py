@@ -40,7 +40,7 @@ class JournalEntries(ApiBase):
                                            type_name='Transaction',
                                            basic_search=basic_search,
                                            pageSize=20)
-        return self._paginated_search_to_generator(paginated_search=paginated_search)
+        return self._paginated_search_generator(paginated_search=paginated_search)
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
