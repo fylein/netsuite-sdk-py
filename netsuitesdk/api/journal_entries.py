@@ -33,6 +33,21 @@ class JournalEntries(ApiBase):
         self.line_class_ = getattr(ns_client, self.class_name + 'Line')
         self.line_list_class_ = getattr(ns_client, self.class_name + 'LineList')
 
+    def get_all(self, filters: dict = {}):
+        record_type_search_field = self.ns_client.SearchStringField(searchValue=self.class_name, operator='contains')
+        basic_search = self.ns_client.basic_search_factory(
+            'Transaction',
+            recordType=record_type_search_field,
+            **filters
+        )
+        paginated_search = PaginatedSearch(
+            client=self.ns_client,
+            type_name='Transaction',
+            basic_search=basic_search,
+            pageSize=20
+        )
+        return self._paginated_search_to_generator(paginated_search=paginated_search)
+
     def get_all_generator(self):
         record_type_search_field = self.ns_client.SearchStringField(searchValue=self.class_name, operator='contains')
         basic_search = self.ns_client.basic_search_factory('Transaction', recordType=record_type_search_field)
