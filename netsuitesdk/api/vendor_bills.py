@@ -126,9 +126,10 @@ class VendorBills(ApiBase):
 
         if 'taxDetailsList' in data:
             tax_details_list = []
-            for tdl in data['taxDetailsList']['taxDetails']:
-                tax_details_list.append(self.ns_client.TaxDetails(**tdl))
-            vb['taxDetailsList'] = self.ns_client.TaxDetailsList(taxDetails=tax_details_list)
+            if 'taxDetails' in data['taxDetailsList']:
+                for tdl in data['taxDetailsList']['taxDetails']:
+                    tax_details_list.append(self.ns_client.TaxDetails(**tdl))
+                vb['taxDetailsList'] = self.ns_client.TaxDetailsList(taxDetails=tax_details_list)
 
         logger.debug('able to create vb = %s', vb)
         res = self.ns_client.upsert(vb, 'bills')
