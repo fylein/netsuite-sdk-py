@@ -124,7 +124,7 @@ class VendorBills(ApiBase):
         if 'taxDetailsOverride' in data:
             vb['taxDetailsOverride'] = data['taxDetailsOverride']
 
-        if 'taxDetailsList' in data:
+        if 'taxDetailsList' in data and data['taxDetailsList']:
             tax_details_list = []
             if 'taxDetails' in data['taxDetailsList']:
                 for tdl in data['taxDetailsList']['taxDetails']:
