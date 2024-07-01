@@ -58,6 +58,16 @@ class ExpenseReports(ApiBase):
 
         er['expenseList'] = self.ns_client.ExpenseReportExpenseList(expense=expense_list)
 
+        if 'nexus' in data:
+            er['nexus'] = self.ns_client.RecordRef(**(data['nexus']))
+
+        if 'taxDetailsList' in data:
+            tax_details_list = []
+            for tdl in data['taxDetailsList']['taxDetails']:
+                tax_details_list.append(self.ns_client.TaxDetails(**tdl))
+            er['taxDetailsList'] = self.ns_client.TaxDetailsList(taxDetails=tax_details_list)
+
+
         if 'expenseReportCurrency' in data:
             er['expenseReportCurrency'] = self.ns_client.RecordRef(**(data['expenseReportCurrency']))
 
