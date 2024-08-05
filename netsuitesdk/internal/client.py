@@ -30,8 +30,8 @@ class NetSuiteClient:
     """The Netsuite client class providing access to the Netsuite
     SOAP/WSDL web service"""
 
-    WSDL_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/wsdl/v2019_1_0/netsuite.wsdl'
-    DATACENTER_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/services/NetSuitePort_2019_1'
+    WSDL_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/wsdl/{wsdl_version}/netsuite.wsdl'
+    DATACENTER_URL_TEMPLATE = 'https://{account}.suitetalk.api.netsuite.com/services/{netsuite_port_version}'
 
     _search_preferences = None
     _passport = None
@@ -45,7 +45,7 @@ class NetSuiteClient:
     _app_id = None
 
     def __init__(self, account=None, caching=True, caching_timeout=2592000, caching_path=None, search_body_fields_only=True,
-                 page_size: int = 100):
+                 page_size: int = 100, use_2024_wsdl: bool = False):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -62,8 +62,17 @@ class NetSuiteClient:
         assert '-' not in account, 'Account cannot have hyphens, it is likely an underscore'
         self._account = account
 
-        self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'))
-        self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'))
+        wsdl_version = 'v2019_1_0'
+        netsuite_port_version = 'NetSuitePort_2019_1'
+        netsuite_binding_version = '2019_1'
+
+        if use_2024_wsdl:
+            wsdl_version = 'v2024_1_0'
+            netsuite_port_version = 'NetSuitePort_2024_1'
+            netsuite_binding_version = '2024_1'
+
+        self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'), wsdl_version=wsdl_version)
+        self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'), netsuite_port_version=netsuite_port_version)
 
         if caching:
             base_path = os.path.dirname(os.path.abspath(__file__)) if not caching_path else caching_path
@@ -78,8 +87,10 @@ class NetSuiteClient:
         self._client = Client(self._wsdl_url, transport=transport)
 
         # default service points to wrong data center. need to create a new service proxy and replace the default one
+        netsuite_binding_str = '{{urn:platform_{0}.webservices.netsuite.com}}NetSuiteBinding'.format(netsuite_binding_version)
         self._service_proxy = self._client.create_service(
-            '{urn:platform_2019_1.webservices.netsuite.com}NetSuiteBinding', self._datacenter_url)
+            netsuite_binding_str, self._datacenter_url
+        )
 
         # Parse all complex types specified in :const:`~netsuitesdk.netsuite_types.COMPLEX_TYPES`
         # and store them as attributes of this instance. Same for simple types.
