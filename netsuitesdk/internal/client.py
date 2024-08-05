@@ -3,6 +3,7 @@
     Zeep to connect to a NetSuite account and make requests.
 """
 
+import re
 import base64
 import hashlib
 import hmac
@@ -45,7 +46,7 @@ class NetSuiteClient:
     _app_id = None
 
     def __init__(self, account=None, caching=True, caching_timeout=2592000, caching_path=None, search_body_fields_only=True,
-                 page_size: int = 100, use_2024_wsdl: bool = False):
+                 page_size: int = 100, wsdl_version: str = None):
         """
         Initialize the Zeep SOAP client, parse the xsd specifications
         of Netsuite and store the complex types as attributes of this
@@ -57,22 +58,26 @@ class NetSuiteClient:
                             If None, defaults to 30 days
         :param str caching_path: Sqlite base file path. Default to python library path.
         """
+        if wsdl_version:
+            if not re.match(r'^\d{4}_(\d{1,2})?$', wsdl_version):
+                raise ValueError("Invalid wsdl_version format. It should be in the following format: year_version eg: '2023_1'")
+
         self.logger = logging.getLogger(self.__class__.__name__)
         assert account, 'Invalid account'
         assert '-' not in account, 'Account cannot have hyphens, it is likely an underscore'
         self._account = account
 
-        wsdl_version = 'v2019_1_0'
-        netsuite_port_version = 'NetSuitePort_2019_1'
-        netsuite_binding_version = '2019_1'
+        self.wsdl_version = 'v2019_1_0'
+        self.netsuite_port_version = 'NetSuitePort_2019_1'
+        self.netsuite_binding_version = '2019_1'
 
-        if use_2024_wsdl:
-            wsdl_version = 'v2024_1_0'
-            netsuite_port_version = 'NetSuitePort_2024_1'
-            netsuite_binding_version = '2024_1'
+        if wsdl_version:
+            self.wsdl_version = 'v{wsdl_version}_0'.format(wsdl_version=wsdl_version)
+            self.netsuite_port_version = 'NetSuitePort_{wsdl_version}'.format(wsdl_version=wsdl_version)
+            self.netsuite_binding_version = wsdl_version
 
-        self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'), wsdl_version=wsdl_version)
-        self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'), netsuite_port_version=netsuite_port_version)
+        self._wsdl_url = self.WSDL_URL_TEMPLATE.format(account=account.replace('_', '-'), wsdl_version=self.wsdl_version)
+        self._datacenter_url = self.DATACENTER_URL_TEMPLATE.format(account=account.replace('_', '-'), netsuite_port_version=self.netsuite_port_version)
 
         if caching:
             base_path = os.path.dirname(os.path.abspath(__file__)) if not caching_path else caching_path
@@ -87,7 +92,7 @@ class NetSuiteClient:
         self._client = Client(self._wsdl_url, transport=transport)
 
         # default service points to wrong data center. need to create a new service proxy and replace the default one
-        netsuite_binding_str = '{{urn:platform_{0}.webservices.netsuite.com}}NetSuiteBinding'.format(netsuite_binding_version)
+        netsuite_binding_str = '{{urn:platform_{0}.webservices.netsuite.com}}NetSuiteBinding'.format(self.netsuite_binding_version)
         self._service_proxy = self._client.create_service(
             netsuite_binding_str, self._datacenter_url
         )
