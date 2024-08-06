@@ -28,6 +28,8 @@ export NS_TOKEN_SECRET=xxxx
 
 The following snippet shows how to use TBA to initialize the SDK.
 
+## Note: By default the SDK implementation is using the wsdl version '2019_1', if you wish to use other than the default wsdl version, you can pass an optional wsdl_version. The wsdl_version should be in following format: 'year_version' eg. '2023_1' or '2022_2' etc.
+
 ```python
 import os
 import itertools
@@ -45,7 +47,9 @@ def connect_tba():
         consumer_key=NS_CONSUMER_KEY,
         consumer_secret=NS_CONSUMER_SECRET,
         token_key=NS_TOKEN_KEY,
-        token_secret=NS_TOKEN_SECRET
+        token_secret=NS_TOKEN_SECRET,
+        #optional wsdl_version to use version other than '2019_1' 
+        wsdl_version='2023_2'
     )
     return nc
 
