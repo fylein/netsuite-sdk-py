@@ -1,0 +1,10 @@
+pr_checks:
+  title:
+    - name: 'prefix_check'
+      regex: '^(?i)(fix|feat|test|chore|refactor|build):'
+      message_if_not_matching: 'PR title must start with "fix:", "feat:", "chore:", "refactor", or "test:" (case-insensitive)'
+
+  description:
+    - name: 'clickup_check'
+      regex: '(?i)app.clickup.com'
+      message_if_not_matching: 'PR description must contain a link to a ClickUp (case-insensitive)'
