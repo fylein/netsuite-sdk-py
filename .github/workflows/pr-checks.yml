@@ -1,0 +1,20 @@
+
+name: Strong PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited]
+
+permissions: 
+  pull-requests: write
+  contents: read
+
+jobs:
+  pr_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run strong checks
+        uses: fylein/fyle-pr-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: .github/pr-checks-config.yml
