@@ -495,8 +495,13 @@ class NetSuiteClient:
         status = result.status
         success = status.isSuccess
         if success:
-            result.records = result.recordList.record
-            return result
+            if hasattr(result.recordList, 'record'):
+                result.records = result.recordList.record
+                return result
+            else:
+                # Did not find anything
+                result.records = None
+                return result
         else:
             exc = self._request_error('searchMoreWithId', detail=status['statusDetail'][0])
             raise exc
