@@ -66,6 +66,8 @@ COMPLEX_TYPES = {
         'CustomListSearchBasic',
         'TermSearchBasic',
         'DepartmentSearchBasic',
+        'TaxDetails',
+        'TaxDetailsList',
         'ItemSearchBasic', 'ItemSearchRowBasic',
         'ClassificationSearchBasic',
         'CurrencyRateSearchBasic',

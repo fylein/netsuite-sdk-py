@@ -12,10 +12,7 @@ class Employees(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Employee')
 
-    def get_all_generator(self, is_inactive=False, page_size=50, last_modified_date_query={
-        'search_value',
-        'operator',
-    }):
+    def get_all_generator(self, is_inactive=False, page_size=50, last_modified_date_query={}):
         # Get Only Employee Items using SearchBooleanField
         record_type_search_field = self.ns_client.SearchBooleanField(searchValue=is_inactive)
 

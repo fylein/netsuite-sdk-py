@@ -121,6 +121,16 @@ class VendorBills(ApiBase):
         if 'entity' in data:
             vb['entity'] = self.ns_client.RecordRef(**(data['entity']))
 
+        if 'taxDetailsOverride' in data:
+            vb['taxDetailsOverride'] = data['taxDetailsOverride']
+
+        if 'taxDetailsList' in data and data['taxDetailsList']:
+            tax_details_list = []
+            if 'taxDetails' in data['taxDetailsList']:
+                for tdl in data['taxDetailsList']['taxDetails']:
+                    tax_details_list.append(self.ns_client.TaxDetails(**tdl))
+                vb['taxDetailsList'] = self.ns_client.TaxDetailsList(taxDetails=tax_details_list)
+
         logger.debug('able to create vb = %s', vb)
         res = self.ns_client.upsert(vb, 'bills')
         return self._serialize(res)
