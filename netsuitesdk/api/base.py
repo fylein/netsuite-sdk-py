@@ -40,7 +40,13 @@ class ApiBase:
         return all_records
 
     def count(self):
-        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=10, perform_search=True)
+        record_type_search_field = self.ns_client.SearchBooleanField(searchValue=False)
+        basic_search = self.ns_client.basic_search_factory(
+            type_name=self.type_name,
+            isInactive=record_type_search_field,
+        )
+
+        ps = PaginatedSearch(client=self.ns_client, type_name=self.type_name, pageSize=10, perform_search=True,basic_search=basic_search)
         return ps.total_records
 
     def get_all_generator(self, page_size=20):
