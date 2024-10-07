@@ -25,7 +25,7 @@ class VendorPayments(ApiBase):
                                            pageSize=20)
         return self._paginated_search_to_generator(paginated_search=paginated_search)
 
-    def post(self, data) -> OrderedDict:
+    def _build_vendor_payment(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
         vp = self.ns_client.VendorPayment(externalId=data['externalId'])
         apply_lists = []
@@ -68,6 +68,18 @@ class VendorPayments(ApiBase):
             vp['externalId'] = data['externalId']
 
         vp['entity'] = self.ns_client.RecordRef(**(data['entity']))
+
+        return vp
+
+
+    def post(self, data) -> OrderedDict:
+        vp = self._build_vendor_payment(data)
         logger.debug('able to create vp = %s', vp)
         res = self.ns_client.upsert(vp)
         return self._serialize(res)
+
+    def post_batch(self, records) -> [OrderedDict]:
+        vendor_payments = [self._build_vendor_payment(record) for record in records]
+
+        responses = self.ns_client.upsert_list(vendor_payments)
+        return [self._serialize(response) for response in responses]
