@@ -1,0 +1,332 @@
+kube_bash_integration_prod_us netsuite-api
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+root@netsuite-api-5b4f8d84d5-s57q2:/fyle-netsuite-api# python manage.py shell
+Python 3.10.15 (main, Oct 19 2024, 01:02:59) [GCC 12.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>>
+>>>
+>>> import json
+>>> from apps.workspaces.models import NetSuiteCredentials
+>>> from apps.netsuite.models import CreditCardCharge, CreditCardChargeLineItem
+>>> from apps.fyle.models import Expense, ExpenseGroup
+>>> from typing import Dict
+>>> from requests_oauthlib import OAuth1Session
+>>> import csv
+>>> from datetime import datetime
+>>> from apps.workspaces.models import FyleCredential, Workspace
+nt_links:
+        netsuite_custom_segments.append(
+            {
+                'scriptId': 'custcolfyle_receipt_link',
+                'value': attachment_links[expense.expense_id]
+            }
+        )
+        netsuite_custom_segments.append(
+            {
+                'scriptId': 'custcolfyle_receipt_link_2',
+                'type': 'String',
+                'value': attachment_links[expense.expense_id]
+            }
+        )
+    netsuite_custom_segments.append(
+        {
+            'scriptId': 'custcolfyle_expense_url',
+            'value': '{}/app/admin/#/enterprise/view_expense/{}?org_id={}'.format(
+                settings.FYLE_EXPENSE_URL,
+                expense.expense_id,
+                org_id
+            )
+        }
+    )
+    netsuite_custom_segments.append(
+        {
+            'scriptId': 'custcolfyle_expense_url_2',
+            'value': '{}/app/admin/#/enterprise/view_expense/{}?org_id={}'.format(
+                settings.FYLE_EXPENSE_URL,
+                expense.expense_id,
+                org_id
+            )
+        }
+    )
+    line = {
+        'account': {
+            'internalId': line.account_id
+        },
+        'amount': line.amount - line.tax_amount if (line.tax_item_id and line.tax_amount is not None) else line.amount,
+        'memo': line.memo,
+        'grossAmt': line.amount,
+        'department': {
+            'internalId': line.department_id
+        },
+        'class': {
+            'internalId': line.class_id
+        },
+        'location': {
+            'internalId': line.location_id
+        },
+        'customer': {
+            'internalId': line.customer_id
+        },
+        'customFieldList': netsuite_custom_segments,
+        'isBillable': line.billable,
+        'taxAmount': None,
+        'taxCode': {
+            'name': None,
+            'internalId': line.tax_item_id if (line.tax_item_id and line.tax_amount is not None) else None,
+            'externalId': None,
+            'type': 'taxGroup'
+        },
+    }
+    lines.append(line)
+    return lines
+
+from datetime >>> from typing import List
+>>> from django.conf import settings
+>>> from fyle_accounting_mappings.models import DestinationAttribute
+>>>
+i>>> workspace_id=439
+>>> netsuite_credentials = NetSuiteCredentials.objects.get(workspace_id=workspace_id)
+>>> failed_records = []
+      ),
+ >>>
+ >>> def construct_credit_card_charge_lineitems(
+...         credit_card_charge_lineitem: CreditCardChargeLineItem,
+...         attachment_links: Dict, cluster_domain: str, org_id: str) -> List[Dict]:
+...     line = credit_card_charge_lineitem
+...     lines = []
+...     expense = Expense.objects.get(pk=line.expense_id)
+...     netsuite_custom_segments = line.netsuite_custom_segments
+...     if attachment_links and expense.expense_id in attachment_links:
+...         netsuite_custom_segments.append(
+...             {
+...                 'scriptId': 'custcolfyle_receipt_link',
+...                 'value': attachment_links[expense.expense_id]
+...             }
+...         )
+ke...         netsuite_custom_segments.append(
+...             {
+...                 'scriptId': 'custcolfyle_receipt_link_2',
+...                 'type': 'String',
+...                 'value': attachment_links[expense.expense_id]
+...             }
+...         )
+...     netsuite_custom_segments.append(
+...         {
+...             'scriptId': 'custcolfyle_expense_url',
+...             'value': '{}/app/admin/#/enterprise/view_expense/{}?org_id={}'.format(
+...                 settings.FYLE_EXPENSE_URL,
+...                 expense.expense_id,
+...                 org_id
+...             )
+...         }
+...     )
+...     netsuite_custom_segments.append(
+...         {
+...             'scriptId': 'custcolfyle_expense_url_2',
+...             'value': '{}/app/admin/#/enterprise/view_expense/{}?org_id={}'.format(
+...                 settings.FYLE_EXPENSE_URL,
+...                 expense.expense_id,
+...                 org_id
+...             )
+ternalId'] =...         }
+...     )
+...     line = {
+...         'account': {
+...             'internalId': line.account_id
+...         },
+...         'amount': line.amount - line.tax_amount if (line.tax_item_id and line.tax_amount is not None) else line.amount,
+...         'memo': line.memo,
+...         'grossAmt': line.amount,
+...         'department': {
+...             'internalId': line.department_id
+...         },
+...         'class': {
+...             'internalId': line.class_id
+...         },
+...         'location': {
+...             'internalId': line.location_id
+...         },
+...         'customer': {
+...             'internalId': line.customer_id
+...         },
+...         'customFieldList': netsuite_custom_segments,
+...         'isBillable': line.billable,
+...         'taxAmount': None,
+...         'taxCode': {
+...             'name': None,
+...             'internalId': line.tax_item_id if (line.tax_item_id and line.tax_amount is not None) else None,
+...             'externalId': None,
+...             'type': 'taxGroup'
+...         },
+...     }
+...     lines.append(line)
+...     return lines
+...
+>>> from datetime import datetime
+>>> def construct_credit_card_charge(
+...         credit_card_charge: CreditCardCharge,
+...         credit_card_charge_lineitem: CreditCardChargeLineItem, attachment_links: Dict, transaction_date) -> Dict:
+...     fyle_credentials = FyleCredential.objects.get(workspace_id=credit_card_charge.expense_group.workspace_id)
+...     cluster_domain = fyle_credentials.cluster_domain
+...     org_id = Workspace.objects.get(id=credit_card_charge.expense_group.workspace_id).fyle_org_id
+...     if transaction_date:
+...         transaction_date = transaction_date
+...     else:
+...         transaction_date = credit_card_charge.transaction_date
+...         transaction_date = transaction_date.strftime('%m/%d/%Y')
+...     credit_card_charge_payload = {
+...         'account': {
+...             'internalId': credit_card_charge.credit_card_account_id
+...         },
+...         'entity': {
+...             'internalId': credit_card_charge.entity_id
+...         },
+...         'subsidiary': {
+...             'internalId': credit_card_charge.subsidiary_id
+...         },
+...         'location': {
+...             'internalId': credit_card_charge.location_id
+...         },
+...         'currency': {
+...             'internalId': credit_card_charge.currency
+...         },
+...         'department': {
+...             'internalId': credit_card_charge.department_id
+...         },
+...         'class': {
+...             'internalId': credit_card_charge.class_id
+...         },
+...         'tranDate': transaction_date,
+...         'memo': credit_card_charge.memo,
+...         'tranid': credit_card_charge.reference_number,
+...         'expenses': construct_credit_card_charge_lineitems(
+...             credit_card_charge_lineitem, attachment_links, cluster_domain, org_id
+...         ),
+...         'externalId': credit_card_charge.external_id
+...     }
+...     return credit_card_charge_payload
+...
+>>> def post_credit_card_charge(credit_card_charge: CreditCardCharge,
+...                                 credit_card_charge_lineitem: CreditCardChargeLineItem, attachment_links: Dict,
+...                                 refund: bool, netsuite_credentials, transaction_date=None):
+...     """
+...     Post vendor credit_card_charges to NetSuite
+...     """
+...     account = netsuite_credentials.ns_account_id.replace('_', '-')
+...     consumer_key = netsuite_credentials.ns_consumer_key
+...     consumer_secret = netsuite_credentials.ns_consumer_secret
+...     token_key = netsuite_credentials.ns_token_id
+...     token_secret = netsuite_credentials.ns_token_secret
+...     is_sandbox = False
+...     if '-SB' in account:
+...         is_sandbox = True
+...     url = f"https://{account.lower()}.restlets.api.netsuite.com/app/site/hosting/restlet.nl?" \
+...             f"script=customscript_cc_charge_fyle&deploy=customdeploy_cc_charge_fyle"
+...     if refund:
+...         credit_card_charge_lineitem.amount = abs(credit_card_charge_lineitem.amount)
+...         url = f"https://{account.lower()}.restlets.api.netsuite.com/app/site/hosting/restlet.nl?" \
+...                 f"script=customscript_cc_refund_fyle&deploy=customdeploy_cc_refund_fyle"
+...     credit_card_charges_payload = construct_credit_card_charge(
+...         credit_card_charge, credit_card_charge_lineitem, attachment_links, transaction_date)
+...     credit_card_charges_payload['internalId'] = credit_card_charge.expense_group.response_logs['internalId']
+...     oauth = OAuth1Session(
+...         client_key=consumer_key,
+...         client_secret=consumer_secret,
+...         resource_owner_key=token_key,
+...         resource_owner_secret=token_secret,
+...         realm=netsuite_credentials.ns_account_id.upper() if is_sandbox else account,
+...         signature_method='HMAC-SHA256'
+...     )
+...     raw_response = oauth.put(
+...         url, headers={
+...             'Content-Type': 'application/json',
+...             'Accept': 'application/json'
+...         }, data=json.dumps(credit_card_charges_payload))
+...     status_code = raw_response.status_code
+...     if status_code == 200 and 'success' in json.loads(raw_response.text) and json.loads(raw_response.text)['success']:
+...         print(json.loads(raw_response.text))
+...     else:
+...         failed_records.append({credit_card_charge.expense_group.response_logs['internalId']: json.loads(raw_response.text)})
+...         print(failed_records)
+...
+>>>
+>>>
+>>>
+>>> file_path = 'gxc_update_batch_1_50.csv'
+>>> with open(file_path, mode='r') as file:
+...     reader = csv.DictReader(file)
+...     for r in reader:
+...         expense: Expense = Expense.objects.get(expense_number=r['expense_number'], workspace_id=workspace_id)
+...         expense_group = ExpenseGroup.objects.get(expenses=expense, workspace_id=workspace_id)
+...         credit_card_charge = CreditCardCharge.objects.get(expense_group=expense_group)
+...         credit_card_charge_lineitems = CreditCardChargeLineItem.objects.get(credit_card_charge=credit_card_charge)
+...         refund = False
+...         transaction_date = None
+...         if expense.amount < 0:
+...             refund = True
+...         credit_card_account_id = None
+...         attachment_links = {}
+...         attachment_links[expense.expense_id] = r['receipt_url']
+...         credit_card_charge_lineitems.amount = r['netsuite_amount'] if r['netsuite_amount'] != "" else credit_card_charge_lineitems.amount
+...         if r['netsuite_date'] != "":
+...             transaction_date = r['netsuite_date']
+...         if r['netsuite_account'] != "":
+...             credit_card_account_id = DestinationAttribute.objects.filter(workspace_id=workspace_id, attribute_type='CREDIT_CARD_ACCOUNT', value=r['netsuite_account']).first()
+...             credit_card_charge.credit_card_account_id = credit_card_account_id.destination_id if credit_card_account_id else credit_card_charge.credit_card_account_id
+...         credit_card_charge.netsuite_receipt_url = r['receipt_url']
+...         credit_card_charge.save()
+...         credit_card_charge_lineitems.save()
+...         post_credit_card_charge(credit_card_charge, credit_card_charge_lineitems, attachment_links, refund, netsuite_credentials, transaction_date)
+...
+{'internalId': 81778, 'success': True}
+{'internalId': 80540, 'success': True}
+{'internalId': 14055, 'success': True}
+{'internalId': 26304, 'success': True}
+{'internalId': 26087, 'success': True}
+{'internalId': 77569, 'success': True}
+{'internalId': 14798, 'success': True}
+{'internalId': 62243, 'success': True}
+{'internalId': 84323, 'success': True}
+{'internalId': 83470, 'success': True}
+{'internalId': 83465, 'success': True}
+{'internalId': 67383, 'success': True}
+{'internalId': 83467, 'success': True}
+{'internalId': 64636, 'success': True}
+{'internalId': 78312, 'success': True}
+{'internalId': 71708, 'success': True}
+{'internalId': 69852, 'success': True}
+{'internalId': 62541, 'success': True}
+{'internalId': 84757, 'success': True}
+{'internalId': 62554, 'success': True}
+{'internalId': 83464, 'success': True}
+{'internalId': 87472, 'success': True}
+{'internalId': 32654, 'success': True}
+{'internalId': 50859, 'success': True}
+{'internalId': 36973, 'success': True}
+{'internalId': 36974, 'success': True}
+{'internalId': 37481, 'success': True}
+{'internalId': 37489, 'success': True}
+{'internalId': 37480, 'success': True}
+{'internalId': 37479, 'success': True}
+{'internalId': 58327, 'success': True}
+{'internalId': 37988, 'success': True}
+{'internalId': 50871, 'success': True}
+{'internalId': 53348, 'success': True}
+{'internalId': 43816, 'success': True}
+{'internalId': 53354, 'success': True}
+{'internalId': 46199, 'success': True}
+{'internalId': 46626, 'success': True}
+{'internalId': 46624, 'success': True}
+{'internalId': 47803, 'success': True}
+{'internalId': 47804, 'success': True}
+{'internalId': 55442, 'success': True}
+{'internalId': 55443, 'success': True}
+{'internalId': 47809, 'success': True}
+{'internalId': 55352, 'success': True}
+{'internalId': 55444, 'success': True}
+{'internalId': 55357, 'success': True}
+{'internalId': 58430, 'success': True}
+{'internalId': 51119, 'success': True}
+{'internalId': 58535, 'success': True}
+>>>
