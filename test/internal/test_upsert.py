@@ -1,6 +1,7 @@
 from netsuitesdk.internal.utils import PaginatedSearch
 from netsuitesdk.internal.exceptions import NetSuiteRequestError
 import logging
+from datetime import datetime
 
 
 logger = logging.getLogger(__name__)
@@ -44,38 +45,39 @@ def test_upsert_vendor_bill(ns):
     vbe1['account'] = cat_account_ref
     vbe1['amount'] = 10.0
     vbe1['department'] = dep_ref
-    vbe1['class'] = class_ref
-    vbe1['location'] = loc_ref
+    # vbe1['class'] = class_ref
+    # vbe1['location'] = loc_ref
 
     expenses.append(vbe1)
     vbe1 = ns.VendorBillExpense()
     vbe1['account'] = cat_account_ref
     vbe1['amount'] = 20.0
     vbe1['department'] = dep_ref
-    vbe1['class'] = class_ref
-    vbe1['location'] = loc_ref
+    # vbe1['class'] = class_ref
+    # vbe1['location'] = loc_ref
 
     expenses.append(vbe1)
 
-    bill = ns.VendorBill(externalId='1234')
+    bill = ns.VendorBill(externalId='12345')
     bill['currency'] = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId) # US dollar
     bill['exchangerate'] = 1.0
     bill['expenseList'] = ns.VendorBillExpenseList(expense=expenses)
     bill['memo'] = 'test memo'
-    bill['class'] = class_ref
-    bill['location'] = loc_ref
+    # bill['class'] = class_ref
+    # bill['location'] = loc_ref
     bill['entity'] = vendor_ref
+    bill['tranDate'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
     logger.debug('upserting bill %s', bill)
     record_ref = ns.upsert(bill)
     logger.debug('record_ref = %s', record_ref)
-    assert record_ref['externalId'] == '1234', 'External ID does not match'
+    assert record_ref['externalId'] == '12345', 'External ID does not match'
 
-    bill2 = ns.get(recordType='vendorBill', externalId='1234')
+    bill2 = ns.get(recordType='vendorBill', externalId='12345')
     logger.debug('bill2 = %s', str(bill2))
     assert (29.99 < bill2['userTotal']) and (bill2['userTotal'] < 30.01), 'Bill total is not 30.0'
     
     subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
-    bill_account_ref = ns.RecordRef(type='account', internalId=237)
+    bill_account_ref = ns.RecordRef(type='account', internalId=84)
     vbe1['account'] = bill_account_ref
     vbe1['subsdiary'] = subs_ref
     
@@ -115,22 +117,23 @@ def test_upsert_journal_entry(ns):
 
     lines.append(debit_line)
 
-    journal_entry = ns.JournalEntry(externalId='JE_1234')
+    journal_entry = ns.JournalEntry(externalId='JE_12345')
     journal_entry['currency'] = ns.RecordRef(type='currency', internalId=get_currency(ns).internalId)  # US dollar
     journal_entry['subsidiary'] = ns.RecordRef(type='subsidiary', internalId='1')
     journal_entry['exchangerate'] = 1.0
     journal_entry['lineList'] = ns.JournalEntryLineList(line=lines)
     journal_entry['memo'] = 'test memo'
+    journal_entry['tranDate'] = datetime.today().date().replace(day=1)
     logger.debug('upserting journal entry %s', journal_entry)
     record_ref = ns.upsert(journal_entry)
     logger.debug('record_ref = %s', record_ref)
-    assert record_ref['externalId'] == 'JE_1234', 'External ID does not match'
+    assert record_ref['externalId'] == 'JE_12345', 'External ID does not match'
 
-    je = ns.get(recordType='journalEntry', externalId='JE_1234')
+    je = ns.get(recordType='journalEntry', externalId='JE_12345')
     logger.debug('je = %s', str(je))
-    assert (je['externalId'] == 'JE_1234'), 'Journal Entry External ID does not match'
+    assert (je['externalId'] == 'JE_12345'), 'Journal Entry External ID does not match'
     
-    cat_account_ref = ns.RecordRef(type='account', internalId=237)
+    cat_account_ref = ns.RecordRef(type='account', internalId=25)
     credit_line['account'] = cat_account_ref
 
     try:
@@ -177,8 +180,8 @@ def test_upsert_expense_report(ns):
     logger.debug('expense report = %s', str(expr))
 
 
-    loc_ref = ns.RecordRef(type='location', internalId=12)
-    subs_ref = ns.RecordRef(type='subsdiary', internalId=5)
+    loc_ref = ns.RecordRef(type='location', internalId=2)
+    subs_ref = ns.RecordRef(type='subsdiary', internalId=1)
     
     er['location'] = loc_ref
     er['subsdiary'] = subs_ref 

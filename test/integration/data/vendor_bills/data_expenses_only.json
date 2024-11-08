@@ -1,121 +1,157 @@
 {
-    "externalId": "1237",
-    "tranId": "E/2023/17/02",
-    "tranDate": "2023-01-30T17:32:28Z",
-    "account":{
-        "internalId": null,
+    "nullFieldList": null,
+    "createdDate": null,
+    "lastModifiedDate": null,
+    "nexus": null,
+    "subsidiaryTaxRegNum": null,
+    "taxRegOverride": null,
+    "taxDetailsOverride": null,
+    "customForm": null,
+    "billAddressList": null,
+    "account": {
+        "name": null,
+        "internalId": "25",
         "externalId": null,
         "type": "account"
     },
-    "itemList": null,
+    "entity": {
+        "name": null,
+        "internalId": "3382",
+        "externalId": null,
+        "type": "vendor"
+    },
+    "subsidiary": {
+        "name": null,
+        "internalId": "1",
+        "externalId": null,
+        "type": "subsidiary"
+    },
+    "location": {
+        "name": null,
+        "internalId": null,
+        "externalId": null,
+        "type": "location"
+    },
+    "department": {
+        "name": null,
+        "internalId": null,
+        "externalId": null,
+        "type": "department"
+    },
+    "class": {
+        "name": null,
+        "internalId": null,
+        "externalId": null,
+        "type": "classification"
+    },
+    "approvalStatus": null,
+    "nextApprover": null,
+    "vatRegNum": null,
+    "postingPeriod": null,
+    "tranDate": "2024-11-08T00:00:00",
+    "currencyName": null,
+    "billingAddress": null,
+    "exchangeRate": null,
+    "entityTaxRegNum": null,
+    "taxPointDate": null,
+    "terms": null,
+    "dueDate": null,
+    "discountDate": null,
+    "tranId": "E/2024/11/T/34447",
+    "userTotal": null,
+    "discountAmount": null,
+    "taxTotal": null,
+    "paymentHold": null,
+    "memo": "Reimbursable expenses by admin1@fylefordemocctransactions.org",
+    "tax2Total": null,
+    "creditLimit": null,
+    "availableVendorCredit": null,
     "currency": {
         "name": null,
         "internalId": "1",
         "externalId": null,
         "type": "currency"
     },
+    "status": null,
+    "landedCostMethod": null,
+    "landedCostPerLine": null,
+    "transactionNumber": null,
     "expenseList": [
         {
-            "account": {
-                "name": null,
-                "internalId": 16,
-                "externalId": null,
-                "type": "account"
-            },
-            "amount": 10.0,
-            "customFieldList": [
-                {
-                    "type": "String",
-                    "value": "NetsuiteSDK test field1"
-                },
-                {
-                    "type": "Select",
-                    "value": "45"
-                }
-            ],
+            "orderDoc": null,
+            "orderLine": null,
+            "line": null,
+            "amount": 30.0,
+            "grossAmt": 30.0,
+            "taxDetailsReference": null,
             "department": {
                 "name": null,
-                "internalId": "1",
+                "internalId": null,
                 "externalId": null,
                 "type": "department"
             },
             "class": {
                 "name": null,
-                "internalId": "1",
+                "internalId": null,
                 "externalId": null,
                 "type": "classification"
             },
             "location": {
                 "name": null,
-                "internalId": "1",
+                "internalId": null,
                 "externalId": null,
                 "type": "location"
             },
-            "memo": "Kuch lete kyun nahin"
-        },
-        {
+            "customer": {
+                "name": null,
+                "internalId": null,
+                "externalId": null,
+                "type": "customer"
+            },
+            "customFieldList": [
+                {
+                    "scriptId": "custcolfyle_expense_url",
+                    "type": "String",
+                    "value": "https://staging1.fyle.tech/app/admin/#/enterprise/view_expense/txBFlLMIQNJt?org_id=orT192eaSf2q"
+                },
+                {
+                    "scriptId": "custcolfyle_expense_url_2",
+                    "type": "String",
+                    "value": "https://staging1.fyle.tech/app/admin/#/enterprise/view_expense/txBFlLMIQNJt?org_id=orT192eaSf2q"
+                }
+            ],
+            "isBillable": null,
+            "tax1Amt": null,
+            "taxAmount": null,
+            "taxCode": {
+                "name": null,
+                "internalId": null,
+                "externalId": null,
+                "type": "taxGroup"
+            },
+            "taxRate1": null,
+            "taxRate2": null,
+            "amortizationSched": null,
+            "amortizStartDate": null,
+            "amortizationEndDate": null,
+            "amortizationResidual": null,
             "account": {
                 "name": null,
-                "internalId": 15,
+                "internalId": "224",
                 "externalId": null,
                 "type": "account"
             },
-            "amount": 20.0,
-            "customFieldList": [
-                {
-                    "type": "String",
-                    "value": "NetsuiteSDK test field1"
-                },
-                {
-                    "type": "Select",
-                    "value": "45"
-                }
-            ],
-            "department": {
-                "name": null,
-                "internalId": "1",
-                "externalId": null,
-                "type": "department"
-            },
-            "class": {
-                "name": null,
-                "internalId": "1",
-                "externalId": null,
-                "type": "classification"
-            },
-            "location": {
-                "name": null,
-                "internalId": "1",
-                "externalId": null,
-                "type": "location"
-            },
-            "memo": "Humdard ka tonic"
-
+            "category": null,
+            "memo": "admin1@fylefordemocctransactions.org - Fedex - Professional Services - 2024-11-08 - C/2024/11/R/2",
+            "projectTask": null
         }
     ],
-    "memo": "Fyle ka Bill",
-    "class": {
-        "name": null,
-        "internalId": "1",
-        "externalId": null,
-        "type": "classification"
-    },
-    "location": {
-        "name": null,
-        "internalId": "1",
-        "externalId": null,
-        "type": "location"
-    },
-    "entity": {
-        "name": null,
-        "internalId": "-100",
-        "externalId": null,
-        "type": "vendor"
-    },
-    "department": {
-        "name": null,
-        "internalId": "1",
-        "externalId": null,
-        "type": "department"
-    }
+    "itemList": null,
+    "accountingBookDetailList": null,
+    "landedCostsList": null,
+    "purchaseOrderList": null,
+    "taxDetailsList": null,
+    "customFieldList": null,
+    "internalId": null,
+    "externalId": "12345"
 }
