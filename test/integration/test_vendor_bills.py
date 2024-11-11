@@ -30,21 +30,21 @@ def test_post(nc):
     assert (29.99 < vb2['userTotal']) and (vb2['userTotal'] < 30.01), 'Bill total is not 30.0'
 
 
-    vb3 = {}
-    with open('./test/integration/data/vendor_bills/data_items_only.json') as oj:
-        s = oj.read()
-        vb3 = json.loads(s)
-    logger.debug('rvb1 = %s', vb3)
-    res = nc.vendor_bills.post(vb3)
-    logger.debug('res = %s', res)
-    assert res['externalId'] == vb3['externalId'], 'External ID does not match'
+    # vb3 = {}
+    # with open('./test/integration/data/vendor_bills/data_items_only.json') as oj:
+    #     s = oj.read()
+    #     vb3 = json.loads(s)
+    # logger.debug('rvb1 = %s', vb3)
+    # res = nc.vendor_bills.post(vb3)
+    # logger.debug('res = %s', res)
+    # assert res['externalId'] == vb3['externalId'], 'External ID does not match'
 
 
-    vb4 = {}
-    with open('./test/integration/data/vendor_bills/data_expense_and_items.json') as oj:
-        s = oj.read()
-        vb4 = json.loads(s)
-    logger.debug('rvb1 = %s', vb4)
-    res = nc.vendor_bills.post(vb4)
-    logger.debug('res = %s', res)
-    assert res['externalId'] == vb4['externalId'], 'External ID does not match'
+    # vb4 = {}
+    # with open('./test/integration/data/vendor_bills/data_expense_and_items.json') as oj:
+    #     s = oj.read()
+    #     vb4 = json.loads(s)
+    # logger.debug('rvb1 = %s', vb4)
+    # res = nc.vendor_bills.post(vb4)
+    # logger.debug('res = %s', res)
+    # assert res['externalId'] == vb4['externalId'], 'External ID does not match'

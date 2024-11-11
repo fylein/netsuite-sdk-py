@@ -1,7 +1,6 @@
 import logging
-import pytest
 import json
-import os
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +21,7 @@ def test_post(nc):
     with open('./test/integration/data/expense_reports/data.json') as oj:
         s = oj.read()
         expr1 = json.loads(s)
+        expr1['tranDate'] = datetime.today().date().replace(day=1).strftime('%Y-%m-%dT%H:%M:%S')
     logger.debug('expr1 = %s', expr1)
     res = nc.expense_reports.post(expr1)
     logger.debug('res = %s', res)
