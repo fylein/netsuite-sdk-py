@@ -36,7 +36,7 @@ from .internal.client import NetSuiteClient
 class NetSuiteConnection:
     def __init__(self, account, consumer_key, consumer_secret, token_key, token_secret,
                  caching=True, caching_timeout=2592000, caching_path=None,
-                 search_body_fields_only=True, page_size: int = 100, wsdl_version: str = None):
+                 search_body_fields_only=True, page_size: int = 100, wsdl_version: str = '2024_1'):
 
         ns_client = NetSuiteClient(account=account, caching=caching, caching_timeout=caching_timeout,
                                    caching_path=caching_path, search_body_fields_only=search_body_fields_only,
