@@ -29,6 +29,7 @@ export NS_TOKEN_SECRET=xxxx
 The following snippet shows how to use TBA to initialize the SDK.
 
 Note: By default the SDK implementation is using the wsdl version '2019_1', if you wish to use other than the default wsdl version, you can pass an optional wsdl_version. The wsdl_version should be in following format: 'year_version' eg. '2023_1' or '2022_2' etc.
+From version 3.0.0, the default wsdl_version will be 2024_1.
 
 ```python
 import os
