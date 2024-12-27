@@ -8,7 +8,6 @@ COMPLEX_TYPES = {
         'BaseRef',
         'GetAllRecord',
         'GetAllResult',
-        'Passport',
         'RecordList',
         'RecordRef',
         'ListOrRecordRef',
