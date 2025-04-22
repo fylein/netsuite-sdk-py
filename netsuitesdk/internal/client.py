@@ -112,7 +112,8 @@ class NetSuiteClient:
         self._search_preferences = self.SearchPreferences(
             bodyFieldsOnly=search_body_fields_only,
             pageSize=page_size,
-            returnSearchColumns=return_search_columns
+            returnSearchColumns=return_search_columns,
+            runServerSuiteScriptAndTriggerWorkflows=False,
         )
 
     def _init_complex_types(self):
