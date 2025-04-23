@@ -113,6 +113,7 @@ class NetSuiteClient:
             bodyFieldsOnly=search_body_fields_only,
             pageSize=page_size,
             returnSearchColumns=return_search_columns,
+            # Approch #1
             # runServerSuiteScriptAndWorkflowTriggers=False,
         )
 
@@ -346,6 +347,7 @@ class NetSuiteClient:
             raise NetSuiteError('Must either login first or pass passport or tokenPassport to request header.')
         if include_search_preferences:
             soapheaders['searchPreferences'] = self._search_preferences
+        # Approach #2
         soapheaders["runServerSuiteScriptAndWorkflowTriggers"] = True
 
         return soapheaders
