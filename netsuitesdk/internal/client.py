@@ -113,7 +113,7 @@ class NetSuiteClient:
             bodyFieldsOnly=search_body_fields_only,
             pageSize=page_size,
             returnSearchColumns=return_search_columns,
-            runServerSuiteScriptAndWorkflowTriggers=False,
+            # runServerSuiteScriptAndWorkflowTriggers=False,
         )
 
     def _init_complex_types(self):
