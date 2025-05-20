@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from .base import ApiBase
 import logging
+from netsuitesdk.internal.utils import PaginatedSearch
 
 logger = logging.getLogger(__name__)
 
@@ -148,6 +149,37 @@ class Customers(ApiBase):
 
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Customer')
+
+    def get_inactive_after_date_generator(self, last_modified_date):
+        """
+        Get all inactive customers after a given lastModifiedDate
+        :param last_modified_date: The date after which to search for inactive customers (YYYY-MM-DDT%HH:MM:SS)
+        :return: List of inactive customers
+        """
+        # Create search fields for inactive status and lastModifiedDate
+        is_inactive_field = self.ns_client.SearchBooleanField(searchValue=True)
+        last_modified_field = self.ns_client.SearchDateField(
+            searchValue=last_modified_date,
+            operator='after'
+        )
+
+        # Create basic search with both conditions
+        basic_search = self.ns_client.basic_search_factory(
+            type_name=self.type_name,
+            isInactive=is_inactive_field,
+            lastModifiedDate=last_modified_field
+        )
+
+        # Create paginated search
+        paginated_search = PaginatedSearch(
+            client=self.ns_client,
+            type_name=self.type_name,
+            basic_search=basic_search,
+            pageSize=20
+        )
+
+        # Return generator of results
+        return self._paginated_search_generator(paginated_search=paginated_search)
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
