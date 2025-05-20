@@ -96,24 +96,32 @@ class Vendors(ApiBase):
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Vendor')
 
-    def get_inactive_after_date_generator(self, last_modified_date):
+    def get_records_generator(self, last_modified_date=None, active=None):
         """
-        Get all inactive vendors after a given lastModifiedDate
-        :param last_modified_date: The date after which to search for inactive vendors (YYYY-MM-DDT%HH:MM:SS)
-        :return: List of inactive vendors
+        Get vendors based on lastModifiedDate and active status
+        :param last_modified_date: The date after which to search for vendors (YYYY-MM-DDT%HH:MM:SS)
+        :param active: Boolean to filter by active status. None means no filter on active status
+        :return: Generator of vendors matching the criteria
         """
-        # Create search fields for inactive status and lastModifiedDate
-        is_inactive_field = self.ns_client.SearchBooleanField(searchValue=True)
-        last_modified_field = self.ns_client.SearchDateField(
-            searchValue=last_modified_date,
-            operator='after'
-        )
+        search_fields = {}
 
-        # Create basic search with both conditions
+        # Add active status filter if specified
+        if active is not None:
+            search_fields['isInactive'] = self.ns_client.SearchBooleanField(
+                searchValue=not active
+            )
+
+        # Add last modified date filter if specified
+        if last_modified_date:
+            search_fields['lastModifiedDate'] = self.ns_client.SearchDateField(
+                searchValue=last_modified_date,
+                operator='after'
+            )
+
+        # Create basic search with the specified conditions
         basic_search = self.ns_client.basic_search_factory(
             type_name=self.type_name,
-            isInactive=is_inactive_field,
-            lastModifiedDate=last_modified_field
+            **search_fields
         )
 
         # Create paginated search
