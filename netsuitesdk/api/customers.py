@@ -2,8 +2,10 @@ from collections import OrderedDict
 
 from .base import ApiBase
 import logging
+from netsuitesdk.internal.utils import PaginatedSearch
 
 logger = logging.getLogger(__name__)
+
 
 class Customers(ApiBase):
     SIMPLE_FIELDS = [
@@ -148,6 +150,45 @@ class Customers(ApiBase):
 
     def __init__(self, ns_client):
         ApiBase.__init__(self, ns_client=ns_client, type_name='Customer')
+
+    def get_records_generator(self, last_modified_date=None, active=None):
+        """
+        Get customers based on lastModifiedDate and active status
+        :param last_modified_date: The date after which to search for customers (YYYY-MM-DDT%HH:MM:SS)
+        :param active: Boolean to filter by active status. None means no filter on active status
+        :return: Generator of customers matching the criteria
+        """
+        search_fields = {}
+
+        # Add active status filter if specified
+        if active is not None:
+            search_fields['isInactive'] = self.ns_client.SearchBooleanField(
+                searchValue=not active
+            )
+
+        # Add last modified date filter if specified
+        if last_modified_date:
+            search_fields['lastModifiedDate'] = self.ns_client.SearchDateField(
+                searchValue=last_modified_date,
+                operator='after'
+            )
+
+        # Create basic search with the specified conditions
+        basic_search = self.ns_client.basic_search_factory(
+            type_name=self.type_name,
+            **search_fields
+        )
+
+        # Create paginated search
+        paginated_search = PaginatedSearch(
+            client=self.ns_client,
+            type_name=self.type_name,
+            basic_search=basic_search,
+            pageSize=20
+        )
+
+        # Return generator of results
+        return self._paginated_search_generator(paginated_search=paginated_search)
 
     def post(self, data) -> OrderedDict:
         assert data['externalId'], 'missing external id'
