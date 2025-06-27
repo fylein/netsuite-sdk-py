@@ -27,6 +27,7 @@ jobs:
           echo "STATUS=$(cat pytest-coverage.txt | grep 'Required test' | awk '{ print $1 }')" >> $GITHUB_ENV
           echo "${{ env.STATUS }}"
           echo "FAILED=$(cat test-reports/report.xml | awk -F'=' '{print $5}' | awk -F' ' '{gsub(/"/, "", $1); print $1}')" >> $GITHUB_ENV
+
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
         if: ${{ always() && github.ref != 'refs/heads/master' }}
@@ -34,6 +35,7 @@ jobs:
           create-new-comment: true
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./test-reports/report.xml
+
       - name: Evaluate Coverage
         if: ${{ (env.STATUS == 'FAIL') || (env.FAILED > 0) }}
         run: exit 1

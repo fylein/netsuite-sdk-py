@@ -1,0 +1,65 @@
+name: Publish to GitHub Release on Version Change
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Get current and previous version
+        id: get_version
+        run: |
+          set -e
+          CURR_VERSION=$(grep "version=" setup.py | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
+          PREV_VERSION=$(git show HEAD^:setup.py | grep "version=" | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
+          echo "Current version: $CURR_VERSION"
+          echo "Previous version: $PREV_VERSION"
+          echo "curr_version=$CURR_VERSION" >> $GITHUB_OUTPUT
+          echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if version changed
+        id: version_check
+        run: |
+          if [ "${{ steps.get_version.outputs.curr_version }}" != "${{ steps.get_version.outputs.prev_version }}" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        if: ${{ steps.version_check.outputs.changed == 'true' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.curr_version }}
+          name: Release ${{ steps.get_version.outputs.curr_version }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Install dependencies
+        if: ${{ steps.version_check.outputs.changed == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+
+      - name: Build and publish
+        if: ${{ steps.version_check.outputs.changed == 'true' }}
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
