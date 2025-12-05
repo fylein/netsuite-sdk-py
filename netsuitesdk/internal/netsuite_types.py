@@ -59,6 +59,7 @@ COMPLEX_TYPES = {
         'VendorSearchBasic',
         'SubsidiarySearchBasic',
         'EmployeeSearchBasic',
+        'ExpenseCategorySearchBasic',
         'FolderSearchBasic',
         'FileSearchBasic',
         'CustomRecordSearchBasic',
