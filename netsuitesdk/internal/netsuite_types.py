@@ -72,7 +72,9 @@ COMPLEX_TYPES = {
         'ClassificationSearchBasic',
         'CurrencyRateSearchBasic',
         'ConsolidatedExchangeRateSearchBasic',
-        'BillingAccountSearchBasic'
+        'BillingAccountSearchBasic',
+        'SalesTaxItemSearchBasic',
+        'TaxGroupSearchBasic'
     ],
 
     'ns6': [
